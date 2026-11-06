@@ -3972,7 +3972,7 @@ function npMeetTry(){if(s.dead)return;const al=npLive().length;if(npAll().length
   const damp=Math.max(.25,1-al*.14);let made=0;
   for(const [k,p] of c.sort(()=>R()-.5)){if(made>=2)break;if(R()<p*damp*(made?.35:1)&&npcMeet(k))made++}}
 /* ---------- 그들의 삶 ---------- */
-function npFate(r,t){r.fate=r.fate||[];r.fate.push(`${s.year}년 ${t}`)}
+function npFate(r,t){r.fate=r.fate||[];r.fate.push(/^\d{4}년/.test(t)?t:`${s.year}년 ${t}`)}
 const npKind=(r,big)=>big?(r.close>=50||r.hate>=50||r.riv>=60?'big':'ev'):(r.close>=40||r.hate>=40||r.riv>=50?'ev':'sys');
 // 그의 일을 기록하고 당신에게 알린다
 function npEv(r,t,big){npFate(r,t);L(`${npWho(r)}${bat(r.n)?'은':'는'} ${t}`,npKind(r,big))}
@@ -8389,7 +8389,7 @@ const bfHere=()=>s.cond==='normal'&&!s.dead;
 const bfPar=()=>noble()?'생쉴피스 성당':'생테티엔뒤몽 성당';
 // 관계 수치는 조용히 바꾼다(장면 글에 숫자를 붙이지 않는다)
 function bfRel(k,o){const r=bfR(k);if(!r)return;for(const x in o)r[x]=clamp((r[x]||0)+o[x],0,100);r.bd=relBond(r)}
-function bfFate(k,t){const r=bfR(k);if(!r)return;r.fate=r.fate||[];r.fate.push(`${s.year}년 ${t}`)}
+function bfFate(k,t){const r=bfR(k);if(!r)return;r.fate=r.fate||[];r.fate.push(/^\d{4}년/.test(t)?t:`${s.year}년 ${t}`)}
 function bfJob(k,j){const r=bfR(k);if(r)r.job=j}
 function bfDie(k,cause,t,quiet){const r=bfR(k);if(!r||!r.alive)return;r.alive=false;r.dead=s.year;r.dc=cause;bfFate(k,t);
   // 그와 함께한 기억은 모두 다시 떠오르고, 다른 의미가 된다
@@ -8603,7 +8603,7 @@ beat('etienne','et_debate',{when:()=>s.age>=18&&bfAlive('etienne')&&bfHere(),unt
    july: 그 뒤 출생 — 7월 혁명, 1831년 성당 약탈, 1832년 콜레라와 6월 봉기, 1834년 트랑스노냉, 1848년 6월. */
 const bfW=(a,b)=>T()>=a&&T()<b;
 beat('etienne','et_dawn',{when:()=>bfAlive('etienne')&&bfHere()&&!child()&&(bfRev()?bfW(1789.53,1790.9):bfW(1830.56,1831.3)),until:()=>bfRev()?T()>=1790.9:T()>=1831.3,run:async()=>{const E=bN('etienne'),rv=bfRev(),F=bfR('etienne').sex==='F';
-  bfSet('etienne','together');bfJob('etienne',rv?(F?'남장을 하고 구민 회의에 나가는 사람':'구민 회의 서기'):(F?'남장을 한 공화파 신문 기자':'공화파 신문 기자'));bfFate('etienne',F?(rv?'머리를 자르고 남자 옷을 입은 채 구민 회의에 나가기 시작했다':'남자 옷을 입고 7월의 바리케이드에 섰다'):rv?'구민 회의에 드나들기 시작했다':'7월의 바리케이드에 섰다');const dis=F?' 머리를 짧게 자르고 남자 옷을 입었다. “거기선 다들 나를 그냥 에티엔이라고 불러. 아무도 묻지 않아.”':'';
+  bfSet('etienne','together');bfJob('etienne',rv?(F?'남장을 하고 구민 회의에 나가는 사람':'구민 회의 서기'):(F?'남장을 한 공화파 신문 기자':'공화파 신문 기자'));bfFate('etienne',F?(rv?(bfFl('etienne','garb')?'남자 옷을 입은 채 ‘에티엔’이라는 이름으로 구민 회의에 나가기 시작했다':'머리를 자르고 남자 옷을 입은 채 구민 회의에 나가기 시작했다'):'남자 옷을 입고 7월의 바리케이드에 섰다'):rv?'구민 회의에 드나들기 시작했다':'7월의 바리케이드에 섰다');const dis=F?(rv&&bfFl('etienne','garb')?' 봄에 자른 짧은 머리에 동생의 외투 차림이다.':' 머리를 짧게 자르고 남자 옷을 입었다. “거기선 다들 나를 그냥 에티엔이라고 불러. 아무도 묻지 않아.”'):'';
   await bfScene(rv?'바스티유가 떨어진 날':'영광의 사흘',rv?'le 14 juillet':'les Trois Glorieuses',rv?`7월의 어느 날, ${bI('etienne')} 숨을 몰아쉬며 달려온다. 모자에 푸른색과 붉은색 모표를 꽂았다.${dis} “바스티유가 떨어졌어! 퐁뇌프에서 한 약속 기억해? 이제 시작이야.”`:`7월의 사흘. ${bI('etienne')} 화약 냄새를 풍기며 달려온다. 손에 삼색기를 들었다.${dis} “부르봉이 쫓겨났어! 퐁뇌프에서 한 약속 기억해? 이제 시작이야.”`,[
    {l:rv?'구민 회의에 함께 나간다':'시청 앞 광장으로 함께 간다',a:'radical',f:()=>{bfSet('etienne','withYou');s.pol=clamp(s.pol+4,-100,100);bfMem('m_dawn','etienne',rv?`바스티유가 떨어진 날, ${bW('etienne')} 구민 회의에 나갔다. 모두가 동시에 말하고 있었다.`:`영광의 사흘, ${bW('etienne')} 시청 앞 광장에 섰다. 삼색기가 다시 올라갔다.`,{tone:'희망',their:'그 아이와 함께였다. 그날은 세상이 우리 편이었다.'});bfRel('etienne',{close:6})}},
    {l:'“조심해.”라고만 한다',a:'safe',f:()=>{bfMem('m_dawn','etienne',`${rv?'바스티유가 떨어진 날':'영광의 사흘'}, ${bI('etienne')} 들떠서 달려왔다. 당신은 조심하라고만 했다.`,{tone:'두려움',their:'그 아이는 조심하라고만 했다. 그 말이 그때는 비겁하게 들렸다.'})}},
@@ -8661,7 +8661,7 @@ beat('gabriel','ga_hide',{when:()=>bfAlive('gabriel')&&bfHere()&&!child()&&(bfRe
 // 에티엔: 같은 약속, 다른 정의 — 서로 반대편에 서는 밤
 beat('etienne','et_list',{when:()=>bfAlive('etienne')&&bfHere()&&!child()&&(bfRev()?bfW(1793.9,1794.55)&&(bfFl('gabriel','hid')||T()>=1794.15):bfW(1832.45,1832.9)&&(bfFl('gabriel','hid')||T()>=1832.6)),until:()=>bfRev()?T()>=1794.55:T()>=1832.9,run:async()=>{const E=bN('etienne'),rv=bfRev(),F=bfR('etienne').sex==='F';
   const gab=bfAlive('gabriel')&&bfFl('gabriel','hid');const tgt=gab?bfGuest():(bfAlive('gabriel')?bN('gabriel'):'옆 골목의 늙은 신부');const isJ=gab&&rv&&tgt===bN('jules');const where=gab?`${bN('gabriel')}의 다락방`:'숨은 곳';
-  bfJob('etienne',rv?(F?'남장을 한 구 혁명감시위원':'구 혁명감시위원회 위원'):(F?'경시청 관리의 아내':'경시청 관리'));bfFate('etienne',rv?(F?'남장을 한 채 구 혁명감시위원회 위원이 되었다. 아무도 그녀가 여자라는 것을 몰랐다':'구 혁명감시위원회 위원이 되었다'):'경시청 관리가 되었다');
+  bfJob('etienne',rv?(F?'남장을 한 구 혁명감시위원':'구 혁명감시위원회 위원'):(F?'경시청 관리의 아내':'경시청 관리'));if(!(rv&&F&&bfFl('etienne','sect')))bfFate('etienne',rv?(F?'남장을 한 채 구 혁명감시위원회 위원이 되었다. 아무도 그녀가 여자라는 것을 몰랐다':'구 혁명감시위원회 위원이 되었다'):'경시청 관리가 되었다');
   bfKnow('etienne','name',1);bfAsk('q_et_name','etienne',`그 명단에서 이름이 빠졌다면, 그것은 ${bN('etienne')} 덕이었을까?`);
   const lawTxt=bfS().law?`‘${bfLawN(bfS().law)}’`:'가장 부당한 법';
   const T0=rv?`밤늦게 문을 두드리는 소리. ${jo(E,'이다','다')}. ${F?'짧은 머리에 남자 옷, 모자에 붉은 모표, 허리에 구 혁명감시위원회의 띠. 위원회에서는 모두 시민 에티엔이라고 부른다':'모자에 붉은 모표, 허리에 구 혁명감시위원회의 띠'}. ${bU('etienne')} 명단을 든 채 오래 서 있다. “${gab?jo(tgt,'이','가')+' 숨어 있다는':tgt+'에 대한'} 밀고가 들어왔어. 어디 있는지 알지? 말해 주면 처형 대신 유형으로 돌려 볼게. 말하지 않으면… 나도 어쩔 수 없어.”`
@@ -10510,8 +10510,8 @@ rv('rv_etmax',1793.2,1793.8,()=>rvEt()&&rvAlive('robespierre')&&bfFl('etienne','
    {l:`나와서 ${E}에게 “그 사람을 너무 믿지 마.”라고 말한다`,a:'social',f:()=>{bfRel('etienne',{resp:3,close:-2});bfSet('etienne','warnedMax');rvMem('m_rv_etmax',['etienne','robespierre'],`뒤플레의 집을 나와 ${E}에게 그 사람을 너무 믿지 말라고 했다.`,{tone:'의문',their:'그 사람이 그분을 너무 믿지 말라고 했다. 그때는 화가 났다. 테르미도르에 그 말이 떠올랐다.'});
      say(`${bU('etienne')} 걸음을 멈추고 당신을 노려보았다. “너는 그분을 몰라.” 그러고는 혼자 앞서 걸어갔다. 모퉁이를 돌기 전, ${bHe('etienne')}는 한 번 뒤를 돌아보았다. 그 얼굴에 확신과 의심이 반반 섞여 있었다.`)}}])});
 
-rv('rv_split',1793.7,1794.0,()=>rvAlive('danton')&&rvAlive('robespierre'),async()=>{const F=RV_F(),cm=rvAlive('desmoulins');
-  await bfScene('두 사람의 저녁','Danton et Robespierre',`가을, ${cm?'카미유의 집':'팔레루아얄의 식당'}에서 저녁을 먹는다. 아르시에서 돌아온 당통은 새 아내 이야기를 하며 웃고, 맞은편의 ${jo(F?'막시밀리앙':'로베스피에르','은','는')} 물 탄 포도주를 거의 마시지 않는다. 당통이 잔을 들고 말한다. “덕, 덕, 덕. 시민 ${F?'막시밀리앙':'로베스피에르'}, 사람은 덕만으로 살지 않소. 고기도 먹고 여자도 사랑하지.” 웃음이 터진다. 그는 웃지 않는다. 냅킨을 접어 놓고 일어선다.${cm?' 카미유가 두 사람을 번갈아 보며 어쩔 줄 몰라 한다.':''}`,[
+rv('rv_split',1793.85,1794.05,()=>rvAlive('danton')&&rvAlive('robespierre'),async()=>{const F=RV_F(),cm=rvAlive('desmoulins');
+  await bfScene('두 사람의 저녁','Danton et Robespierre',`${s.month===10?'늦가을':'초겨울'}, ${cm?'카미유의 집':'팔레루아얄의 식당'}에서 저녁을 먹는다. 아르시에서 돌아온 당통은 새 아내 이야기를 하며 웃고, 맞은편의 ${jo(F?'막시밀리앙':'로베스피에르','은','는')} 물 탄 포도주를 거의 마시지 않는다. 당통이 잔을 들고 말한다. “덕, 덕, 덕. 시민 ${F?'막시밀리앙':'로베스피에르'}, 사람은 덕만으로 살지 않소. 고기도 먹고 여자도 사랑하지.” 웃음이 터진다. 그는 웃지 않는다. 냅킨을 접어 놓고 일어선다.${cm?' 카미유가 두 사람을 번갈아 보며 어쩔 줄 몰라 한다.':''}`,[
    {l:'당통의 농담에 같이 웃는다',a:'social',f:()=>{rvRel('danton',{close:6});rvRel('robespierre',{close:-6,trust:-4});rvMem('m_rv_split',['danton','robespierre'],'당통이 덕을 놀리던 저녁, 당신도 같이 웃었다. 로베스피에르는 냅킨을 접고 일어섰다.',{tone:'씁쓸함'});
      say(`문간에서 그가 돌아보았다. 당신 얼굴에서 웃음이 미처 지워지지 않은 것을, 그는 보았다. 아무 말 없이 나갔다. 당통은 어깨를 으쓱했다. “저 친구는 웃는 법을 아라스에 두고 왔어.” 그날 밤 당신은 그 마지막 눈빛 때문에 잠을 설쳤다.`)}},
    {l:`따라 나가 ${jo(F?'막시밀리앙':'로베스피에르','을','를')} 붙잡는다`,a:'social bold',f:()=>{rvRel('robespierre',{close:6,trust:4});rvRel('danton',{close:-3});rvMem('m_rv_split',['danton','robespierre'],'당통이 덕을 놀리던 저녁, 자리를 뜬 로베스피에르를 따라 나갔다.',{tone:'두려움'});
@@ -10541,7 +10541,7 @@ rv('rv_arrest',1794.15,1794.27,()=>rvAlive('danton')||rvAlive('desmoulins'),asyn
      say(`${cm?'뤼실은 대답 없는 문 앞에 한참 서 있다가 돌아갔다. ':''}새벽에 마차 소리가 났다. 창문 틈으로 보니 헌병들이 골목을 지나가고 있었다. 당신은 촛불을 끄고 침대에 누웠다. 잠은 오지 않았다.`,'dark')}}])});
 
 rv('rv_after',1794.27,1794.5,()=>rvAlive('robespierre')&&rvR('robespierre')&&(RV_F()||rvR('robespierre').close>=40),async()=>{const F=RV_F(),sj=rvAlive('saintjust');
-  await bfScene('튈르리의 정원','après Germinal',`4월, 당통과 ${RV_F()?'카미유':'데물랭'}의 목이 떨어진 지 몇 주. 튈르리 정원에서 ${jo(F?'막시밀리앙':'로베스피에르','을','를')} 본다. 개 한 마리를 데리고 혼자 걷고 있다. 예전보다 더 마르고, 더 꼿꼿하다.${sj?' 멀리 정원 입구에서 생쥐스트가 서류를 든 채 그를 기다리고 있다.':''}`,[
+  await bfScene('튈르리의 정원','après Germinal',`${s.month+1}월, 당통과 ${RV_F()?'카미유':'데물랭'}의 목이 떨어진 지 ${s.month<=3?'몇 주':s.month===4?'한 달 남짓':'두 달'}. 튈르리 정원에서 ${jo(F?'막시밀리앙':'로베스피에르','을','를')} 본다. 개 한 마리를 데리고 혼자 걷고 있다. 예전보다 더 마르고, 더 꼿꼿하다.${sj?' 멀리 정원 입구에서 생쥐스트가 서류를 든 채 그를 기다리고 있다.':''}`,[
    {l:'다가가 “카미유 이야기를 하고 싶어.”라고 말한다',a:'bold social',f:()=>{rvRel('robespierre',{close:F?2:-2,trust:-2});rvMem('m_rv_after','robespierre','1794년 봄, 튈르리 정원에서 로베스피에르에게 카미유 이야기를 꺼냈다.',{tone:'씁쓸함'});
      say(`그는 걸음을 멈추지 않았다. “카미유는…” 그가 처음으로 말을 고르는 것을 보았다. “…루이르그랑에서 내 숙제를 베꼈소. 늘.” 그 말을 끝으로 그는 정원 입구 쪽으로 걸어갔다.${sj?' 생쥐스트가 서류를 내밀었고, 그는 받아 들었다.':''} 그 뒷모습이 너무 가벼워 보였다.`)}},
    {l:'멀리서 바라만 본다',a:'safe',f:()=>{rvMem('m_rv_after','robespierre','1794년 봄, 튈르리 정원에서 혼자 걷는 로베스피에르를 멀리서 바라보았다.',{tone:'그리움'});
@@ -11942,7 +11942,7 @@ const cs=(k,id,a,b,c,run)=>R17_C.push({k,id,a,b,c,run});
 const adv=(k,l,a,t,o={})=>({l,a,f:()=>{bfRel(k,o.rel||{close:4,trust:3});if(o.mem)bfMem(o.mem[0],k,o.mem[1],{tone:o.mem[2]||'희망',their:o.mem[3]||null});if(o.fate)bfFate(k,o.fate);if(o.set)bfSet(k,o.set[0],o.set[1]);say(t+fx(o.fx||{}))}});
 // 루이즈: 빵집 주인 드니 프랑수아의 죽음(1789년 10월 21일) 뒤
 cs('louise','c17_lo',1789.8,1790.4,()=>true,async()=>{const L=bN('louise');
-  await bfScene('빵장수의 겨울','l’hiver du boulanger',`1789년 10월 21일, 노트르담 근처 빵집 주인 드니 프랑수아가 빵을 숨겼다는 소문 끝에 군중에게 끌려가 그레브 광장 가로등에 매달렸다. 이튿날 국민의회는 계엄령을 선포했다. 며칠 뒤 ${jo(L,'이','가')} 당신을 빵집 뒷계단으로 부른다. 눈이 부어 있다. “아버지가 빵집을 접고 고향으로 내려가재. 빵장수가 이제 파리에서 제일 위험한 직업이래. 나는… 이 화덕을 두고 못 가겠어. 네 생각은 어때?”`,[
+  await bfScene('빵장수의 겨울','l’hiver du boulanger',`1789년 10월 21일, 노트르담 근처 빵집 주인 드니 프랑수아가 빵을 숨겼다는 소문 끝에 군중에게 끌려가 그레브 광장 가로등에 매달렸다. 이튿날 국민의회는 계엄령을 선포했다. 몇 주 뒤 ${jo(L,'이','가')} 당신을 빵집 뒷계단으로 부른다. 눈이 부어 있다. “아버지가 빵집을 접고 고향으로 내려가재. 빵장수가 이제 파리에서 제일 위험한 직업이래. 나는… 이 화덕을 두고 못 가겠어. 네 생각은 어때?”`,[
    adv('louise','“남아. 이 골목엔 네 빵이 필요해.”','family bold',`${jo(L,'은','는')} 앞치마로 눈을 훔치더니 웃었다. 이튿날 아침부터 빵집 문에 분필로 값과 무게가 적혔다. ‘4파운드 빵 12수. 속이지 않음.’ 골목 사람들이 그 글씨 앞에서 모자를 들었다.`,{rel:{close:7,trust:5},fate:'1789년 가을, 빵집 주인이 군중에게 죽은 뒤에도 파리에 남아 화덕을 지켰다',mem:['m17_lo',`빵장수가 가로등에 매달린 그해 가을, ${L}에게 남으라고 했다.`,'희망','그 사람이 남으라고 했다. 그 말 한마디로 평생 이 화덕 앞에 섰다.'],fx:{hap:2,rloc:1}}),
    adv('louise','“아버지 말씀을 따라. 살아야 빵도 굽지.”','safe family',`${jo(L,'은','는')} 한참 화덕을 보다가 말했다. “네 말이 맞아. 그래서 아버지랑 동생들은 보낼 거야. 나는 남고.” 다음 주 짐마차가 떠났다. ${jo(L,'은','는')} 혼자 화덕에 불을 붙였다.`,{rel:{close:3,trust:4},fate:'1789년 겨울, 가족을 고향으로 보내고 혼자 빵집에 남았다',fx:{hap:-1}}),
    adv('louise','“구 회의에 빵 장부를 공개하자. 숨길 게 없으면 무서울 것도 없어.”','radical study',`당신이 장부를 정서하고, ${jo(L,'이','가')} 구 회의 탁자에 올려놓았다. 밀가루를 얼마에 사서 빵을 얼마에 파는지. 회의장이 조용해졌다가, 누군가 박수를 쳤다. 그 겨울 그 빵집 앞 줄은 길었지만 아무도 소리치지 않았다.`,{rel:{close:5,trust:6,resp:4},fate:'1789년 겨울, 구 회의에 빵집 장부를 공개했다',fx:{rpeople:2,pol:1}})])});
@@ -12008,14 +12008,15 @@ cs('etienne','c17_etdoor',1789.25,1789.5,etF,async()=>{const E=bN('etienne');
      say(`둘이서 밤새 청원서를 썼다. 여자도 배울 권리, 일할 권리, 제 이름으로 말할 권리. 이튿날 구청 서기에게 내밀었지만, 서기는 읽지도 않고 서류 더미 맨 밑에 넣었다. 돌아오는 길에 ${jo(E,'이','가')} 말했다. “종이는 문 밖에 두고 오면 그만이야. 몸이 문 안에 있어야 해.” 그 주 일요일, ${bHe('etienne')}는 머리를 잘랐다.`+fx({edu:1}))}}]);
   bfFate('etienne','봄, 선거 회의 문 앞에서 쫓겨난 뒤 머리를 잘랐다')});
 cs('etienne','c17_etcit',1793.22,1793.75,etF,async()=>{const E=bN('etienne');bfJob('etienne','구 혁명감시위원(남장)');
-  await bfScene('시민 에티엔','le citoyen Étienne',`1793년 봄. 구마다 혁명감시위원회가 생겼다. 위원 열두 명을 뽑는 구 회의에서 누군가 ‘시민 에티엔 모렐’의 이름을 불렀다. 손이 줄줄이 올라갔다. 그날 밤 ${jo(E,'이','가')} 당신의 창문을 두드린다. 짧은 머리, 바지, 허리에 두른 삼색 띠. “내가 뽑혔어. 아무도 몰라. 그런데 클레르 라콩브랑 폴린 레옹이 혁명공화여성협회를 만들었대. 여자 이름으로, 여자 옷을 입고 모인대. 거기 가면 나는 다시 ${jo(E,'이','가')} 될 수 있어. 대신 위원회 자리는 내놓아야겠지. 이 띠를 계속 차야 할까?”`,[
+  const past=bfFl('etienne','garb')?'':` 1789년 봄, 삼부회 선거 회의 문 앞에서 쫓겨난 뒤로 ${bU('etienne')} 머리를 자르고 남동생의 외투를 입었다. 그 뒤 구 회의에서는 모두 ${bL('etienne')} 에티엔이라고 불렀다.`;
+  await bfScene('시민 에티엔','le citoyen Étienne',`1793년 봄.${past} 구마다 혁명감시위원회가 생겼다. 위원 열두 명을 뽑는 구 회의에서 누군가 ‘시민 에티엔 모렐’의 이름을 불렀다. 손이 줄줄이 올라갔다. 그날 밤 ${jo(E,'이','가')} 당신의 창문을 두드린다. 짧은 머리, 바지, 허리에 두른 삼색 띠. “내가 뽑혔어. 아무도 몰라. 그런데 클레르 라콩브랑 폴린 레옹이 혁명공화여성협회를 만들었대. 여자 이름으로, 여자 옷을 입고 모인대. 거기 가면 나는 다시 ${jo(E,'이','가')} 될 수 있어. 대신 위원회 자리는 내놓아야겠지. 이 띠를 계속 차야 할까?”`,[
    {l:'“띠를 차. 문 안에 들어간 사람만 문을 열 수 있어.”',a:'radical',f:()=>{bfSet('etienne','sect','stay');bfRel('etienne',{close:5,resp:4});bfMem('m17_sect','etienne',`감시위원이 된 ${E}에게 띠를 계속 차라고 했다. 문 안에서 문을 열라고.`,{tone:'희망',obj:'삼색 띠',their:'그 사람이 띠를 차라고 했다. 안에서 문을 열라고. 나는 안에서 다른 문들을 닫았다.'});
      say(`${jo(E,'은','는')} 띠를 고쳐 맸다. “그래. 안에서 열어야지.” 그 뒤로 위원회 서명란에는 늘 ‘에티엔 모렐’이라는 이름이 적혔다. 그 서명이 무엇을 적게 될지, 그날 밤 둘 다 알지 못했다.`+fx({pol:1}))}},
    {l:'“여성협회로 가. 네 이름으로 싸워.”',a:'bold',f:()=>{bfSet('etienne','sect','club');bfRel('etienne',{close:6,trust:5});bfMem('m17_sect','etienne',`감시위원이 된 ${E}에게 여성협회로 가서 제 이름으로 싸우라고 했다.`,{tone:'희망',their:'그 사람은 내 이름으로 싸우라고 했다. 그 말을 들은 밤에만, 나는 내 이름으로 불렸다.'});
      say(`${jo(E,'은','는')} 한참 띠를 만지작거렸다. “내 이름으로….” 다음 주 ${bHe('etienne')}는 생퇴스타슈 성당 납골당에서 열리는 여성협회 모임에 치마를 입고 나갔다. 그러나 위원회 띠도 끝내 버리지 못했다. 낮에는 시민 에티엔, 밤에는 시민 ${E}였다. 가을에 여성 클럽이 모두 금지되자, ${bHe('etienne')}에게는 낮의 이름만 남았다.`)}},
    {l:'“어느 쪽이든, 들키지만 마.”',a:'safe',f:()=>{bfSet('etienne','sect','hide');bfRel('etienne',{close:2});
      say(`${jo(E,'은','는')} 쓴웃음을 지었다. “너는 늘 그 말이네.” 그래도 그날 밤 ${bHe('etienne')}는 당신 방에서 띠를 풀고, 벽에 머리를 기댄 채 한참 앉아 있다가 갔다. 그 몇 시간 동안만 ${bHe('etienne')}는 아무도 아니었다.`)}}]);
-  bfFate('etienne','봄, 남장을 한 채 ‘시민 에티엔’으로 구 혁명감시위원에 뽑혔다')});
+  if(!bfFl('etienne','garb'))bfSet('etienne','garb','before');bfSet('etienne','sect',bfF('etienne').fl.sect||'seen');bfFate('etienne','봄, 남장을 한 채 ‘시민 에티엔’으로 구 혁명감시위원에 뽑혔다')});
 
 /* ---------- 차례 ---------- */
 {const _rd17=rfDaily;rfDaily=async function(){await _rd17();if(!s||s.dead)return;try{
