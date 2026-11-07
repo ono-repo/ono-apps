@@ -1472,7 +1472,7 @@ const CAUSE={ill:'병',old:'노환',guillotine:'단두대',battle:'전사',massa
 function die(cause,detail){if(s.dead)return;s.dead=true;closeJob();
   if(cause==='ill')detail=detail||(s.age<5?pick(['천연두','홍역','이질','디프테리아']):s.age<60?pick(['폐결핵','장티푸스','늑막염','열병','이질']):pick(['뇌졸중','폐렴','수종']));
   s.death={cause,detail,year:s.year,season:SEASON[s.season],age:s.age};
-  const txt={ill:`${jo(detail,'으로')} 세상을 떠났다.`,old:'자리에 누운 지 며칠 만에 조용히 숨을 거두었다.',guillotine:'혁명 광장의 단두대에서 처형되었다.',battle:detail?`${detail}에서 전사하였다.`:'전장에서 쓰러졌다.',massacre:'감옥에 들이닥친 군중에게 살해되었다.',famine:'굶주림 끝에 숨을 거두었다.',childbirth:'아이를 낳다가 숨을 거두었다.',duel:'결투에서 치명상을 입고 죽었다.',executed:detail||'처형되었다.',drowned:'루아르 강의 익사형으로 죽었다.',deported:'기아나 유형지의 열병으로 죽었다.',murdered:detail||'원한을 품은 자들에게 살해되었다.',cholera:'콜레라에 걸려 하루 만에 죽었다.',smallpox:'천연두로 죽었다.',riot:detail||'봉기 중에 총탄을 맞고 쓰러졌다.',shot:detail||'총살되었다.',cold:detail||'혹한 속에 얼어 죽었다.'}[cause];
+  const txt={sudden:detail||'갑자기 쓰러져 세상을 떠났다.',ill:`${jo(detail,'으로')} 세상을 떠났다.`,old:'자리에 누운 지 며칠 만에 조용히 숨을 거두었다.',guillotine:'혁명 광장의 단두대에서 처형되었다.',battle:detail?`${detail}에서 전사하였다.`:'전장에서 쓰러졌다.',massacre:'감옥에 들이닥친 군중에게 살해되었다.',famine:'굶주림 끝에 숨을 거두었다.',childbirth:'아이를 낳다가 숨을 거두었다.',duel:'결투에서 치명상을 입고 죽었다.',executed:detail||'처형되었다.',drowned:'루아르 강의 익사형으로 죽었다.',deported:'기아나 유형지의 열병으로 죽었다.',murdered:detail||'원한을 품은 자들에게 살해되었다.',cholera:'콜레라에 걸려 하루 만에 죽었다.',smallpox:'천연두로 죽었다.',riot:detail||'봉기 중에 총탄을 맞고 쓰러졌다.',shot:detail||'총살되었다.',cold:detail||'혹한 속에 얼어 죽었다.'}[cause];
   say(txt,'dark')}
 
 /* ================= 유년 ================= */
@@ -9543,7 +9543,7 @@ const SS_END=['그렇게 한 해가 갔다.','촛불이 꺼졌다.','눈이 내�
 const SS_GR=[n=>`${n}의 부고는 평범한 날 닿았다. 세상이 그토록 아무렇지 않을 수 있다는 것이 견딜 수 없었다.`,n=>`그날 밤 당신은 짐승처럼 울었다. ${n}의 이름이 목구멍에서 찢어진 소리로 몇 번이고 튀어나왔다.`,n=>`당신은 손에 든 잔을 떨어뜨렸다. 깨진 조각에 손가락을 베었는데 아프지 않았다.`,n=>`대답할 사람이 없는데도 당신은 자꾸 ${n}에게 말을 걸었다. 멈추면 정말로 끝나 버릴 것 같았다.`,n=>`세상이 한 사람만큼 작아졌다. 가슴에 ${jo(n,'이','가')} 있던 자리가 구멍처럼 남았다.`];
 const ssEst=()=>SS_CLASS[s.estate]?s.estate:'artisan';
 const ssGrp=()=>noble()?'noble':s.estate==='bourgeois'?'bourgeois':s.estate==='peasant'?'peasant':'artisan';
-function ssClassLines(y,a,n){const ph=slPh(a);const L0=(SS_CLASS[ssEst()][ph]||SS_CLASS[ssEst()].adl||[]).slice();const rev=y>=1789&&y<1800&&a>=12?(SS_REV[ssGrp()]||[]):[];
+function ssClassLines(y,a,n){const ph=slPh(a);const L0=(SS_CLASS[ssEst()][ph]||SS_CLASS[ssEst()].adl||[]).slice();const rev=T()>=1789.5&&y<1800&&a>=12?(SS_REV[ssGrp()]||[]).filter(t=>!/아시냐/.test(t)||T()>=1791):[];
   const pool=rev.length&&R()<.6?rev:L0;return slP('cls'+ssEst()+ph+(pool===rev?'r':''),pool.length?pool:L0,n)}
 function ssSplit(t){const out=[];String(t).split(/(?<=[.!?”])\s+/).filter(Boolean).forEach(x=>{if(out.length&&(/^(하고|라고|라며|하며|이라고|라는|하는|하면서)/.test(x)||out[out.length-1].split('“').length>out[out.length-1].split('”').length))out[out.length-1]+=' '+x;else out.push(x)});return out}
 const ssLen=a=>a.join(' ').length;
@@ -12169,11 +12169,11 @@ cs('etienne','c17_etcit',1793.22,1793.75,etF,async()=>{const E=bN('etienne');bfJ
 
 /* ================= 개편 18: 세상을 떠난 뒤 =================
    1. 주인공이 죽으면 행동·계획·편지·선물 단추가 눌리지 않는다. 기록과 탭은 그대로 둘러볼 수 있다.
-   2. 그때 살아 있는 오랜 벗(다섯 사람)마다, 성격과 함께 지나온 일과 지금의 관계에 맞는 두 줄의 애도가 쌓인다. */
+   2. 그때 살아 있는 오랜 벗마다, 성격과 함께 지나온 일과 지금의 관계에 맞는 애도가 인생 기록의 사망 문구 다음에 쌓인다. */
 const R18_MSG='세상을 떠난 뒤에는 할 수 없습니다.';
 {const st=document.createElement('style');st.textContent=
   'body.deceased .letter-ch,body.deceased #panel .opt,body.deceased #panel .plan,body.deceased #panel .fopt,body.deceased #panel .node{opacity:.45;pointer-events:none}'+
-  '.ob-mourn{list-style:none;margin:0;padding:0;display:grid;gap:12px}.ob-mourn li{text-align:left;font-size:.92rem;line-height:1.6;border-left:2px solid var(--line);padding-left:10px}.ob-mourn li b{display:block;font-family:var(--fd);font-size:.86rem;color:var(--mut)}';
+  '';
   document.head.appendChild(st)}
 // 죽은 뒤에 눌린 행동 단추는 여기서 막는다(보기만 하는 단추는 그대로)
 document.addEventListener('click',e=>{if(!s||!s.dead)return;const b=e.target.closest&&e.target.closest('button');if(!b)return;
@@ -12184,67 +12184,257 @@ document.addEventListener('click',e=>{if(!s||!s.dead)return;const b=e.target.clo
 {const _ba=buildActs;buildActs=function(pin){if(s&&s.dead){pin.appendChild(el('p','mut','세상을 떠났다. 이제 할 수 있는 일은 없다.'));return}return _ba(pin)}}
 {const _rd=render;render=function(){const r=_rd.apply(this,arguments);try{document.body.classList.toggle('deceased',!!(s&&s.dead))}catch(e){}return r}}
 
-/* ---------- 애도: [하는 일, 남기는 말] 두 줄 ---------- */
-function r18Tier(r){const b=relBond(r);if(r.cut||(r.hate||0)>=40||b==='혐오')return 'cold';if(r.close>=60||b==='친우'||b==='연인'||rf7Rom(r)>=60)return 'warm';return 'mid'}
-function r18Lines(k,r,used=new Set()){const N=bN(k),Nu=jo(N,'은','는'),Ni=jo(N,'이','가'),F=r.sex==='F',T0=r18Tier(r),fl=f=>bfFl(k,f),young=s.age<30;
-  const B=bfS(),mo=B.mem.filter(m=>m.k.includes(k)&&m.obj).pop();const L={warm:[],mid:[],cold:[]};
+/* ---------- 애도: [하는 일, 남기는 말] (개편 21에서 다시 씀) ----------
+   벗의 성격(tr)과 지금의 관계(가까움·연인·맞수·존경·멀어짐·당신이 저버림), 혁명 뒤에 함께 겪은 일(r21)에 따라 고른다.
+   주인공이 죽은 바로 그때, 인생 기록의 사망 문구 다음에 쌓인다. */
+function r18Mood(k,r){const b=relBond(r);
+  if(s.r16den&&s.r16den[k]&&bfF(k).fl.r21!=='recon')return 'guilt';
+  if(r.cut||(r.hate||0)>=40||b==='혐오')return 'cold';
+  if(rf7Rom(r)>=60||b==='연인')return 'love';
+  if((r.riv||0)>=55&&r.close<60)return 'rival';
+  if(r.close>=60||b==='친우')return 'warm';
+  if((r.resp||0)>=65)return 'respect';
+  return 'mid'}
+function r18Tier(r){const k=r.core;const m=r18Mood(k,r);return m==='guilt'||m==='cold'?'cold':m==='love'||m==='warm'||m==='respect'?'warm':'mid'}
+const R18_TR={
+ 다정:{warm:[['장례 내내 남은 가족의 손을 놓지 않았다.','“울어도 돼. 나도 울 거니까.”'],['당신 집 부엌에 들어가 식구들이 먹을 수프를 끓였다.','슬픈 집에도 저녁은 온다고 했다.']],
+   mid:[['장례가 끝나고 남은 음식을 싸서 이웃들에게 나눠 주었다.','그것이 그 사람이 아는 애도였다.']],cold:[['장례에는 가지 않았지만, 그날 밤 창가에 촛불 하나를 켜 두었다.','미워하는 일에도 지쳐 있었다.']]},
+ 열정:{warm:[['무덤 앞에서 소리 내어 울었다. 남들이 쳐다봐도 그치지 않았다.','“네가 없는 세상에서 무슨 싸움을 해.”']],
+   mid:[['부고를 신문 귀퉁이에 직접 써서 실었다.','문장마다 느낌표가 있었다.']],cold:[['부고를 듣고 “잘 갔어.”라고 내뱉었다.','그러고는 사흘 동안 한 줄도 쓰지 못했다.']]},
+ 경건:{warm:[['아흐레 동안 당신을 위한 기도를 하루도 빠뜨리지 않았다.','“평안히. 이제는 평안히.”']],
+   mid:[['당신 이름으로 미사 한 대를 봉헌했다.','헌금함에 떨어진 동전 소리가 오래 울렸다.']],cold:[['고해소에서 당신을 미워한 죄를 고백했다.','보속으로 받은 기도를 그날 밤 다 바쳤다.']]},
+ 야심:{warm:[['하던 일을 모두 미루고 장례를 손수 챙겼다.','그해 장부에서 손해 본 날을 처음으로 기쁘게 적었다.']],
+   mid:[['장례식에서 사람들과 인사를 나누다가 문득 말을 멈추었다.','이 자리에 그 사람이 없다는 것이 이상했다.']],cold:[['부고를 읽고 장부를 덮었다.','셈이 맞지 않는 사람이었다. 끝까지.']]},
+ 허영:{warm:[['가장 좋은 상복을 맞추고도 거울을 보지 않았다.','“네가 봤으면 웃었을 거야. 그래서 안 봐.”']],
+   mid:[['장례식에 늦게 와서 맨 뒷자리에 섰다.','눈에 띄지 않으려 한 것은 처음이었다.']],cold:[['장례식에 화려한 옷을 입고 나타나 사람들을 수군거리게 했다.','돌아가는 마차 안에서는 한참 얼굴을 가렸다.']]},
+ 신중:{warm:[['짧은 추도문을 써서 아무에게도 보여 주지 않았다.','그 종이는 평생 책상 서랍에 있었다.']],
+   mid:[['조문 편지를 세 번 고쳐 썼다.','“그는 성실했다.” 결국 한 줄만 남겼다.']],cold:[['부고에 대해 아무 말도 하지 않았다.','그 침묵이 할 수 있는 전부였다.']]}};
+const R18_REL={
+ love:[['당신이 보낸 편지 묶음을 끝내 태우지 못했다.','“답장을 보낼 곳이 이제 없네.”'],['당신이 마지막으로 앉았던 의자에 오래 앉아 있었다.','의자에는 아직 온기가 남아 있는 것 같았다.']],
+ rival:[['부고를 읽고 한참 웃다가, 갑자기 웃음을 멈추었다.','“이제 누구랑 겨뤄.”'],['장례식 맨 뒤에서 모자를 벗었다.','평생 처음으로 당신에게 고개를 숙였다.']],
+ respect:[['당신에게 배운 것들을 하나씩 적어 내려갔다.','종이 한 장이 모자랐다.']],
+ guilt:[['장례식에 와서 오래 관을 내려다보았다.','“다 용서하지는 못했어. 그래도 왔어.”'],['부고를 들고 감옥 벽을 떠올렸다.','“네가 내 이름을 댄 날을 잊은 적은 없어. 그래도 미워한 날보다 그리워한 날이 많았어.”']]};
+function r18Lines(k,r,used=new Set()){const N=bN(k),Nu=jo(N,'은','는'),Ni=jo(N,'이','가'),F=r.sex==='F',mood=r18Mood(k,r),T0=r18Tier(r),fl=f=>bfFl(k,f),young=s.age<30,r21=bfF(k).fl.r21;
+  const B=bfS(),mo=B.mem.filter(m=>m.k.includes(k)&&m.obj).pop();const L={warm:[],mid:[],cold:[]};const add=(t,a,b,tg)=>L[t].push([a,b,tg]);
   if(k==='louise'){
-    L.warm.push([`${Nu} 그날 아침 화덕에 불을 넣지 않았다. 대신 어제 구운 빵의 꽁다리 하나를 떼어 관 위에 올려놓았다.`,`“제일 바삭한 데야. 아무한테나 안 줘. 그건 끝까지 네 몫이었어.”`]);
-    L.warm.push(fl('taught')?[`${Nu} 부고를 남에게 읽어 달라고 하지 않았다. 당신에게 배운 글자로 한 자 한 자 소리 내어 읽었다.`,`읽다가 당신 이름에서 오래 멈추었다.`]:[`${Nu} 부고를 받아 들고 한참 서 있었다. 이제 그 종이를 읽어 줄 사람이 없었다.`,`“네가 읽어 주던 목소리로 들리는 것 같아. 아무것도 안 적혀 있어도.”`]);
-    L.mid.push([`${Nu} 장례가 끝난 뒤 빵 한 덩이를 당신 집 문 앞에 두고 갔다.`,`“남은 사람들이라도 배는 곯지 마.”`]);
-    L.cold.push([`${Nu} 장례에 오지 않았다.`,`다만 그 주 내내 빵 하나를 덜 구웠다고, 빵집 심부름꾼이 전했다.`])}
+    add('warm',`${Nu} 그날 아침 화덕에 불을 넣지 않았다. 대신 어제 구운 빵의 꽁다리 하나를 떼어 관 위에 올려놓았다.`,`“제일 바삭한 데야. 아무한테나 안 줘. 그건 끝까지 네 몫이었어.”`);
+    add('warm',...(fl('taught')?[`${Nu} 부고를 남에게 읽어 달라고 하지 않았다. 당신에게 배운 글자로 한 자 한 자 소리 내어 읽었다.`,`읽다가 당신 이름에서 오래 멈추었다.`]:[`${Nu} 부고를 받아 들고 한참 서 있었다. 이제 그 종이를 읽어 줄 사람이 없었다.`,`“네가 읽어 주던 목소리로 들리는 것 같아. 아무것도 안 적혀 있어도.”`]));
+    add('warm',`${Nu} 장례 행렬이 빵집 앞을 지날 때 가게 문을 닫고 앞치마를 벗었다.`,`그날 골목의 빵은 모두 공짜였다.`);
+    add('mid',`${Nu} 장례가 끝난 뒤 빵 한 덩이를 당신 집 문 앞에 두고 갔다.`,`“남은 사람들이라도 배는 곯지 마.”`);
+    add('mid',`${Nu} 동생 피에르를 시켜 조화를 보냈다.`,`리본에는 서툰 글씨로 당신 이름이 적혀 있었다.`);
+    add('cold',`${Nu} 장례에 오지 않았다.`,`다만 그 주 내내 빵 하나를 덜 구웠다고, 빵집 심부름꾼이 전했다.`);
+    add('cold',`${Nu} 부고를 전해 들은 손님에게 “그래요?”라고만 했다.`,`그날 반죽은 유난히 오래 치댔다.`)}
   if(k==='etienne'){
-    L.warm.push([`${Nu} 관 위에 『텔레마코스의 모험』을 올려놓았다.`,`“퐁뇌프에서 한 약속, 나 혼자서라도 마저 지킬게.”`]);
-    if(F&&fl('garb'))L.warm.push([`${Nu} 그날만은 남자 옷을 벗고 치마를 입은 채 장례에 섰다.`,`“나를 ${N}라고 불러 준 마지막 사람이 너였어.”`]);
-    L.mid.push([`${Nu} 추도사를 쓰다가 세 번 찢었다.`,`“너에 대해서는 연설이 안 돼. 보고 싶다는 말밖에.”`]);
-    L.cold.push([`${Nu} 부고를 끝까지 읽고 반듯하게 접었다.`,`“우리는 같은 약속을 하고 다른 길로 갔지. 그래도 출발한 자리는 같았어.”`])}
+    add('warm',`${Nu} 관 위에 『텔레마코스의 모험』을 올려놓았다.`,`“퐁뇌프에서 한 약속, 나 혼자서라도 마저 지킬게.”`);
+    if(F&&fl('garb'))add('warm',`${Nu} 그날만은 남자 옷을 벗고 치마를 입은 채 장례에 섰다.`,`“나를 ${N}라고 불러 준 마지막 사람이 너였어.”`);
+    add('warm',`${Nu} 퐁뇌프 난간에 혼자 가서 섰다.`,`“약속은 둘이 했는데, 이제 증인이 없네.”`);
+    add('mid',`${Nu} 추도사를 쓰다가 세 번 찢었다.`,`“너에 대해서는 연설이 안 돼. 보고 싶다는 말밖에.”`);
+    add('mid',`${Nu} 장례식에서 법에 관한 이야기만 했다.`,`그것 말고 할 줄 아는 말이 없었다.`);
+    add('cold',`${Nu} 부고를 끝까지 읽고 반듯하게 접었다.`,`“우리는 같은 약속을 하고 다른 길로 갔지. 그래도 출발한 자리는 같았어.”`);
+    add('cold',`${Nu} 장례식 대신 카페 프로코프 구석에 앉아 있었다.`,`둘이 앉던 자리 맞은편은 끝내 비워 두었다.`)}
   if(k==='jules'){const pr=/신부/.test(r.job||'');
-    L.warm.push(pr?[`${Nu} 장례 미사를 직접 집전했다. 강론 내내 한 번도 말을 더듬지 않았다.`,`“하, 하느님께 너를 부탁드렸어. 나보다 너를 더 잘 아시니까.”`]:[`${Nu} 종탑에 올라 혼자 조종을 울렸다. 종소리 사이사이 당신 이름을 불렀다.`,`노래할 때처럼, 그 이름만은 더듬지 않았다.`]);
-    L.warm.push([`${Nu} 관 속에 참새 깃털 하나를 넣어 주었다.`,`“머, 먼저 가서 기다려. 나는 노래하면서 갈게.”`]);
-    L.mid.push([`${Nu} 저녁마다 당신을 위해 기도를 올렸다.`,`“네가 믿든 안 믿든, 이건 내가 할 수 있는 유일한 일이야.”`]);
-    L.cold.push([`${Nu} 장례 대신 성당 맨 뒷자리에서 혼자 묵주를 돌렸다.`,`용서는 기도 속에서만 했다. 입 밖으로는 끝내 하지 못했다.`])}
+    add('warm',...(pr?[`${Nu} 장례 미사를 직접 집전했다. 강론 내내 한 번도 말을 더듬지 않았다.`,`“하, 하느님께 너를 부탁드렸어. 나보다 너를 더 잘 아시니까.”`]:[`${Nu} 종탑에 올라 혼자 조종을 울렸다. 종소리 사이사이 당신 이름을 불렀다.`,`노래할 때처럼, 그 이름만은 더듬지 않았다.`]));
+    add('warm',`${Nu} 관 속에 참새 깃털 하나를 넣어 주었다.`,`“머, 먼저 가서 기다려. 나는 노래하면서 갈게.”`);
+    add('mid',`${Nu} 저녁마다 당신을 위해 기도를 올렸다.`,`“네가 믿든 안 믿든, 이건 내가 할 수 있는 유일한 일이야.”`);
+    add('mid',`${Nu} 당신 무덤에 작은 나무 십자가를 손수 깎아 세웠다.`,`삐뚤어졌지만 다시 깎지 않았다.`);
+    add('cold',`${Nu} 장례 대신 성당 맨 뒷자리에서 혼자 묵주를 돌렸다.`,`용서는 기도 속에서만 했다. 입 밖으로는 끝내 하지 못했다.`);
+    add('cold',`${Nu} 조종을 치라는 말에 잠시 망설였다.`,`그리고 쳤다. 한 번 더 치지는 않았다.`)}
   if(k==='antoine'){
-    L.warm.push([`${Nu} 장례비를 아무도 모르게 치렀다.`,`장부의 그 줄에는 ‘갚을 것 없음’이라고만 적었다.`]);
-    L.warm.push([`${Nu} 조끼에서 은단추 하나를 떼어 관 위에 올려놓았다.`,`“어릴 때 구슬 내기에서 진 거, 이제야 갚는다.”`]);
-    L.mid.push([`${Nu} 가장 좋은 검은 외투를 입고 장례에 왔다.`,`“사람이 가도 셈은 남는다는데, 너한텐 받을 게 하나도 없네.”`]);
-    L.cold.push([`${Nu} 장례에 화환만 보냈다.`,`화환값은 장부의 ‘손실’ 칸에 적혔다가, 나중에 조용히 지워졌다.`])}
+    add('warm',`${Nu} 장례비를 아무도 모르게 치렀다.`,`장부의 그 줄에는 ‘갚을 것 없음’이라고만 적었다.`);
+    add('warm',`${Nu} 조끼에서 은단추 하나를 떼어 관 위에 올려놓았다.`,`“어릴 때 구슬 내기에서 진 거, 이제야 갚는다.”`);
+    add('mid',`${Nu} 가장 좋은 검은 외투를 입고 장례에 왔다.`,`“사람이 가도 셈은 남는다는데, 너한텐 받을 게 하나도 없네.”`);
+    add('mid',`${Nu} 남은 식구들에게 가게 일자리를 하나 내주었다.`,`이유를 묻자 “셈이 맞아서.”라고만 했다.`);
+    add('cold',`${Nu} 장례에 화환만 보냈다.`,`화환값은 장부의 ‘손실’ 칸에 적혔다가, 나중에 조용히 지워졌다.`);
+    add('cold',`${Nu} 부고를 듣고 하던 흥정을 마저 끝냈다.`,`손님이 돌아간 뒤에야 의자에 털썩 주저앉았다.`)}
   if(k==='gabriel'){
-    L.warm.push([`${Nu} 처음으로 거울을 보지 않고 집을 나섰다. 관 위에 푸른 리본을 매어 두었다.`,`“이번엔 안 달아났어. 끝까지 있었어.”`]);
-    if(fl('hid'))L.warm.push([`${Nu} 다락방 문을 열어 둔 채 장례에 갔다.`,`“문은 닫을 때보다 열어 둘 때가 더 무섭다는 거, 너한테 배웠어.”`]);
-    L.mid.push([`${Nu} 장례식에서 누구보다 단정한 상복을 입었다.`,`그런데 넥타이가 비뚤어진 것을 끝내 알아차리지 못했다.`]);
-    L.cold.push([`${Nu} 장례에 오지 않았다.`,`대신 그날 밤, 얼음이 깨지던 그 연못가를 오래 걸었다고 한다.`])}
+    add('warm',`${Nu} 처음으로 거울을 보지 않고 집을 나섰다. 관 위에 푸른 리본을 매어 두었다.`,`“이번엔 안 달아났어. 끝까지 있었어.”`);
+    if(fl('hid'))add('warm',`${Nu} 다락방 문을 열어 둔 채 장례에 갔다.`,`“문은 닫을 때보다 열어 둘 때가 더 무섭다는 거, 너한테 배웠어.”`);
+    add('warm',`${Nu} 튈르리 연못가에 가서 오래 서 있었다.`,`“그날 너는 물에 빠졌고 나는 달아났지. 오늘은 내가 남았네.”`);
+    add('mid',`${Nu} 장례식에서 누구보다 단정한 상복을 입었다.`,`그런데 넥타이가 비뚤어진 것을 끝내 알아차리지 못했다.`);
+    add('cold',`${Nu} 장례에 오지 않았다.`,`대신 그날 밤, 얼음이 깨지던 그 연못가를 오래 걸었다고 한다.`)}
+  if(k==='robespierre'){
+    add('warm',`${Nu} 『에밀』의 한 구절을 베껴 관 위에 올려놓았다.`,`“사람은 선하게 태어난다. 자네가 그 증거였소.”`);
+    add('mid',`${Nu} 짧은 조문 편지를 보냈다.`,`글씨는 작고 반듯했다. 줄 하나 흐트러지지 않았다.`);
+    add('cold',`${Nu} 부고를 읽고 아무 말 없이 다음 연설문을 고쳤다.`,`그날 연설은 평소보다 짧았다.`)}
+  if(k==='desmoulins'){
+    add('warm',`${Nu} 신문 한 호를 통째로 당신에게 바쳤다.`,`“이번 호에는 농담이 하나도 없습니다. 독자 여러분, 양해해 주십시오.”`);
+    add('mid',`${Nu} 장례식에서 한 번도 더듬지 않고 추도사를 읽었다.`,`팔레루아얄의 그날처럼.`);
+    add('cold',`${Nu} 부고 옆에 짧은 풍자시를 썼다가 지웠다.`,`지운 자국이 오래 남았다.`)}
   // 아이로 죽었으면, 아이의 슬픔으로
   if(child()){const C={louise:[`${Nu} 빵집 뒷계단에 앉아 꽁다리 두 개를 떼어 놓았다.`,`하나는 저녁이 될 때까지 아무도 먹지 않았다.`],
     etienne:[`${Nu} 한 책상을 쓰던 자리 옆을 비워 두었다.`,`선생이 다른 아이를 앉히려 하자 처음으로 대들었다.`],
     jules:[`${Nu} 종탑 계단 아래에서 오래 울었다.`,`그날 저녁 종은 평소보다 한 번 적게 울렸다.`],
     antoine:[`${Nu} 아끼던 은단추를 당신 무덤가 흙에 묻었다.`,`“이건 셈 안 해. 그냥 주는 거야.”`],
-    gabriel:[`${Nu} 한동안 새 옷 대신 검은 리본을 달고 다녔다.`,`어른들이 이유를 물어도 대답하지 않았다.`]};return C[k]}
-  // 함께 간직한 물건이 있으면
-  if(mo&&T0!=='cold')L[T0].push([`${Nu} ${jo(mo.obj,'을','를')} 꺼내 오래 들여다보았다.`,`${mo.y}년의 일이었다. 그 일을 기억하는 사람이 이제 하나뿐이다.`,'obj']);
-  // 연인이었다면
-  if(rf7Rom(r)>=60&&T0==='warm')L.warm.push([`${Nu} 당신이 보낸 편지 묶음을 끝내 태우지 못했다.`,`“답장을 보낼 곳이 이제 없네.”`,'rom']);
-  // 너무 일찍 떠났다면
-  if(young&&T0!=='cold')L[T0].push([`${Ni} 말했다. “우리 중에 네가 제일 먼저일 줄은 몰랐어.”`,`${jo(bHe(k),'은','는')} 그 말을 하고 나서야 울었다.`,'young']);
-  const pool=L[T0].filter(x=>!x[2]||!used.has(x[2]));let [a,b,tg]=pick(pool.length?pool:L[T0]);if(tg)used.add(tg);
+    gabriel:[`${Nu} 한동안 새 옷 대신 검은 리본을 달고 다녔다.`,`어른들이 이유를 물어도 대답하지 않았다.`],
+    robespierre:[`${Nu} 기숙사 침대 옆 빈자리를 오래 보았다.`,`그날 밤은 『에밀』을 펴지 않았다.`],
+    desmoulins:[`${Nu} 라틴어 풍자시 대신 짧은 애가를 지었다.`,`처음으로 아무도 웃지 않은 시였다.`]};return C[k]||null}
+  // 성격에 따른 애도
+  const TR=R18_TR[r.tr];if(TR)for(const t of ['warm','mid','cold'])(TR[t]||[]).forEach((x,i)=>add(t,`${Nu} ${x[0]}`,x[1],'tr_'+r.tr+t+i));
+  // 관계에 따른 애도
+  const RL={love:'warm',rival:'mid',respect:'warm',guilt:'cold'}[mood];
+  if(RL)(R18_REL[mood]||[]).forEach((x,i)=>{for(let j=0;j<2;j++)add(RL,`${Nu} ${x[0]}`,x[1],'rel_'+mood+i)});
+  // 혁명 뒤에 함께 겪은 일
+  if(r21==='recon')add(T0,`${Nu} 장례식에서 말했다. “늦게라도 화해해서 다행이야. 안 그랬으면 평생 이 말을 못 했을 거야.”`,`그리고 처음으로 소리 내어 울었다.`,'r21recon');
+  if(r21==='quarrel')add(T0,`${Nu} 그 마지막 말다툼을 끝내 풀지 못한 채 장례식에 섰다.`,`“다음에 사과하려고 했어. 다음이 있을 줄 알았어.”`,'r21quar');
+  if(r21==='recall'&&T0!=='cold')add(T0,`${Nu} 얼마 전 둘이 나눈 옛이야기를 떠올렸다.`,`“그때 다 말해 둬서 다행이야.”`,'r21recall');
+  if(r21==='regret')add(T0,`${Nu} 당신이 사과하던 날의 얼굴을 떠올렸다.`,`“그 사과, 받아 줄걸 그랬어.”`,'r21regret');
+  // 함께 간직한 물건, 너무 이른 죽음
+  if(mo&&T0!=='cold')add(T0,`${Nu} ${jo(mo.obj,'을','를')} 꺼내 오래 들여다보았다.`,`${mo.y}년의 일이었다. 그 일을 기억하는 사람이 이제 하나뿐이다.`,'obj');
+  if(young&&T0!=='cold')add(T0,`${Ni} 말했다. “우리 중에 네가 제일 먼저일 줄은 몰랐어.”`,`${jo(bHe(k),'은','는')} 그 말을 하고 나서야 울었다.`,'young');
+  const pool=L[T0].filter(x=>!x[2]||!used.has(x[2]));if(!L[T0].length)return null;let [a,b,tg]=pick(pool.length?pool:L[T0].filter(x=>!x[2]).concat(pool).length?L[T0].filter(x=>!x[2]):L[T0]);if(tg)used.add(tg);
   // 소식을 들은 자리
   const dc=s.death&&s.death.cause;
   if(dc==='guillotine'&&T0!=='cold'){const G={louise:[`${Nu} 그날 빵 하나를 따로 구워, 이름 없는 묘지 담장 밑에 두고 왔다.`,`“거기선 아무도 이름을 불러 주지 않는대. 그러니까 내가 불러.”`],
     etienne:[`${Nu} 판결문 사본을 구해 밤새 읽었다.`,`“법이 너를 죽였어. 우리가 같이 쓰자던 그 법이.”`],
     jules:[`${Nu} 숨어서 당신을 위한 미사를 드렸다. 이름 대신 ‘하느님이 아시는 그 사람’이라고 불렀다.`,`그 미사에서만은 한 번도 더듬지 않았다.`],
     antoine:[`${Nu} 사형 집행인의 조수에게 몰래 돈을 쥐여 주고 당신의 유품을 찾아왔다.`,`그 돈은 장부에 적지 않았다.`],
-    gabriel:[`${Nu} 처형 날 혁명 광장의 군중 맨 앞줄에 섰다. 수레가 지나가는 동안 한 번도 눈을 돌리지 않았다.`,`“이번엔 안 달아났어. 끝까지 봤어.”`]};[a,b]=G[k]}
+    gabriel:[`${Nu} 처형 날 혁명 광장의 군중 맨 앞줄에 섰다. 수레가 지나가는 동안 한 번도 눈을 돌리지 않았다.`,`“이번엔 안 달아났어. 끝까지 봤어.”`]};if(G[k])[a,b]=G[k]}
+  else if(dc==='sudden'&&T0!=='cold'&&R()<.5&&!used.has('sud')){used.add('sud');a=`너무 갑작스러운 부고였다. ${a}`}
   if(r.cond==='prison'){a=`${Nu} 감옥에서 소식을 들었다.`;b=T0==='warm'?`“나가면 제일 먼저 너한테 가려고 했는데.” 그날 밤 ${jo(bHe(k),'은','는')} 벽을 보고 누워 한 번도 돌아눕지 않았다.`:T0==='mid'?`소식을 전한 간수에게 고맙다는 말만 하고 오래 말이 없었다.`:`“그래.” 한마디뿐이었다. 그 뒤로 며칠 동안 아무것도 먹지 않았다.`}
   else if(s.cond==='emigre'){a=`부고는 몇 달이 지나서야 국경 너머에서 ${N}에게 닿았다.`;b=T0==='cold'?`${Nu} 편지를 끝까지 읽고 서랍에 넣었다.`:`“배웅도 못 했네. 너는 늘 나를 배웅해 줬는데.”`}
   return [a,b]}
 function r18Mourn(){if(!s||!s.dead||s.r18m)return;s.r18m=[];
-  const used=new Set();for(const k of BF_KEYS){const r=bfR(k);if(!r||!r.alive)continue;let ab;try{ab=r18Lines(k,r,used)}catch(e){console.error(e);continue}
+  const used=new Set();for(const k of BF_KEYS){const r=bfR(k);if(!r||!r.alive)continue;let ab;try{ab=r18Lines(k,r,used)}catch(e){console.error(e);continue}if(!ab)continue;
     s.r18m.push({k,n:r.n,t:ab.join(' ')})}
-  for(const m of s.r18m)L(m.t,'ev');
-  if(s.r18m.length)L(`살아 있는 오랜 벗 ${s.r18m.length}명이 당신을 애도했다.`,'sys')}
-{const _se=showEnd;showEnd=function(){try{r18Mourn()}catch(e){console.error(e)}_se.apply(this,arguments);try{
-  let sec=$('#obMournSec');const ul0=$('#obRels');if(!sec&&ul0){sec=el('div','ob-sec');sec.id='obMournSec';sec.appendChild(el('h3',null,'오랜 벗들의 애도'));const u=el('ul','ob-mourn');u.id='obMourn';sec.appendChild(u);const host=ul0.closest('.ob-sec')||ul0.parentNode;host.after(sec)}
-  if(sec){const u=$('#obMourn');u.innerHTML='';const ms=s.r18m||[];sec.hidden=!ms.length;ms.forEach(m=>{const li=el('li');li.appendChild(el('b',null,m.n));li.appendChild(document.createTextNode(m.t));u.appendChild(li)})}
-  }catch(e){console.error(e)}}}
+  if(s.r18m.length)L(`살아 있는 오랜 벗 ${s.r18m.length}명이 당신을 애도했다.`,'sys');
+  for(const m of s.r18m)L(m.t,'ev')}
+// 죽는 바로 그때, 사망 문구 다음에 쌓는다(부고 화면에는 따로 싣지 않는다)
+{const _d=die;die=function(){const was=!!(s&&s.dead);const r=_d.apply(this,arguments);if(!was&&s&&s.dead){try{r18Mourn()}catch(e){console.error(e)}}return r}}
+{const _se=showEnd;showEnd=function(){try{r18Mourn()}catch(e){console.error(e)}return _se.apply(this,arguments)}}
+
+/* ================= 개편 21: 혁명이 지나간 뒤 (1794년 가을~1804년 봄) =================
+   혁명을 살아남은 주인공은, 벗마다 한 번씩 그 시절을 돌아본다. 벗이 살아 있으면 지금의 관계에 따라
+   회상하거나(가까움·보통), 다투거나 화해하거나(멀어짐), 지난 잘못을 마주한다(당신이 이름을 댄 벗).
+   벗이 이미 떠났으면 그 사람의 흔적 앞에서 당신이 무엇을 할지 고른다.
+   나폴레옹이 황제로 선포된(1804년 5월 18일) 직후, 주인공은 갑작스럽게 세상을 떠난다. */
+const R21=[];const r21=(k,id,a,b,run)=>R21.push({k,id,a,b,run});
+function r21Mood(k,r){if(s.r16den&&s.r16den[k])return 'guilt';if(r.cut||(r.hate||0)>=35)return 'cold';return r.close>=55?'warm':'mid'}
+const r21Gone=r=>{const y=r.dead?s.year-r.dead:0;return y<=1?'한 해 남짓':`${y}년`};
+function r21Set(k,v){bfSet(k,'r21',v)}
+function r21Recon(k,t){const r=bfR(k);r.cut=null;r.hate=Math.max(0,(r.hate||0)-30);bfRel(k,{close:14,trust:10});r21Set(k,'recon');bfFate(k,'당신과 화해했다');
+  bfMem('m21_'+k,k,t,{tone:'위로',their:'그 사람이 먼저 손을 내밀었다. 아니, 내가 먼저였던가. 이제는 아무래도 좋다.'});if(s.r16den&&s.r16den[k])delete s.r16den[k]}
+const r21Mem=(k,t,tone,their)=>bfMem('m21_'+k,k,t,{tone,their:their||null});
+// 당신이 이름을 댄 벗: 몇 해 뒤의 진짜 대화(벗마다 대답이 다르다)
+const R21_G={louise:'“나도 무서웠어. 그래도 나는 아무 이름도 대지 않았어.” 그래도 루이즈는 꽁다리를 떼어 당신 손에 쥐여 주었다.',
+ etienne:'“나도 무서웠어. 그래서 명단을 들었지.” 둘은 같은 잔을 비웠다. 그것이 둘이 할 수 있는 화해의 전부였다.',
+ jules:'“무, 무서운 건 죄가 아니야.” 쥘은 당신 이마에 성호를 그었다. “무서워서 한 일은… 하느님이 아셔.”',
+ antoine:'“셈은 끝났어. 너도 나도 손해 봤지.” 앙투안은 장부의 한 줄을 펜으로 그어 지웠다.',
+ gabriel:'“나도 얼음판에서 달아났어. 우리 둘 다 겁쟁이였네.” 가브리엘은 처음으로 거울 앞이 아닌 곳에서 웃었다.'};
+function r21Guilt(k,place){const N=bN(k),Nu=jo(N,'은','는'),Ni=jo(N,'이','가');
+  return bfScene(`${N}에게 댄 이름`,'le nom',`${place} ${N}에게 이름을 댄 날로부터 몇 해가 지났다. 그 뒤로 몇 번 마주쳤지만 그 이야기는 꺼내지 않았다. 오늘은 둘만 남았다. ${Nu} 먼저 입을 연다. “왜 그랬어? 진짜 이유를 듣고 싶어.”`,[
+   {l:'“무서웠어. 그게 다야.”',a:'family',f:()=>{const r=bfR(k);r.hate=Math.max(0,(r.hate||0)-15);bfRel(k,{trust:6,close:5});r21Set(k,'regret');r21Mem(k,`혁명이 지난 뒤, ${N}에게 그날 이름을 댄 것은 무서워서였다고 털어놓았다.`,'죄책감','그 사람은 무서웠다고 했다. 나도 그랬다. 그래서 더 아팠다.');say(R21_G[k]+fx({hap:2}))}},
+   {l:'“공화국을 위해서였어.”',a:'radical',f:()=>{bfRel(k,{hate:8,close:-6});r21Set(k,'quarrel');r21Mem(k,`혁명이 지난 뒤, ${N}에게 그날 이름을 댄 것은 공화국을 위해서였다고 했다.`,'씁쓸함','그 사람은 공화국을 말했다. 그 말을 들으니 그날의 감옥 냄새가 났다.');say(`${Nu} 쓴웃음을 지었다. “그 말, 그때 다들 했지. 그래서 듣기 싫어.” ${Ni} 먼저 자리를 떴다.`)}},
+   {l:'대답 대신 무릎을 꿇는다',a:'family pious',f:()=>{r21Recon(k,`혁명이 지난 뒤, ${N} 앞에서 그날 일로 무릎을 꿇었다.`);say(`${Nu} 한참 당신을 내려다보다가 일으켜 세웠다. “일어나. 그 자세로는 이야기를 못 하잖아.” 그날 둘은 밤늦도록 이야기했다.`+fx({hap:3}))}}])}
+// 멀어진 벗과 다시 마주쳤을 때
+function r21Cold(k,title,fr,text,recon,quarrel){const N=bN(k),Nu=jo(N,'은','는');
+  return bfScene(title,fr,text,[
+   {l:'먼저 손을 내민다',a:'family social',f:()=>{r21Recon(k,`혁명이 지난 뒤, 몇 해 동안 말을 끊었던 ${N}에게 먼저 손을 내밀었다.`);say(recon+fx({hap:3}))}},
+   {l:'지난 일을 따진다',a:'bold',f:()=>{bfRel(k,{hate:6,close:-5,riv:4});r21Set(k,'quarrel');r21Mem(k,`혁명이 지난 뒤, ${N}${jo(N,'과','와').slice(-1)} 다시 마주쳤지만 지난 일을 따지다 또 다투었다.`,'후회','또 다투었다. 이번이 마지막일 줄 알았다면 다르게 말했을 것이다.');say(quarrel)}},
+   {l:'모른 척 지나간다',a:'safe',f:()=>{r21Set(k,'cold');say(`${Nu} 당신이 지나가는 것을 끝까지 보고 있었다. 돌아보지 않았지만, 그 눈길이 등에 오래 남았다.`)}}])}
+// 루이즈: 혁명 뒤 가장 굶주린 겨울(1795~96)
+r21('louise','r21_lo',1795.8,1797.4,async r=>{const N=bN('louise'),Nu=jo(N,'은','는'),Ni=jo(N,'이','가');
+  if(!r.alive){await bfScene('남의 화덕','le four d’un autre',`${Ni} 떠난 지 ${r21Gone(r)}. 빵집 간판이 바뀌었다. 새 주인은 빵을 정직하게 달아 판다. 그러나 꽁다리를 떼어 내미는 사람은 이제 없다.`,[
+     {l:'빵을 사서 꽁다리를 뒷계단에 두고 온다',a:'family',f:()=>{r21Mem('louise',`${N}의 빵집이 남의 손에 넘어간 뒤, 빵 꽁다리를 뒷계단에 두고 왔다.`,'그리움');say('뒷계단에 꽁다리를 올려 두었다. 참새 두 마리가 내려와 쪼아 먹었다. 당신은 그것이 나쁘지 않다고 생각했다.'+fx({hap:1}))}},
+     {l:'동생 피에르를 찾아가 돕는다',a:'family social',f:()=>{r21Mem('louise',`${N}의 동생 피에르를 찾아가 그의 아이 몫으로 돈을 쥐여 주었다.`,'위로');say('피에르는 짐마차꾼이 되어 있었다. 누나 이야기를 하자 그는 모자를 벗었다. 당신은 그의 아이 몫으로 몇 리브르를 쥐여 주었다.'+fx({money:-50,rloc:1,hap:1}))}},
+     {l:'그냥 지나간다',a:'safe',f:()=>say('빵집 앞을 지나쳤다. 냄새만은 예전 그대로였다.')}]);return}
+  const m=r21Mood('louise',r);
+  if(m==='guilt')return r21Guilt('louise','빵 한 덩이 값이 종이돈으로 수백 리브르인 겨울.');
+  if(m==='cold')return r21Cold('louise','빵집 앞 줄','la queue',`혁명이 지나간 뒤의 겨울. 빵집 앞 줄에서 ${jo(N,'과','와')} 눈이 마주쳤다. 몇 해 동안 말을 섞지 않은 사이다. 당신 차례가 오자 ${Nu} 빵을 내밀며 낮게 묻는다. “아직도 내가 미워?”`,
+    `${Nu} 한참 당신을 보다가 꽁다리를 떼어 빵 위에 얹어 주었다. “제일 바삭한 데야. 아무한테나 안 줘.” 그 말을 다시 듣는 데 몇 해가 걸렸다.`,`“네가 먼저 등을 돌렸잖아.” 그 말에 ${Nu} 빵을 도로 가져갔다. 등 뒤에서 빵집 문이 닫혔다.`);
+  await bfScene('빵집 뒷계단, 다시','le quignon, encore',`혁명이 지나간 뒤의 겨울. 빵 한 덩이 값이 종이돈으로 수백 리브르다. ${Nu} 빵집 뒷계단에 앉아 있다가 당신을 보고 꽁다리를 떼어 내민다. 손가락이 터 있다. “바스티유가 떨어지던 해에 우리 몇 살이었지? 그때는 빵만 있으면 다 될 줄 알았어.”`,[
+   {l:'꽁다리를 받아 반으로 나눈다',a:'family',f:()=>{bfRel('louise',{close:6,trust:3});r21Set('louise','recall');r21Mem('louise',`혁명이 지난 겨울, ${N}${jo(N,'과','와').slice(-1)} 빵집 뒷계단에서 꽁다리를 반씩 나눠 먹었다. 열 살 때와 같은 자리였다.`,'그리움','그 사람은 하나도 안 변했다. 나만 늙었다.');say(`열 살 때와 같은 자리, 같은 맛이었다. ${Nu} 웃었다. “너는 하나도 안 변했어. 나만 늙었네.”`+fx({hap:2}))}},
+   {l:'“그 시절 내가 못 한 일이 많아.”라고 털어놓는다',a:'safe',f:()=>{bfRel('louise',{trust:5});r21Set('louise','recall');r21Mem('louise',`혁명이 지난 겨울, ${N}에게 그 시절 하지 못한 일들을 털어놓았다.`,'위로','그 사람이 못 한 일이 많다고 했다. 살아남은 걸로 됐다고 말해 주었다.');say(`${Nu} 고개를 저었다. “다들 그랬어. 살아남은 걸로 됐어.” 그 말이 위로인지 체념인지, 둘 다 몰랐다.`)}},
+   {l:'빵값 이야기를 하다 언성을 높인다',a:'bold',f:()=>{bfRel('louise',{close:-8,riv:5});r21Set('louise','quarrel');r21Mem('louise',`혁명이 지난 겨울, 빵값 이야기 끝에 ${N}${jo(N,'과','와').slice(-1)} 언성을 높였다.`,'후회','빵값 이야기였다. 그런 걸로 싸우다니. 그게 마지막 겨울인 줄 알았다면.');say(`“최고가격제를 없앤 사람들 편을 든 게 누군데!” ${Nu} 꽁다리를 도로 가져갔다. 그해 겨울 빵집 문은 당신 앞에서만 일찍 닫혔다.`)}}])});
+// 에티엔: 총재정부의 파리(1796~99)
+r21('etienne','r21_et',1796.3,1799.5,async r=>{const N=bN('etienne'),Nu=jo(N,'은','는'),Ni=jo(N,'이','가'),F=r.sex==='F';
+  if(!r.alive){await bfScene('헌책방의 책','chez le bouquiniste',`${Ni} 떠난 지 ${r21Gone(r)}. 센 강변 헌책방 상자 속에서 낡은 『텔레마코스의 모험』을 보았다. 여백에 낯익은 글씨가 있다. ‘좋은 왕은 백성을 위해 있다. 왕이 없어도.’`,[
+     {l:'책을 산다',a:'study',f:()=>{bfObj('r21_tel',`${N}의 글씨가 남은 『텔레마코스의 모험』`,{from:'etienne'});r21Mem('etienne',`센 강변 헌책방에서 ${N}의 글씨가 남은 『텔레마코스의 모험』을 샀다.`,'그리움');say('책값은 몇 수였다. 당신은 그 책을 평생 머리맡에 두었다.'+fx({hap:1}))}},
+     {l:'그 구절만 읽고 상자에 돌려 둔다',a:'safe',f:()=>{r21Mem('etienne',`헌책방에서 ${N}의 글씨가 남은 책을 보았지만 사지 않았다.`,'씁쓸함');say('다른 누군가가 그 책을 사서, 그 여백을 읽기를 바랐다.')}},
+     {l:'퐁뇌프에 가서 그 약속을 다시 떠올린다',a:'radical',f:()=>{r21Mem('etienne',`${N}이 떠난 뒤, 혼자 퐁뇌프 난간에 서서 어릴 적 약속을 떠올렸다.`,'그리움');say('난간은 그대로였다. 약속한 두 아이 가운데 하나만 남았다. 당신은 그 약속을 혼자 다시 했다.'+fx({cour:1}))}}]);return}
+  const m=r21Mood('etienne',r);
+  if(m==='guilt')return r21Guilt('etienne','총재정부의 파리.');
+  if(m==='cold')return r21Cold('etienne','카페 프로코프','le café Procope',`총재정부의 파리. 카페 프로코프에서 ${jo(N,'과','와')} 마주쳤다. 몇 해째 말을 섞지 않은 사이다. ${Nu} 신문을 내려놓는다. “테르미도르 뒤에 너는 잘 지냈더라. 나는 감옥에 있었고.”`,
+    `${Nu} 내민 손을 한참 보다가 잡았다. “퐁뇌프에서 한 약속은 아직 유효해?” “응.” 그걸로 충분했다.`,`${Nu} 커피값을 탁자에 던지고 나갔다. 바닥에 떨어진 신문 1면에 ‘화해’라는 낱말이 크게 적혀 있었다.`);
+  await bfScene('퐁뇌프, 다시','le Pont-Neuf',`총재정부의 파리. 멋쟁이들이 대로를 메운다. 퐁뇌프 난간에서 ${Ni} 강을 내려다보고 있다.${F&&bfFl('etienne','garb')?' 오랜만에 치마를 입었다.':''} “여기서 약속했던 거 기억해? 법을 바꾸자고. 법은 바뀌었어. 그런데 왜 이렇게 쓸쓸할까.”`,[
+   {l:'“그래도 우리가 한 일은 남았어.”',a:'radical',f:()=>{bfRel('etienne',{close:6,trust:3});r21Set('etienne','recall');r21Mem('etienne',`총재정부 시절, ${N}${jo(N,'과','와').slice(-1)} 퐁뇌프 난간에서 어릴 적 약속을 이야기했다.`,'그리움','그 사람은 우리가 한 일이 남았다고 했다. 그 말 하나로 몇 해를 더 버텼다.');say(`${Nu} 오래 강물을 보다가 고개를 끄덕였다. “봉건 공납은 다시 안 돌아와. 그거면 됐나.” 둘은 해가 질 때까지 난간에 기대 있었다.`+fx({hap:2}))}},
+   {l:'“우리가 너무 멀리 갔어. 사람이 너무 많이 죽었어.”',a:'safe',f:()=>{bfRel('etienne',{trust:6});r21Set('etienne','recall');r21Mem('etienne',`총재정부 시절, 퐁뇌프에서 ${N}에게 우리가 너무 멀리 갔다고 말했다.`,'죄책감','그 사람이 너무 멀리 갔다고 했다. 맞는 말이었다. 처음으로 그 말을 끝까지 들었다.');say(bfFl('etienne','together')?`${Nu} 입술을 깨물었다. “명단에 내 서명이 있어. 그건 평생 안 지워져.” 그날 처음으로 ${jo(bHe('etienne'),'이','가')} 우는 것을 보았다.`:`${Nu} 대꾸하지 않았다. 대신 난간 위에 손을 올려 당신 손 옆에 나란히 놓았다.`)}},
+   {l:'“다시 시작하자. 이번엔 제대로.”',a:'radical bold',f:()=>{bfRel('etienne',{close:5,resp:3});r21Set('etienne','recall');s.pol=clamp(s.pol+3,-100,100);r21Mem('etienne',`총재정부 시절, 퐁뇌프에서 ${N}에게 다시 시작하자고 했다.`,'희망','그 사람이 다시 시작하자고 했다. 이번엔 명단은 쓰지 말자고, 내가 말했다.');say(`${Nu} 웃었다. 오랜만에 보는 옛날 웃음이었다. “그럼 이번엔 명단은 쓰지 말자.”`)}}])});
+// 앙투안: 군납과 투기의 시절(1797~1800)
+r21('antoine','r21_an',1797.8,1800.6,async r=>{const N=bN('antoine'),Nu=jo(N,'은','는'),Ni=jo(N,'이','가');
+  if(!r.alive){await bfScene('경매','la vente',`${Ni} 떠난 지 ${r21Gone(r)}. 그 사람 가게의 물건이 경매에 나왔다. 진열대 위에 은단추가 가득 든 작은 상자가 놓여 있다.`,[
+     {l:'은단추 상자를 산다',a:'family',f:()=>{bfObj('r21_btn',`${N}의 은단추 상자`,{from:'antoine'});r21Mem('antoine',`${N}의 가게 경매에서 은단추 상자를 샀다.`,'그리움');say('경매인이 망치를 내리쳤다. 상자를 열자 단추마다 작은 종이표가 붙어 있었다. ‘값을 매기지 말 것.’'+fx({money:-20,hap:1}))}},
+     {l:'그 사람의 어머니를 찾아간다',a:'family social',f:()=>{r21Mem('antoine',`${N}이 떠난 뒤, 그 어머니를 찾아갔다.`,'위로');say('늙은 어머니는 당신을 알아보았다. “그 애가 네 이야기를 자주 했어. 셈을 할 줄 모르는 친구라고.” 그 말에 당신은 웃다가 울었다.'+fx({hap:1}))}},
+     {l:'경매장을 나온다',a:'safe',f:()=>say('망치 소리가 등 뒤에서 여러 번 울렸다. 하나도 당신 것이 되지 않았다.')}]);return}
+  const m=r21Mood('antoine',r),broke=(r.fate||[]).some(t=>/재산을 (모두 )?잃었다/.test(t));
+  if(m==='guilt')return r21Guilt('antoine','군납 상인들이 마차를 타고 대로를 달리던 무렵.');
+  if(m==='cold')return r21Cold('antoine','공증인의 대기실','chez le notaire',`${jo(N,'과','와')} 몇 해째 말을 하지 않는다. 오늘 공증인 사무실 대기실에서 마주쳤다. ${Nu} 장부를 무릎에 올려놓고 당신을 흘끗 본다. “우리 사이엔 셈이 아직 안 끝났지.”`,
+    `${Nu} 장부를 덮었다. “그래. 끝내자.” 공증인이 이름을 불렀을 때 둘은 함께 일어섰다.`,`“네 장부에서 내 이름은 지워.” ${Nu} 정말로 그 자리에서 한 줄을 그었다. 펜 소리가 날카로웠다.`);
+  if(broke){await bfScene('잡화상 2층','au-dessus de la boutique',`${Nu} 재판에서 지고 재산을 잃었다. 생드니 거리 잡화상 2층 방에 다시 들어앉아 있다. 창가에 은단추 몇 개가 굴러다닌다. “아버지랑 똑같이 됐어. 웃기지?”`,[
+     {l:'돈을 빌려준다',a:'family',f:()=>{bfRel('antoine',{close:8,trust:6});r21Set('antoine','recall');r21Mem('antoine',`재산을 잃은 ${N}에게 돈을 빌려주었다. 갚을 날짜는 적지 말라고 했다.`,'위로','그 사람이 돈을 밀어 넣었다. 갚을 날짜는 안 적어도 된다고. 나는 그날 처음으로 빚이 무섭지 않았다.');say(`${Nu} 돈을 받지 않으려 했다. 당신이 주머니에 밀어 넣었다. “장부에 적어 둬. 갚을 날짜는 안 적어도 돼.”`+fx({money:-100}))}},
+     {l:'“다시 시작하면 돼. 너는 늘 그랬잖아.”',a:'bold',f:()=>{bfRel('antoine',{close:5,resp:3});r21Set('antoine','recall');r21Mem('antoine',`재산을 잃은 ${N}에게 다시 시작하면 된다고 했다.`,'희망');say(`${Nu} 은단추 하나를 집어 손가락 사이로 굴렸다. 어릴 때 그 버릇 그대로였다. “그래. 단추 하나부터.”`)}},
+     {l:'아무 말 없이 옆에 앉는다',a:'safe',f:()=>{bfRel('antoine',{close:4});r21Set('antoine','recall');say('둘은 해가 질 때까지 말없이 창밖 생드니 거리를 내려다보았다. 아래층 잡화상에서 누군가 흥정하는 소리가 올라왔다.')}}]);return}
+  await bfScene('새 마차','la voiture neuve',`총재정부 시절, 군납과 국유재산으로 부자가 된 사람들이 대로를 마차로 달린다. ${Nu} 그중 하나였다. 문짝에 가문 문장 비슷한 것을 그려 넣은 새 마차에서 내려 당신을 끌어안는다. “어릴 때 구슬 내기에서 너한테 진 은단추 기억나? 이제 그런 거 상자째 살 수 있어.”`,[
+   {l:'“축하해. 그런데 조심해.”',a:'safe',f:()=>{bfRel('antoine',{trust:5,close:3});r21Set('antoine','recall');r21Mem('antoine',`총재정부 시절, 새 마차를 산 ${N}에게 축하하면서도 조심하라고 했다.`,'그리움','그 사람은 늘 조심하라고만 했다. 그날 밤 장부를 처음부터 다시 맞춰 보았다.');say(`${Nu} 웃었다. “너는 늘 조심하라고만 해.” 그래도 그날 밤 장부를 처음부터 다시 맞춰 보았다고 했다.`)}},
+   {l:'옛날 잡화상 이야기를 한다',a:'family',f:()=>{bfRel('antoine',{close:7});r21Set('antoine','recall');r21Mem('antoine',`총재정부 시절, ${N}${jo(N,'과','와').slice(-1)} 생드니 거리 잡화상 시절 이야기를 했다.`,'그리움','그 사람과 계산대 밑 이야기를 했다. 마차를 돌려보내고 걸어서 집에 갔다.');say(`둘은 계산대 밑에서 숨바꼭질하던 이야기를 했다. ${Nu} 마차를 돌려보내고 걸어서 돌아갔다.`+fx({hap:2}))}},
+   {l:'“그 돈, 누구 피로 번 거야?”',a:'bold radical',f:()=>{bfRel('antoine',{close:-10,hate:6,riv:5});r21Set('antoine','quarrel');r21Mem('antoine',`총재정부 시절, 새 마차를 산 ${N}에게 그 돈이 누구 피로 번 것이냐고 물었다.`,'후회','그 사람이 내 돈을 피라고 불렀다. 틀린 말도 아니라서 더 화가 났다.');say(`${Nu} 얼굴이 굳었다. “너도 그 빵 먹고 살았잖아.” 마차 문이 세게 닫혔다.`)}}])});
+// 가브리엘: 통령 정부의 파리, 망명자 사면 무렵(1800~02)
+r21('gabriel','r21_ga',1800.2,1802.9,async r=>{const N=bN('gabriel'),Nu=jo(N,'은','는'),Ni=jo(N,'이','가');
+  if(!r.alive){await bfScene('진열창의 리본','le ruban bleu',`${Ni} 떠난 지 ${r21Gone(r)}. 팔레루아얄 회랑의 진열창에 푸른 리본이 걸려 있다. 그 사람이 늘 매던 바로 그 빛깔이다.`,[
+     {l:'리본을 사서 모자에 단다',a:'social',f:()=>{bfObj('r21_rib',`${N}의 빛깔을 닮은 푸른 리본`,{from:'gabriel'});r21Mem('gabriel',`팔레루아얄에서 ${N}이 매던 빛깔의 푸른 리본을 사서 모자에 달았다.`,'그리움');say('거울 앞에서 리본을 고쳐 매다가 웃음이 났다. 그 사람이 보면 비뚤어졌다고 했을 것이다.'+fx({hap:1}))}},
+     {l:'그 사람이 묻힌 곳을 찾아간다',a:'family',f:()=>{r21Mem('gabriel',`${N}이 묻힌 곳을 찾아가 철책에 푸른 리본을 매어 두었다.`,'위로');say(r.dc==='guillotine'?'처형된 사람들이 묻힌 구덩이에는 이름이 없었다. 당신은 철책에 푸른 리본을 매어 두었다.':'묘비 앞에 섰다. 이름이 반듯하게 새겨져 있었다. 그 사람다웠다.')}},
+     {l:'튈르리 연못가를 걷는다',a:'safe',f:()=>{r21Mem('gabriel',`${N}이 떠난 뒤 튈르리 연못가를 혼자 걸었다.`,'그리움');say('어릴 때 얼음이 깨지던 연못이다. 이제 그날을 기억하는 사람은 당신 하나다.')}}]);return}
+  const m=r21Mood('gabriel',r);
+  if(m==='guilt')return r21Guilt('gabriel','통령 정부의 파리.');
+  if(m==='cold')return r21Cold('gabriel','살롱의 소파','le salon',`통령 정부의 살롱. ${Ni} 맞은편 소파에서 부채를 접었다 폈다 한다. 몇 해 동안 서로 모른 척해 온 사이다. 사람들이 빠져나가자 ${Nu} 말한다. “우리, 언제까지 이럴 거야?”`,
+    `${Nu} 부채를 접어 당신 손에 쥐여 주었다. 손잡이에 푸른 리본이 묶여 있었다. “오늘까지만 하자.”`,`“네가 먼저 시작했잖아.” ${Nu} 부채를 탁 소리 나게 펼치고 일어섰다. 향수 냄새만 남았다.`);
+  await bfScene('튈르리의 연못','le bassin',`통령 정부의 파리. 튈르리 정원 연못가에서 ${Ni} 거울도 없이 넥타이를 고쳐 매고 있다. 어릴 때 얼음이 깨지던 바로 그 연못이다. “여기 오면 아직도 다리가 떨려. 그날 내가 달아났잖아. 그 뒤로 평생 그날을 갚으며 살았어.”`,[
+   {l:'“너는 이미 다 갚았어.”',a:'family',f:()=>{bfRel('gabriel',{close:6,trust:4});r21Set('gabriel','recall');r21Mem('gabriel',`통령 정부 시절, 튈르리 연못가에서 ${N}에게 이미 다 갚았다고 말해 주었다.`,'위로','그 사람이 다 갚았다고 했다. 그 말을 평생 기다렸다.');say(bfFl('gabriel','hid')?`“다락방에 숨겨 준 사람들, 그걸로 충분해.” ${Nu} 처음으로 거울 앞이 아닌 곳에서 웃었다.`:`${Nu} 고개를 저었다가 결국 웃었다. “네가 그렇다면 그런 거지.”`)}},
+   {l:'“그날 나도 무서웠어.”',a:'safe',f:()=>{bfRel('gabriel',{close:5,trust:5});r21Set('gabriel','recall');r21Mem('gabriel',`통령 정부 시절, 튈르리 연못가에서 ${N}${jo(N,'과','와').slice(-1)} 얼음이 깨지던 날을 처음부터 끝까지 이야기했다.`,'그리움');say(`${Nu} 놀란 얼굴로 당신을 보았다. 둘은 그날 일을 처음으로 처음부터 끝까지 이야기했다. 연못 위로 오리가 지나갔다.`+fx({hap:1}))}},
+   {l:'“너는 여전히 겉멋만 들었네.”',a:'social',f:()=>{bfRel('gabriel',{close:4});r21Set('gabriel','recall');say(`${Nu} 넥타이를 풀어 당신 목에 걸어 주었다. “그럼 이제 네가 겉멋 들어.” 둘은 연못가에서 소리 내어 웃었다.`)}}])});
+// 쥘: 콩코르다, 다시 울리는 종(1801~03)
+r21('jules','r21_ju',1802.3,1803.9,async r=>{const N=bN('jules'),Nu=jo(N,'은','는'),Ni=jo(N,'이','가');const ev=T()>=1802.29?'1802년 부활절. 콩코르다가 공포되고 노트르담에서 테 데움이 울렸다.':'콩코르다가 맺어졌다는 소식이 돈다. 곧 성당 문이 다시 열린다.';
+  if(!r.alive){await bfScene('새 종','la cloche neuve',`${ev} ${bfPar()}에 새 종이 걸렸다. 옛 종은 혁명 때 녹여 대포가 되었다. 종지기 자리에는 낯선 소년이 서 있다. ${Ni} 떠난 지 ${r21Gone(r)}.`,[
+     {l:'소년에게 그 이름으로 한 번 더 쳐 달라고 한다',a:'pious',f:()=>{r21Mem('jules',`콩코르다 뒤 새 종이 걸린 날, 종지기 소년에게 ${N}의 이름으로 한 번 더 쳐 달라고 했다.`,'그리움');say(`소년은 영문도 모르고 종을 한 번 더 쳤다. 그 소리가 ${N}의 노랫소리 같았다.`+fx({faith:1,hap:1}))}},
+     {l:'그 사람의 이름으로 미사를 봉헌한다',a:'pious',f:()=>{r21Mem('jules',`${N}의 이름으로 미사를 봉헌했다.`,'위로');say(`신부가 ${N}의 이름을 읽었다. 한 번도 더듬지 않았다. 당연한 일인데 이상하게 서운했다.`+fx({money:-10,faith:2}))}},
+     {l:'종탑 계단에 참새 깃털 하나를 두고 온다',a:'family',f:()=>{r21Mem('jules',`새 종이 걸린 종탑 계단에 참새 깃털 하나를 두고 왔다.`,'그리움');say('계단 아래 깃털은 바람에 날려 종탑 위로 올라갔다. 당신은 그것을 끝까지 올려다보았다.')}}]);return}
+  const m=r21Mood('jules',r);
+  if(m==='guilt')return r21Guilt('jules',ev);
+  if(m==='cold')return r21Cold('jules','성당 문 앞','sur le parvis',`${ev} 미사가 끝나고 ${Ni} 성당 문 앞에서 사람들을 배웅한다. 당신 차례가 오자 손을 내밀지 않는다. “오, 오랜만이야.”`,
+    `${Nu} 내민 손을 두 손으로 감쌌다. “고, 고해성사는 다음에 해. 오늘은 그냥… 들어와.” 둘은 텅 빈 성당에 나란히 앉았다.`,`“그 시절엔 다들 어쩔 수 없었어.” 그 말에 ${Nu} 처음으로 더듬지 않고 대답했다. “아니. 나는 어쩔 수 있었어.”`);
+  // 선서 거부 사제로 숨어 지낸 쥘은 이미 ‘다시 울리는 종’(ju_return)에서 돌아왔다. 그 뒤의 이야기는 고해소에서.
+  if(bfFl('jules','refr')){await bfScene('고해소의 창살','le confessionnal',`콩코르다 뒤 다시 문을 연 ${bfPar()}. 고해소 창살 너머에서 낯익은 목소리가 들린다. “고, 고해할 게 있으면 해. 없으면… 그냥 이야기해도 돼.” ${N}였다.`,[
+     {l:'그 시절의 일을 고백한다',a:'pious',f:()=>{bfRel('jules',{trust:7,close:4});r21Set('jules','recall');r21Mem('jules',`콩코르다 뒤, ${N}의 고해소에서 혁명 시절의 일을 고백했다.`,'위로','그 사람이 그 시절 일을 고백했다. 창살 너머라서 나는 울어도 괜찮았다.');say(`창살 너머에서 ${Nu} 끝까지 들었다. 보속은 기도 세 번이었다. “네, 네 번째는 나를 위해 해 줘. 나도 그 시절에 고백할 게 많거든.”`+fx({faith:2,hap:2}))}},
+     {l:'“네가 살아서 다행이야.”라고만 한다',a:'family',f:()=>{bfRel('jules',{close:7});r21Set('jules','recall');r21Mem('jules',`콩코르다 뒤 고해소에서, 고백 대신 ${N}에게 살아서 다행이라고만 했다.`,'그리움','그 사람은 고백 대신 내가 살아서 다행이라고 했다. 그것도 고백이었다.');say(`창살 너머가 한참 조용했다. 그러다 ${Ni} 코를 훌쩍이는 소리가 들렸다. “그, 그건 죄가 아니라서 사, 사죄경은 못 해 줘.”`+fx({hap:2}))}},
+     {l:'“나는 고해할 게 없어.”',a:'bold',f:()=>{bfRel('jules',{close:-3});r21Set('jules','quarrel');r21Mem('jules',`콩코르다 뒤 고해소에서 ${N}에게 고해할 게 없다고 했다.`,'씁쓸함','그 사람은 고해할 게 없다고 했다. 그 시절을 지나온 사람 중에 그런 사람은 없다.');say(`“그, 그래.” ${Nu} 창살을 닫지 않았다. 당신이 성당을 나설 때까지 그 작은 창은 열려 있었다.`)}}]);return}
+  await bfScene('다시 울리는 종','les cloches de Pâques',`${ev} ${bfPar()} 종탑 계단에서 ${Ni} 밧줄을 쥐고 있다. 손이 떨린다. “이, 이 종을 다시 치게 될 줄 몰랐어. 같이 칠래?”`,[
+   {l:'함께 밧줄을 당긴다',a:'pious family',f:()=>{bfRel('jules',{close:7,trust:4});r21Set('jules','recall');bfObj('r21_rope','다시 울린 종탑의 밧줄 한 오라기',{from:'jules'});r21Mem('jules',`콩코르다 뒤, ${N}${jo(N,'과','와').slice(-1)} 함께 종탑 밧줄을 당겼다. 열 해 만에 종이 울렸다.`,'기쁨','그 사람과 같이 종을 쳤다. 열 해 동안 기다린 소리였다.');say(`종이 울렸다. 열 해 만이었다. ${Nu} 울면서 웃었다. 아래 광장에서 사람들이 모자를 벗었다.`+fx({faith:2,hap:3}))}},
+   {l:'그 시절 이야기를 꺼낸다',a:'safe',f:()=>{bfRel('jules',{trust:6});r21Set('jules','recall');r21Mem('jules',`콩코르다 뒤 종탑에서 ${N}${jo(N,'과','와').slice(-1)} 숨어 지내던 시절 이야기를 했다.`,'위로');say(`${Nu} 지하실 미사와 감옥 이야기를 했다. 한 번도 더듬지 않았다. “하느님이 왜 나를 살려 두셨는지 이제 알 것 같아. 이 종 치라고.”`)}},
+   {l:'“나는 그 사이 신을 잃었어.”',a:'bold',f:()=>{bfRel('jules',{close:-2});r21Set('jules','quarrel');r21Mem('jules',`콩코르다 뒤 종탑에서 ${N}에게 그 사이 신을 잃었다고 했다.`,'씁쓸함','그 사람이 신을 잃었다고 했다. 괜찮다고 했지만, 그날 종은 혼자 쳤다.');say(`${Nu} 밧줄을 쥔 채 말했다. “괘, 괜찮아. 하느님은 너를 안 잃었어.” 당신은 대꾸하지 않았다. 그날 종은 ${Ni} 혼자 쳤다.`)}}])});
+// 1758년생: 막시밀리앙(테르미도르 한 해 뒤)과 카미유(처형 한 해 뒤)
+r21('robespierre','r21_rb',1795.5,1795.8,async r=>{if(r.alive||!rfRDon())return;
+  await bfScene('한 해 뒤의 노래','le Réveil du peuple','테르미도르 9일에서 한 해가 지났다. 거리에서 멋쟁이 젊은이들이 ‘인민의 각성’을 부른다. 피에 굶주린 괴물들이 쓰러졌다는 노래다. 노래 속 괴물은 루이르그랑에서 『에밀』을 읽던 아이다.',[
+   {l:'노래에 끼지 않고 지나간다',a:'safe',f:()=>{bfMem('m21_robespierre','robespierre','테르미도르 한 해 뒤, 거리의 노래에 끼지 않고 지나갔다. 빗속의 라틴어 축사를 떠올렸다.',{tone:'그리움'});say('노래는 등 뒤에서 오래 따라왔다. 당신은 그 아이가 빗속에서 읽던 라틴어 축사를 떠올렸다.')}},
+   {l:'그의 옛 편지를 꺼내 읽는다',a:'study',f:()=>{bfMem('m21_robespierre','robespierre','테르미도르 한 해 뒤, 막시밀리앙의 옛 편지를 꺼내 읽었다.',{tone:'그리움'});say('작고 반듯한 글씨였다. 당신은 편지를 다시 접어 『에밀』 사이에 끼웠다.'+fx({hap:-1}))}},
+   {l:'편지를 태운다',a:'safe',f:()=>{bfMem('m21_robespierre','robespierre','테르미도르 한 해 뒤, 막시밀리앙의 편지를 태웠다.',{tone:'후회'});bfReg('r21_burn','robespierre','막시밀리앙의 편지를 태웠다.');say('편지가 타는 동안 창문을 닫았다. 그 냄새를 누가 맡을까 무서웠다. 그러다 그런 자신이 부끄러웠다.'+fx({sus:-2}))}}])});
+r21('desmoulins','r21_ds',1795.2,1795.5,async r=>{if(r.alive||!rfRDon())return;
+  await bfScene('오라스','Horace','카미유가 떠난 지 한 해. 뤼실도 열하루 뒤 같은 길을 갔다. 뤼실의 어머니 뒤플레시 부인이 세 살이 안 된 손자 오라스를 키운다는 소식을 들었다.',[
+   {l:'오라스를 찾아간다',a:'family',f:()=>{bfMem('m21_desmoulins','desmoulins','카미유가 떠난 지 한 해, 어린 오라스를 찾아가 라틴어 풍자시 한 줄을 들려주었다.',{tone:'위로'});say('아이가 당신을 빤히 보았다. 카미유의 눈이었다. 당신은 라틴어 풍자시 한 줄을 들려주었다. 아이가 웃었다.'+fx({hap:2}))}},
+   {l:'『비외 코르들리에』를 다시 읽는다',a:'study',f:()=>{bfMem('m21_desmoulins','desmoulins','카미유가 떠난 지 한 해, 『비외 코르들리에』 셋째 호를 다시 읽었다.',{tone:'씁쓸함'});say('‘관용위원회를 세우자.’ 그 문장이 이제는 모두가 하는 말이 되었다. 한 해 늦게.')}},
+   {l:'그 이름을 입에 올리지 않는다',a:'safe',f:()=>{bfReg('r21_ds','desmoulins','카미유가 떠난 뒤 그 이름을 입에 올리지 않았다.');say('그해 봄 내내, 당신은 팔레루아얄 쪽으로 걷지 않았다.')}}])});
+R21.sort((a,b)=>a.a-b.a);
+{const _rd21=rfDaily;rfDaily=async function(){await _rd21();if(!s||s.dead)return;try{
+  if(!bfRev()||sheetLive||child()||s.cond!=='normal'||s.age<16)return;s.r21=s.r21||{d:{},nx:0};if(MI()<s.r21.nx)return;const t=T();
+  for(const x of R21){if(s.r21.d[x.id])continue;if(t>=x.b){s.r21.d[x.id]='miss';continue}if(t<x.a||!bfMet(x.k))continue;const r=bfR(x.k);
+    if(r.alive&&r.cond!=='normal')continue;
+    s.r21.d[x.id]=s.year;s.r21.nx=MI()+3;await x.run(r);if(sheetLive)await done();return}
+}catch(e){console.error(e);if(sheetLive)sheetClose()}}}
+
+/* ---------- 황제 즉위 직후, 갑작스러운 죽음 ---------- */
+H(1804,5,'5월 18일, 원로원이 제1통령 나폴레옹 보나파르트를 ‘프랑스인의 황제’로 선포하였다.');
+CAUSE.sudden='급사';
+const R21_SUDDEN=()=>s.age<14?['갑자기 높은 열이 오르더니 이틀 만에 숨을 거두었다.']:['황제 즉위를 알리는 축포가 울리던 날 저녁, 식탁에서 갑자기 쓰러져 다시 일어나지 못했다.','계단을 내려오다 가슴을 움켜쥐고 쓰러졌다. 의사가 왔을 때는 이미 늦었다.','센 강변을 걷다 뇌졸중으로 쓰러져 그날 밤 숨을 거두었다.','거리에서 달려드는 마차를 피하지 못해 그 자리에서 숨을 거두었다.'];
+{const _as21=advanceSeason;advanceSeason=async function(){await _as21();if(!s||s.dead)return;
+  if(T()>=tm(1804,6)){try{if(sheetLive)sheetClose()}catch(e){}die('sudden',pick(R21_SUDDEN()))}}}
 
 </script>
 </body>
