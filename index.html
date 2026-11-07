@@ -1558,7 +1558,7 @@ async function family(){
   // 자녀 사망
   for(const k of s.kids){if(!k.alive)continue;const a=s.year-k.y;if(a<20&&R()<childP(a)*(price(s.year)>=1.5&&!rich()?1.3:1)*(urban()&&a<2?1.15:1)){k.alive=false;k.dy=s.year;say(`${a<1?'갓난':a+'살 난'} ${k.sex==='M'?'아들':'딸'} ${jo(k.n,'이','가')} ${jo(a<5?pick(['열병','천연두','이질','경련']):pick(['열병','천연두','디프테리아']),'으로')} 죽었다.`+fx({hp:-3}))}}
 }
-async function marriageCheck(){if(s.married&&s.spouse&&s.spouse.alive)return;if(priest()||nun())return;
+async function marriageCheck(){if(s.married&&s.spouse&&s.spouse.alive)return;if(priest()||nun())return;if(wedMourn())return;
   if(s.married&&s.age>55)return;
   const a=s.age;let p=isM()?(a<20?.01:a<25?.1:a<30?.24:a<40?.16:.05):(a<18?.03:a<21?.1:a<25?.2:a<30?.24:a<36?.12:.03);
   if(noble())p*=1.4;if(s.married)p*=.8;if(R()>=p)return;
@@ -1571,7 +1571,7 @@ async function marriageCheck(){if(s.married&&s.spouse&&s.spouse.alive)return;if(
   const i=await shButtons([{l:'혼인한다',s:isM()?`지참금 +${fmt(dowry)}`:`남편의 벌이가 살림에 더해진다`,a:'family'},{l:'거절한다',s:'',a:''}]);
   if(i===0){s.married=true;s.spouse={n:nm,age,alive:true,pay,estate:sameEst};if(dowry)s.money+=dowry;
     if(s.faithKind==='protestant'&&s.year<1788)say(`${jo(nm,'과','와')} 사막(숲속 비밀 예배)에서 혼인하였다. 국법은 이 혼인을 인정하지 않는다.`,'big');
-    else say(`본당에서 ${jo(nm,'과','와')} 혼인 미사를 올렸다.`+fx({soc:2}),'big')}
+    else say(wedPlace(nm)+fx({soc:2}),'big')}
   else say('혼담을 물렸다.');
   await shContinue();sheetClose()}
 
@@ -2497,7 +2497,7 @@ const ACTS=[
  {k:'hide',n:'몸을 숨긴다',s:'공포정치가 끝날 때까지 은신. 철마다 돈이 든다',c:()=>free()&&T()>=1793.25&&T()<1794.5&&s.sus>=20,f:()=>{s.cond='hiding';s.condSince=T();loseJob();say('친지의 다락방으로 숨어들었다.','big')}},
  {k:'emig',n:'국경을 넘어 망명한다',s:'재산 절반을 잃고 일을 버린다',c:()=>free()&&T()>=1789.25&&T()<1799.75&&(noble()||s.sus>=25||s.flags.refractory||s.pol<-40),inter:async()=>{const {m,why}=md([[s.st.cour>=50,1,'의지'],[s.sk.ride>=40,1,'말을 잘 탐'],[s.st.str>=55,1,'산길을 걸을 힘'],[s.st.hp<30,-1,'병약'],[!!patron(),1,'후원자의 통행증']]);const r=await roll(m,{label:'국경 넘기',why});if(r.v>=3)await emigrate();else if(r.v===1&&T()>=1792.5){say('국경에서 붙잡혔다.','big');s.cond='prison';s.prisonKind='terror';s.condSince=T();fx({sus:25})}else say('국경 경비가 삼엄해 되돌아왔다.'+fx({sus:5}));await done()}},
  {k:'career',n:'진로를 바꾼다',s:'조건을 갖춘 다른 일로 옮긴다',c:()=>free()&&s.age<60&&!soldier()&&!deputy(),inter:async()=>{await careerChoice(false)}},
- {k:'match',n:'중매를 넣는다',s:'혼담이 들어온다',c:()=>free()&&s.age>=16&&s.age<55&&!(s.spouse&&s.spouse.alive)&&!priest()&&!nun(),inter:async()=>{await forceMarriage()}},
+ {k:'match',n:'중매를 넣는다',s:'혼담이 들어온다',c:()=>free()&&s.age>=16&&s.age<55&&!(s.spouse&&s.spouse.alive)&&!wedMourn()&&!priest()&&!nun(),inter:async()=>{await forceMarriage()}},
  {k:'retire',n:'일에서 물러난다',s:'일을 그만두고 지대로 산다',c:()=>free()&&s.job&&s.age>=50&&!soldier(),f:()=>{loseJob('% 자리에서 물러나 노년을 보내기로 했다.');s.flags.retired=true}},
  {k:'gamble',n:'도박판에 앉는다',s:'재산이 오르내린다',c:()=>free()&&s.money>=200&&(noble()||urban()),inter:async()=>{const st=Math.round(s.money*.1);const r=await roll(0,{label:'파로 도박'});if(r.v>=5)say('판돈을 쓸어 담았다.'+fx({money:st*2}));else if(r.v<=2)say('가진 돈을 꽤 잃었다.'+fx({money:-st*2}));else say('본전치기였다.')}}
 ];
@@ -3736,7 +3736,7 @@ function relSync(){for(const r of s.rel||[]){if(r.kind==='fic')continue;const p=
     if(s.year>p.d||(s.year===p.d&&s.month+1>=(p.dm||7))){r.alive=false;r.dead=p.d;L(`${r.role} ${p.n}${bat(p.n)?'이':'가'} ${p.d}년 ${p.dc==='노환'||p.dc==='병'?`${p.d-p.b}세로 세상을 떠났다`:p.dc==='단두대'?'단두대에서 처형되었다':p.dc==='전사'?'전사하였다':`세상을 떠났다 (${p.dc})`}.`,r.close>=55?'ev':'sys');if(r.close>=60&&!child())fx({hp:-1})}}}}
 function relFx(r,o){const parts=[];for(const [k,lab] of [['close','친밀'],['trust','신뢰'],['resp','존경'],['riv','경쟁심'],['hate','미움']])if(o[k]){r[k]=r[k]||0;r[k]=clamp(r[k]+o[k],0,100);parts.push(`${lab} ${o[k]>0?'+':''}${o[k]}`)}return parts.length?` (${r.n}: ${parts.join(', ')})`:''}
 // 관계의 성격(친우·라이벌·존경·혐오…)은 수치에서 나온다. 실존 인물과 가상 인물 모두 같다.
-function relBond(r){const h=r.hate||0;if(h>=60)return '혐오';if(r.riv>=60&&r.close<55)return '라이벌';if(r.close>=75&&r.trust>=65)return '친우';if(r.resp>=75&&r.close<75)return '존경';if(r.role==='연인')return '연인';return r.role}
+function relBond(r){const h=r.hate||0;if(h>=60)return '혐오';if(r.role==='연인')return '연인';if(r.riv>=60&&r.close<55)return '라이벌';if(r.close>=75&&r.trust>=65)return '친우';if(r.resp>=75&&r.close<75)return '존경';if(r.role==='연인')return '연인';return r.role}
 const patron=()=>relsAlive().find(r=>r.role==='후원자'&&r.close>=55&&r.trust>=50);
 const rival=()=>relsAlive().find(r=>r.role==='경쟁자'&&r.riv>=60&&(!r.tr||!job()||r.tr===job().tr));
 // 그의 가치관에 내 처신이 맞는가: -1 · 0 · +1
@@ -3747,7 +3747,7 @@ async function relTick(){if((child()&&!(s.age>=9&&inSchool()))||s.cond==='prison
   if(inSchool(['college','univ','seminary','convent']))ctx.push(['친구',.35,'동창'],['스승',.15,'선생']);
   if(job()&&s.cond==='normal'){ctx.push(['동료',.22,'일터'],['경쟁자',trait('야심')?.2:.1,'일터']);if(job().t>=2)ctx.push(['후원자',.12+(s.st.soc>=55?.08:0),'윗사람'])}
   if(s.party)ctx.push(['동료',.25,'파벌']);
-  if(!s.married&&s.age>=16&&s.age<=32&&!priest()&&!nun())ctx.push(['연인',.12+(s.st.soc>=50?.05:0),'']);
+  if(!wedNow()&&s.age>=16&&s.age<=32&&!priest()&&!nun())ctx.push(['연인',.12+(s.st.soc>=50?.05:0),'']);
   if(!rl.some(r=>r.role==='친구'))ctx.push(['친구',.3,'이웃']);
   for(const [role,p,w] of ctx){if(rl.filter(r=>r.role===role).length>=(role==='동료'?3:2))continue;if(R()<p){const r=addRel(role);if(r){const P=perOf(r);L(`${r.w||'알게 되었다'} — ${P.n}(${P.fr}, ${P.b}~${P.d}). ${P.bio}`,'ev');break}}}
   relSync();
@@ -3955,11 +3955,11 @@ function npcMeet(ctx){const a=s.age,E0=noble()?s.estate:s.estate;let role='친�
   else if(ctx==='prison'){const tr=inTerror()||T()<1794.7&&T()>=1792.6;o.estate=tr?wpick([['epee',3],['robe',2],['bourgeois',3],['artisan',2]]):wpick([['artisan',5],['bourgeois',2]]);o.age=clamp(a+ri(-15,20),16,75);role='친구';o.trust=ri(50,70);o.close=ri(45,60);o.cond='prison';
     w=tr?`${pick(['뤽상부르','라포르스','생트펠라지','콩시에르주리','카름'])} 감옥의 같은 방 수감자`:`${pick(['비세트르','생트펠라지','라포르스'])} 감옥의 같은 방 수감자`;if(tr&&R()<.25){o.cler=true;o.refr=true;sx='M'}}
   else if(ctx==='love'){sx=isM()?'F':'M';o.estate=R()<.75?s.estate:(noble()?'bourgeois':pick(['artisan','bourgeois']));o.age=isM()?clamp(a-ri(0,6),16,40):clamp(a+ri(0,7),17,45);role='연인';o.close=ri(45,60);o.mar=null;
-    w=pick(noble()?['오페라 무도회에서 만난 사람','튈르리 정원 산책길에서 만난 사람','사촌의 혼례식에서 만난 사람']:['성당 미사에서 눈이 마주친 사람','이웃 공방의 사람','성 요한 축일 밤 모닥불 곁에서 만난 사람','강변 선술집 무도회에서 만난 사람'])}
+    w=s.r22w?`${s.r22w}에서 만난 가면의 주인`:pick(noble()?['오페라 무도회에서 만난 사람','튈르리 정원 산책길에서 만난 사람','사촌의 혼례식에서 만난 사람']:['성당 미사에서 눈이 마주친 사람','이웃 공방의 사람','성 요한 축일 밤 모닥불 곁에서 만난 사람','강변 선술집 무도회에서 만난 사람'])}
   else if(ctx==='exile'){o.estate=pick(['epee','robe']);o.age=a+ri(-10,15);o.cond='emigre';role=R()<.3?'후원자':'친구';w=`망명지 ${s.emiPlace||'코블렌츠'}에서 만난 프랑스 사람`}
   else{o.estate=R()<.6?s.estate:pick(['artisan','bourgeois']);o.age=a+ri(-10,10);role=R()<.15?'경쟁자':'친구';w=pick(['단골 카페에서 알게 된 사람','같은 셋집에 든 사람','본당 형제회에서 만난 사람','장터에서 시비 끝에 친해진 사람'])}
   o.sex=sx;o.w=w;if(o.age<3)o.age=3;if(['street','salon','club','work','love','exile','prison'].includes(ctx)&&o.age<16)o.age=16;
-  if(role==='연인'&&(s.married||priest()||nun()))role='친구';
+  if(role==='연인'&&(priest()||nun()))role='친구';if(role==='연인'&&typeof wedNow==='function'&&wedNow()){o.affair=1;o.secret=1}
   const r=addFic(role,o);if(!r)return null;
   if(r.cond==='army')r.ay=s.year;if(r.cond==='prison')r.py=s.year;if(r.cond==='emigre')r.emi=s.emiPlace||'코블렌츠';
   L(`${w} — ${r.n}(${npAge(r)}세, ${npJob(r)}, ${r.home}). 성격은 ${r.tr}, ${NP_TRD[r.tr]}.`,'ev');return r}
@@ -4131,12 +4131,12 @@ const NP_SC=[
  {id:'h_gloat',k:['hate','rival'],w:3,c:r=>r.alive&&['prison','deported','emigre'].includes(r.cond)&&!child()&&s.cond==='normal'&&!r.gl,f:async r=>{r.gl=1;const i=await Q('원수의 몰락','la chute d’un ennemi',`그토록 미워하던 ${npSub(r)} ${r.cond==='prison'?'감옥에 갇혔다':r.cond==='emigre'?'모든 것을 버리고 나라 밖으로 달아났다':'유형지로 끌려갔다'}. ${ev2He(r)}의 식구들이 끼니를 거른다고 한다.`,[{l:'그 식구들에게 빵을 보낸다',s:'재산 -20',a:'pious family'},{l:'속으로 쾌재를 부른다',s:'',a:'safe'}]);
    if(i===0)say(`이름을 밝히지 않고 빵 바구니를 보냈다. 나중에 ${npTop(r)} 그것이 누구였는지 알게 되었다.`+fx({money:-20,vjus:3,faith:1})+relFx(r,{hate:-30,resp:10,close:8}));else say('그날 밤 포도주 한 병을 땄다.'+fx({vjus:-1})+relFx(r,{hate:3}));await done()}},
  // ----- 연인 -----
- {id:'l_meet',k:['love'],w:2,c:r=>npIn(r)&&!s.married,f:async r=>{say(`${npWith(r)} ${pick(noble()?['오페라 무도회의 가면 뒤에서','튈르리 정원 산책길에서','시녀를 사이에 둔 편지로']:['성당 뒤 골목에서','뤽상부르 정원 벤치에서','강변 갱게트 무도회에서','이웃 아낙들의 눈을 피해 다락방에서'])} 만났다.`+relFx(r,{close:8,trust:4}))}},
- {id:'l_prop',k:['love'],w:2.5,c:r=>npIn(r)&&!s.married&&r.close>=62&&s.age>=18&&!priest()&&!nun()&&!r.mar,f:async r=>{const gap=npNob(r)!==noble()||(r.estate==='artisan')!==(s.estate==='artisan');
+ {id:'l_meet',k:['love'],w:2,c:r=>npIn(r)&&(!wedNow()||r.affair),f:async r=>{say(`${npWith(r)} ${pick(noble()?['오페라 무도회의 가면 뒤에서','튈르리 정원 산책길에서','시녀를 사이에 둔 편지로']:['성당 뒤 골목에서','뤽상부르 정원 벤치에서','강변 갱게트 무도회에서','이웃 아낙들의 눈을 피해 다락방에서'])} 만났다.`+relFx(r,{close:8,trust:4}))}},
+ {id:'l_prop',k:['love'],w:2.5,c:r=>npIn(r)&&!wedNow()&&!wedMourn()&&r.close>=62&&s.age>=18&&!priest()&&!nun()&&!r.mar,f:async r=>{const gap=npNob(r)!==noble()||(r.estate==='artisan')!==(s.estate==='artisan');
    const i=await Q('청혼','la demande',`${npWith(r)} 함께 늙어 가고 싶다.${gap?' 그러나 두 집안의 처지가 다르다. 양쪽 집안이 고개를 저을 것이다.':''}`,[{l:'청혼한다',s:gap?'집안의 반대를 넘어야 한다':'',a:'family bold'},{l:'좀 더 기다린다',s:'',a:'safe'},{l:'헤어진다',s:'',a:'safe'}]);
    if(i===0){const x=gap?await roll(md([[s.st.soc>=50,1,'사교'],[s.st.cour>=50,1,'의지'],[!s.fa.alive&&!s.mo.alive,1,'반대할 부모가 없다'],[noble()&&!npNob(r),-1,'귀족 집안의 체면']]).m,{label:'집안의 반대'}):{v:6};
      if(x.v>=4){const E=r.estate,dowry=isM()?({peasant:80,artisan:300,bourgeois:3000,robe:15000,epee:40000,hobereau:8000}[E]||300):0;const pay=isM()?({peasant:60,artisan:150}[E]||0):Math.round(({artisan:330,bourgeois:1200,robe:3000,epee:5000,peasant:200,hobereau:1500}[E]||300));
-       s.married=true;s.spouse={n:r.n,age:npAge(r),alive:true,pay,estate:E};if(dowry)s.money+=dowry;say(`${npWith(r)} 본당에서 혼인 미사를 올렸다.${dowry?` 지참금 ${fmt(dowry)} ${money()}.`:''}`+fx({soc:2,vfam:3}),'big');s.rel.splice(s.rel.indexOf(r),1)}
+       s.married=true;s.spouse={n:r.n,age:npAge(r),alive:true,pay,estate:E};if(dowry)s.money+=dowry;say(`${wedPlace(r.n)}${dowry?` 지참금 ${fmt(dowry)} ${money()}.`:''}`+fx({soc:2,vfam:3}),'big');s.rel.splice(s.rel.indexOf(r),1)}
      else{say('집안이 끝내 허락하지 않았다. 둘은 울며 헤어졌다.'+fx({hp:-2,rfam:-2})+relFx(r,{close:-20}));r.role='친구'}}
    else if(i===1)say('조금 더 기다리기로 하였다.'+relFx(r,{close:-3}));else{say(`${npWith(r)} 헤어졌다.`+relFx(r,{close:-25,trust:-10}));r.role='친구'}await done()}},
  {id:'l_other',k:['love'],w:1,c:r=>npIn(r)&&r.close<58&&!r.mar,f:async r=>{r.mar=npM(r)?woman():person();r.marY=s.year;r.role='친구';npFate(r,`${jo(r.mar,'과','와')} 혼인하였다.`);say(`${npTop(r)} 집안이 정해 준 ${jo(r.mar,'과','와')} 혼인하였다. 혼례 행렬이 당신의 집 앞을 지나갔다.`+fx({hp:-1})+relFx(r,{close:-10}),'ev')}},
@@ -4452,7 +4452,7 @@ defineAct({k:'theatre',g:'social',n:'극장에 간다',s:'재산 15. 문학 +2, 
 defineAct({k:'guing',g:'social',n:'관문 밖 선술집에서 춤춘다',s:'재산 5. 사교 +2',cost:5,c:()=>acTown()&&s.age<50,f:()=>say(acPick([
   ['일요일, 입시세가 붙지 않는 관문 밖 선술집(갱게트)에서 싼 포도주를 마시고 춤추었다.',()=>inParis()],['쿠르티유의 선술집에서 사육제 마지막 날 밤을 새웠다.',()=>inParis()],
   ['성문 밖 풀밭 무도회에서 바이올린 소리에 맞춰 돌았다.']])+fx({money:-5,soc:2,rpeople:1,hp:R()<.3?-1:0}))});
-defineAct({k:'billet',g:'social',n:'연애편지를 쓴다',s:'글솜씨 판정. 혼담이 될 수도',c:()=>free()&&lit()&&s.age>=16&&s.age<45&&!(s.spouse&&s.spouse.alive)&&!priest()&&!nun(),inter:async()=>{
+defineAct({k:'billet',g:'social',n:'연애편지를 쓴다',s:'글솜씨 판정. 혼담이 될 수도',c:()=>free()&&lit()&&s.age>=16&&s.age<45&&!(s.spouse&&s.spouse.alive)&&!wedMourn()&&!priest()&&!nun(),inter:async()=>{
   const lv=relsAlive().find(r=>r.role==='연인');
   const {m,why}=md([[s.sk.pen>=30,1,'글솜씨'],[(s.kn.kphil||0)>=25,1,'문학'],[s.st.soc>=50,1,'사교'],[s.sk.pen<10,-1,'서툰 글씨']]);const r=await roll(m,{label:'연애편지',why});
   if(lv){say(`${lv.n}에게 편지를 보냈다.`+(r.v>=4?' 답장이 왔다.':' 답장은 짧았다.')+fx({pen:1,klett:1})+relFx(lv,{close:r.v>=4?8:2}));return}
@@ -4461,7 +4461,7 @@ defineAct({k:'billet',g:'social',n:'연애편지를 쓴다',s:'글솜씨 판정.
   const nm=isM()?woman():person();const age=clamp(s.age+(isM()?-ri(1,6):ri(0,6)),16,60);
   const i=await Q('답장','billet doux',`${nm}에게서 답장이 왔다. 다음 주일 미사가 끝나면 성당 앞에서 만나자고 한다.`,[{l:isM()?'청혼한다':'청혼을 받아들인다',s:'',a:'family social'},{l:'편지만 주고받는다',s:'',a:'safe'}]);
   if(i===0){const pay=isM()?{peasant:60,artisan:150}[s.estate]||0:Math.round(POST[pick(['f2','c2','c3','l2','c4'])].pay*({peasant:.5,artisan:.9,bourgeois:1.4,hobereau:2,robe:3,epee:5}[s.estate]||1));
-    s.married=true;s.spouse={n:nm,age,alive:true,pay,estate:s.estate};say(`${jo(nm,'과','와')} 혼인하였다. 편지 묶음은 리본으로 묶어 상자에 넣었다.`+fx({soc:2,vfam:2}),'big')}
+    s.married=true;s.spouse={n:nm,age,alive:true,pay,estate:s.estate};say(`${wedPlace(nm)} 편지 묶음은 리본으로 묶어 상자에 넣었다.`+fx({soc:2,vfam:2}),'big')}
   else say(`${jo(nm,'과','와')} 편지를 주고받았다.`+fx({pen:1,klett:1}));await done()}});
 defineAct({k:'mediate',g:'social',n:'이웃 다툼을 중재한다',s:'사교·웅변 판정. 이웃 평판 +',c:()=>free()&&s.age>=25&&s.rep.rloc>=45,inter:async()=>{
   const d=pick(['밭 경계석을 누가 옮겼느냐','우물 물을 누가 먼저 긷느냐','빌려준 돈 20리브르를 갚느냐','술집에서 오간 욕설을 사과하느냐','닭이 남의 밭을 헤집었느냐']);
@@ -6584,7 +6584,7 @@ const pro2Cur=n=>Math.round(n*econ().cur);
 const pro2L=()=>{const t=T();return t<1789.34?'philosophe':t<1791.5?'patriote':t<1794.8?'jacobin':t<1799.83?'thermidor':t<1814.25?'bonapartist':t<1830.58?'doctrinaire':'republican'};
 const pro2R=()=>{const t=T();return t<1789.34?'devot':t<1792.67?'absolutist':t<1814.25?'royalist':t<1830.58?'ultra':'legitimist'};
 function pro2Fac(l,r){frelAdd(pro2L(),l);frelAdd(pro2R(),r);const p=[];if(l)p.push(`${FAC[pro2L()].n} ${l>0?'+':''}${l}`);if(r)p.push(`${FAC[pro2R()].n} ${r>0?'+':''}${r}`);return p.length?` (파벌 신뢰: ${p.join(', ')})`:''}
-function proWed(){if(s.spouse&&s.spouse.alive)return;const nm=woman();s.married=true;s.spouse={n:nm,age:clamp(s.age-ri(3,12),20,50),alive:true,pay:0,estate:s.estate};return nm}
+function proWed(){if(s.spouse&&s.spouse.alive)return;if(wedMourn())return;const nm=woman();s.married=true;s.spouse={n:nm,age:clamp(s.age-ri(3,12),20,50),alive:true,pay:0,estate:s.estate};return nm}
 
 EV.push(
  /* ======================= 교회 ======================= */
@@ -8708,7 +8708,7 @@ beat('louise','lo_crisis',{when:()=>bfAlive('louise')&&bfHere()&&!child()&&(bfRe
   const bad=t=>{bfMem('m_bake','louise',t,{tone:'후회',their:'그 사람은 나설 수 없다고 했다. 무서웠겠지. 나도 무서웠다. 그래도 그 문 앞에서 오래 서 있었다.'});bfReg('r_bake','louise',rv?`빵집 일로 도와 달라던 ${bL('louise')} 돌려보냈다.`:`아들을 찾아 달라던 ${bL('louise')} 돌려보냈다.`);bfRe('m_bread','그날 문 앞에서 돌려보낸 사람이, 예전에 제일 바삭한 꽁다리를 떼어 주던 아이였다.','죄책감');bfRel('louise',{close:-10,trust:-12})};
   await bfScene(rv?'빵집의 밤':'열한 번째 문',rv?'le maximum':'les journées de Juin',T0,[
    {l:rv?'구 위원회에 가서 그녀를 위해 증언한다':'함께 감옥들을 찾아다닌다',s:rv?'혐의 +':'',a:'bold',f:async()=>{bfBrave();if(rv)s.sus=clamp((s.sus||0)+5,0,100);
-     if(await chance(.7,rv?'증언':'수소문','')){ok(rv?`최고가격제 시절, ${L}의 남편을 위해 구 위원회에서 증언했다. 남편은 사흘 만에 풀려났다.`:`1848년 6월, ${bW('louise')} 감옥마다 아들 이름을 부르며 다녔다. 열한 번째 문에서 대답이 들렸다.`);say(rv?'사흘 뒤 남편이 풀려났다.':'아들은 이브리 요새에 갇혀 있었다. 가을에 풀려났다.','big')}
+     if(await chance(.7,rv?'증언':'수소문','')){ok(rv?`최고가격제 시절, ${L}의 남편을 위해 구 위원회에서 증언했다. 남편은 사흘 만에 풀려났다.`:`1848년 6월, ${bW('louise')} 감옥마다 아들 이름을 부르며 다녔다. 열한 번째 문에서 대답이 들렸다.`);say(rv?`사흘 뒤 ${L}의 남편이 풀려났다.`:'아들은 이브리 요새에 갇혀 있었다. 가을에 풀려났다.','big')}
      else{bfMem('m_bake','louise',rv?`최고가격제 시절, ${L}의 남편을 위해 구 위원회에서 증언했지만 소용없었다. 남편은 테르미도르 뒤에야 풀려났다.`:`1848년 6월, ${bW('louise')} 감옥마다 아들을 찾아다녔지만 찾지 못했다. 아들은 알제리로 보내졌다.`,{tone:'씁쓸함',their:'그 사람은 끝까지 함께 다녔다. 찾지 못했어도 그건 잊지 않는다.'});bfRel('louise',{close:8,trust:8});bfFate('louise',rv?'남편이 감옥에 갇혔다':'아들이 알제리로 유형을 갔다');say(rv?'남편은 풀려나지 못했다.':'아들의 이름은 알제리행 명단에 있었다.','dark')}}},
    etOK?{l:`${bN('etienne')}에게 부탁한다`,a:'social',f:()=>{bfSet('etienne','owed');ok(`최고가격제 시절, ${L}의 남편 일을 ${bN('etienne')}에게 부탁했다. 남편은 이튿날 풀려났다.`);say(`${bU('etienne')} 아무것도 묻지 않고 서류에 서명했다. 그리고 말했다. “이번엔 내가 도왔어.”`)}}:null,
    (!rv&&lit())?{l:'아는 관리에게 탄원서를 써 준다',a:'study',f:async()=>{if(await chance(.5,'탄원','')){ok(`1848년 6월, ${L}의 아들을 위해 탄원서를 썼다. 아들은 가을에 풀려났다.`)}else{bfMem('m_bake','louise',`1848년 6월, ${L}의 아들을 위해 탄원서를 썼지만 답이 없었다. 아들은 알제리로 보내졌다.`,{tone:'씁쓸함',their:'그 사람이 써 준 탄원서를 나는 읽을 수 없었다. 그래도 날마다 그 종이를 꺼내 보았다.'});bfFate('louise','아들이 알제리로 유형을 갔다')}}}:null,
@@ -10897,10 +10897,9 @@ function rf7Obstacles(r){const o=[];const P=typeof perOf==='function'?perOf(r):n
   return o.map(x=>x[1].replace('은(는)',/[가-힣]/.test(r.n.split(' ')[0].slice(-1))&&bat(r.n.split(' ')[0])?'은':'는'))}
 async function rf7RomCheck(){if(!s||s.dead||sheetLive||child()||s.cond!=='normal')return;const r=(s.rel||[]).find(r=>r.alive&&rf7Rom(r)>=80&&!r.romEv);if(!r)return;r.romEv=s.year;
   const N=r.n.split(' ')[0],obs=rf7Obstacles(r);
-  if(!obs.length){const i=await Q('고백',"l’aveu",`${jo(N,'이','가')} 당신의 편지 다발을 리본으로 묶어 들고 찾아왔다. 손이 떨리고 있다. “편지마다 같은 말을 하고 있었어. 이제 직접 듣고 싶어.”`,[{l:'“사랑해.”라고 말한다',a:'social family'},{l:'“우리 혼인하자.”라고 청한다',a:'family',dis:r.sex===s.sex},{l:'아직은 친구로 남자고 한다',a:'safe'}]);
+  if(!obs.length){const i=await Q('고백',"l’aveu",`${jo(N,'이','가')} 당신의 편지 다발을 리본으로 묶어 들고 찾아왔다. 손이 떨리고 있다. “편지마다 같은 말을 하고 있었어. 이제 직접 듣고 싶어.”`,[{l:'“사랑해.”라고 말한다',a:'social family'},{l:'“언젠가 혼인하자.”라고 약속한다',s:'연인이 된다. 혼인은 혼담을 거쳐서',a:'family'},{l:'아직은 친구로 남자고 한다',a:'safe'}]);
     if(i===0){r.role='연인';say(`${jo(N,'이','가')} 웃었다. 우는 것처럼. 그날 저녁 두 사람은 센 강변을 걸었다. 강물에 비친 가로등 불빛이 둘의 그림자를 하나로 겹쳐 놓았다.`+relFx(r,{close:10,trust:8}),'big')}
-    else if(i===1){r.role='배우자';s.married=true;s.spouse={n:r.n,age:Math.max(16,s.year-(r.by||s.by)),alive:true,pay:0,estate:r.estate||s.estate,rid:r.fid||r.pid};
-      say(`${jo(N,'은','는')} 대답 대신 당신 손을 꼭 쥐었다. 몇 달 뒤 ${typeof bfPar==='function'?bfPar():'본당'}에서 혼례를 올렸다. 하객석 맨 앞에서 오랜 벗들이 울고 웃었다.`+fx({rfam:4})+relFx(r,{close:15,trust:10}),'big')}
+    else if(i===1){r.role='연인';r.promise=s.year;say(`${jo(N,'은','는')} 대답 대신 당신 손을 꼭 쥐었다. 둘은 언젠가 혼인하자고 약속했다. 혼담은 서두르지 않기로 했다.`+relFx(r,{close:12,trust:10}),'big')}
     else{r.rom=60;say(`${jo(N,'은','는')} 고개를 끄덕였다. “알았어. 기다릴게.” 그 말이 오래 마음에 걸렸다.`+relFx(r,{close:-2}))}
     await done();return}
   const why=obs.join('. ')+'.';
@@ -11252,9 +11251,9 @@ const RF10_ROM={
  saintjust:{in:N=>`${jo(N,'이','가')} 늘 그렇듯 표정 없이 말했다. “혁명가는 사사로운 감정을 버려야 하오.” 그러고는 당신의 편지를 한 장도 버리지 않고 모아 둔 상자를 열어 보였다.`,yes:N=>`생쥐스트는 처음으로 웃었다. 스물다섯 살다운 웃음이었다.`}};
 {const _rc=rf7RomCheck;rf7RomCheck=async function(){if(!s||s.dead||sheetLive||child()||s.cond!=='normal')return;const r=(s.rel||[]).find(r=>r.alive&&(r.rom||0)>=80&&!r.romEv);if(!r)return;
   const k=r.core||r.pid,R0=RF10_ROM[k];if(!R0)return _rc();r.romEv=s.year;const N=r.n.split(' ')[0],obs=rf7Obstacles(r);
-  if(!obs.length){const i=await Q('고백',"l’aveu",R0.in(N),[{l:'“나도 같은 마음이야.”라고 말한다',a:'social family'},{l:'“우리 혼인하자.”라고 청한다',a:'family',dis:r.sex===s.sex},{l:'아직은 친구로 남자고 한다',a:'safe'}]);
+  if(!obs.length){const i=await Q('고백',"l’aveu",R0.in(N),[{l:'“나도 같은 마음이야.”라고 말한다',a:'social family'},{l:'“언젠가 혼인하자.”라고 약속한다',s:'연인이 된다. 혼인은 혼담을 거쳐서',a:'family'},{l:'아직은 친구로 남자고 한다',a:'safe'}]);
     if(i===0){r.role='연인';say(R0.yes(N)+relFx(r,{close:10,trust:8})+fx({hap:8}),'big')}
-    else if(i===1){r.role='배우자';s.married=true;s.spouse={n:r.n,age:Math.max(16,s.year-(r.by||(perOf(r)?perOf(r).b:s.by))),alive:true,pay:0,estate:r.estate||s.estate,rid:r.fid||r.pid};say(R0.yes(N)+` 몇 달 뒤 두 사람은 혼례를 올렸다.`+fx({rfam:4,hap:12})+relFx(r,{close:15,trust:10}),'big')}
+    else if(i===1){r.role='연인';r.promise=s.year;say(R0.yes(N)+` 둘은 언젠가 혼인하자고 약속했다. 혼담은 서두르지 않기로 했다.`+fx({hap:10})+relFx(r,{close:12,trust:10}),'big')}
     else{r.rom=60;say(`${jo(N,'은','는')} 고개를 끄덕였다. “알았어. 기다릴게.” 그 말이 오래 마음에 걸렸다.`+relFx(r,{close:-2})+fx({hap:-3}))}
     await done();return}
   const why=obs.join('. ')+'.';
@@ -12435,6 +12434,138 @@ CAUSE.sudden='급사';
 const R21_SUDDEN=()=>s.age<14?['갑자기 높은 열이 오르더니 이틀 만에 숨을 거두었다.']:['황제 즉위를 알리는 축포가 울리던 날 저녁, 식탁에서 갑자기 쓰러져 다시 일어나지 못했다.','계단을 내려오다 가슴을 움켜쥐고 쓰러졌다. 의사가 왔을 때는 이미 늦었다.','센 강변을 걷다 뇌졸중으로 쓰러져 그날 밤 숨을 거두었다.','거리에서 달려드는 마차를 피하지 못해 그 자리에서 숨을 거두었다.'];
 {const _as21=advanceSeason;advanceSeason=async function(){await _as21();if(!s||s.dead)return;
   if(T()>=tm(1804,6)){try{if(sheetLive)sheetClose()}catch(e){}die('sudden',pick(R21_SUDDEN()))}}}
+
+/* ================= 개편 22: 혼인에는 순서가 있다 =================
+   1. 혼인은 언제나 혼담(중매·청혼)을 거친 뒤에 올린다.
+   2. 오랜 벗과 로맨틱 80: 고백 → 연인(관계 탭 ‘연인·라이벌’) → 무도회.
+   3. 로맨틱 100: 혼인하지 않은 이성끼리면 혼담 → 몇 달 뒤 혼례. 이미 혼인했거나 같은 성이면 숲 속에서 둘만의 혼례.
+      쥘이 사제라면 사제복을 벗고 세속으로 돌아온다.
+   4. 혼인한 뒤에 가면무도회 같은 자리에서 만난 사람과는 사랑만 할 뿐 혼인하지 않는다.
+   5. 미움과 사랑이 함께 높은 오랜 벗에게는 따로 장면이 있다.
+   6. 배우자를 잃거나 이혼하고 한 해가 지나면 다시 혼담을 받을 수 있다. */
+const wedNow=()=>!!(s&&s.married&&s.spouse&&s.spouse.alive!==false&&!s.divorced);
+// 사별한 지 한 해가 안 되었으면 상중이다
+function wedMourn(){return !!(s&&s.spouse&&s.spouse.alive===false&&!s.divorced&&s.year-(s.spouse.dy||s.year)<1)}
+// 혼례를 올린 곳: 1792년 9월부터 혼인은 구청의 일이고, 1793~1801년에는 성당 문이 대개 닫혀 있었다
+function wedPlace(nm){const t=T(),w=jo(nm,'과','와');if(t>=1792.7&&t<1801.6)return `구청에서 시장 앞에 서서 ${w} 혼인 서약을 했다. 증인 넷이 서명했다.`;if(t>=1801.6)return `구청에서 ${w} 혼인하고, 이튿날 성당에서 축복을 받았다.`;return `본당에서 ${w} 혼인 미사를 올렸다.`}
+const R22_K=()=>BF_KEYS.slice();
+const r22R=k=>typeof r12R==='function'?r12R(k):bfR(k);
+const r22N=k=>typeof r12N==='function'?r12N(k):bN(k);
+const r22Ok=k=>{const r=r22R(k);return !!(r&&r.alive&&r.cond==='normal')};
+const r22He=k=>{const r=r22R(k);return r&&r.sex==='F'?'그녀':'그'};
+function r22Rel(k,o){if(typeof r12Rel==='function')r12Rel(k,o);else bfRel(k,o)}
+function r22Rom(k,n){const r=r22R(k);if(r)r.rom=clamp((r.rom||0)+n,0,100)}
+const r22Mem=(id,k,t,tone,their)=>{try{bfMem(id,k,t,{tone:tone||'희망',their:their||null})}catch(e){}};
+const r22Priest=k=>{const r=r22R(k);return !!(r&&k==='jules'&&/신부/.test(r.job||''))};
+// 혼인할 수 있는 사이인가(공식 혼례)
+const r22CanWed=(k,r)=>!wedNow()&&!wedMourn()&&r.sex!==s.sex&&!r.mar&&!(typeof priest==='function'&&priest())&&!(typeof nun==='function'&&nun());
+const r22Era=()=>{const t=T();return t<1789.5?'old':t<1792.7?'rev':t<1794.6?'ter':t<1799.9?'dir':'cons'};
+
+/* ---------- 2. 연인이 된 오랜 벗과의 무도회 ---------- */
+const R22_BALL={old:['오페라 극장의 무도회','le bal de l’Opéra','샹들리에 수백 개가 흔들리는 오페라 극장. 가면을 쓴 사람들 사이로 현악기 소리가 흐른다.'],
+ rev:['바스티유 터의 무도회','ici l’on danse','허물어진 바스티유 터에 나무를 심고 등불을 걸었다. 입구 팻말에 ‘여기서 춤춘다’라고 적혀 있다.'],
+ ter:['구민들의 카르마뇰','la Carmagnole','구 회의가 끝난 광장. 사람들이 손을 잡고 둥글게 돌며 카르마뇰을 부른다. 붉은 모자들이 횃불 아래 흔들린다.'],
+ dir:['티볼리 정원의 무도회','le jardin de Tivoli','총재정부 시절의 티볼리 정원. 등불이 나무마다 걸리고, 멋쟁이들이 왈츠라는 새 춤을 춘다.'],
+ cons:['프라스카티의 무도회','Frascati','리슐리외 거리의 프라스카티. 거울 벽에 촛불이 겹겹이 비치고, 아이스크림 접시가 돈다.']};
+const R22_BALLF={
+ louise:{i:N=>`${jo(N,'이','가')} 밀가루 냄새를 지우려고 오렌지 꽃물을 뿌리고 왔다. 춤을 출 줄 모른다고 했지만, 음악이 시작되자 제일 먼저 발을 굴렀다.`,a:N=>`${jo(N,'은','는')} 춤이 끝나자 앞치마 주머니에서 꽁다리 하나를 꺼냈다. “무도회 음식은 너무 달아.”`},
+ etienne:{i:N=>`${jo(N,'은','는')} 춤은 귀족의 사치라고 투덜대며 따라왔다. 그런데 음악이 바뀌자 당신 손을 먼저 잡은 것은 ${jo(N,'이었','였')}다.`,a:N=>`${jo(N,'은','는')} 숨을 몰아쉬며 웃었다. “좋아. 혁명에도 춤은 필요해. 연설문에 넣을게.”`},
+ jules:{i:N=>r22Priest('jules')?`${jo(N,'은','는')} 사제라 무도회장에 들어올 수 없다. 대신 담장 밖에서 음악을 듣고 서 있다. 당신이 나가자 ${N}${jo(N,'이','가').slice(-1)} 낮게 성가 한 소절로 박자를 맞춘다.`:`${jo(N,'은','는')} 무도회장 구석에서 모자를 만지작거리고 있다. 사람들 앞에서는 말을 더듬지만, 음악 앞에서는 더듬지 않는다.`,a:N=>`춤이 끝나고 ${jo(N,'이','가')} 속삭였다. “노, 노래할 때처럼… 춤출 때도 안 더듬네.”`},
+ antoine:{i:N=>`${jo(N,'이','가')} 입장권 두 장을 흔들며 나타났다. “값은 묻지 마. 오늘은 장부 안 펼 거야.” 그러고는 춤추는 동안 박자를 입속으로 셌다.`,a:N=>`${jo(N,'은','는')} 마지막 곡이 끝나자 당신 손에 은단추 하나를 쥐여 주었다. “오늘 밤 값. 영수증은 없어.”`},
+ gabriel:{i:N=>`${jo(N,'은','는')} 무도회장에서 가장 눈에 띄는 사람이었다. 그런데 오늘은 누구의 눈길에도 답하지 않고 당신만 본다. 손목에 푸른 리본이 매여 있다.`,a:N=>`${jo(N,'은','는')} 춤이 끝나도 손을 놓지 않았다. “거울 볼 틈이 없었어. 처음이야.”`},
+ robespierre:{i:N=>`${jo(N,'은','는')} 무도회장 벽 쪽에 꼿꼿이 서 있다. 춤은 추지 않는다고 했다. 그러다 아주 느린 곡이 시작되자 말없이 손을 내민다.`,a:N=>`${jo(N,'은','는')} 한 곡만 추고 손을 놓았다. “이걸로 충분하오.” 그 한 곡을 당신은 오래 기억했다.`},
+ desmoulins:{i:N=>`${jo(N,'은','는')} 첫 곡부터 남의 발을 세 번 밟고 세 번 사과했다. 사과할 때마다 더듬었고, 그때마다 사람들이 웃었다.`,a:N=>`${jo(N,'은','는')} 땀범벅이 되어 웃었다. “다, 다음 호 신문에 쓸 거야. 무도회에서 가장 서툰 춤꾼이 가장 행복했다고.”`}};
+async function r22Ball(k){const r=r22R(k),N=r22N(k),E=R22_BALL[r22Era()],F=R22_BALLF[k];const hid=r.secret||r.affair||wedNow();
+  await bfScene(E[0],E[1],`${E[2]} ${F.i(N)}${hid?' 둘 다 아는 사람의 눈을 피해야 하는 사이다.':''}`,[
+   {l:'함께 춤을 춘다',a:'social bold',f:()=>{r22Rom(k,8);r22Rel(k,{close:6,trust:3});r22Mem('m22_ball_'+k,k,`${E[0]}에서 ${jo(N,'과','와')} 춤을 추었다.`,'기쁨','그 사람과 춤을 추었다. 그날 밤 음악이 내 편이었다.');say(F.a(N)+(hid&&R()<.3?' 돌아오는 길에 누군가 둘을 알아본 것 같았다.':'')+fx({hap:6,soc:1,rloc:hid&&R()<.3?-3:0}),'big')}},
+   {l:'정원으로 빠져나가 둘이서만 이야기한다',a:'family',f:()=>{r22Rom(k,6);r22Rel(k,{close:5,trust:5});r22Mem('m22_ball_'+k,k,`${E[0]}에서 ${jo(N,'과','와')} 빠져나와 둘이서만 이야기했다.`,'그리움','음악이 멀리서 들렸다. 그게 더 좋았다.');say(`음악 소리가 멀어졌다. 등불 아래서 ${jo(N,'은','는')} 어릴 적 이야기를 했다. 당신이 기억하지 못하는 일까지 ${r22He(k)}는 다 기억하고 있었다.`+fx({hap:5}))}},
+   {l:'남의 눈이 무서워 일찍 자리를 뜬다',a:'safe',f:()=>{r22Rom(k,-3);say(`${jo(N,'은','는')} 서운한 얼굴로 손을 흔들었다. “다음엔 끝까지 있어.”`+fx({hap:-1}))}}])}
+
+/* ---------- 3. 로맨틱 100: 혼담 → 혼례, 또는 숲 속의 혼례 ---------- */
+const R22_ASK={ // 혼담: 양가와 공증인 앞에서
+ louise:(N,old)=>`${jo(N,'이','가')} 빵집 화덕 앞에서 앞치마를 벗는다. “우리 집 지참금은 이 화덕 하나야. 그래도 괜찮으면… 공증인한테 같이 가.” ${old?'루이즈의 아버지가 밀가루 묻은 손으로 계약서에 서명할 날을 정했다.':'구청 서기가 혼인 공고를 붙일 날을 정했다.'}`,
+ etienne:(N,old)=>`${jo(N,'이','가')} 직접 쓴 혼인 계약서 초안을 내민다. 조항마다 ‘두 사람은 동등하다’는 말이 들어 있다. “${old?'공증인이 이걸 보면 놀라겠지.':'새 법은 혼인도 계약이래. 그럼 제대로 써야지.'}”`,
+ jules:(N,old)=>r22Priest('jules')?`${jo(N,'이','가')} 사제복의 단추를 하나씩 끄른다. “서, 서원을 거두기로 했어. 주교님께 편지도 썼어.” 사제복을 벗은 ${jo(N,'은','는')} 낯설 만큼 가벼워 보인다. “이제 그냥 쥘이야. 그 쥘이… 너한테 혼담을 넣어도 될까?”`:`종탑 아래에서 ${jo(N,'이','가')} 모자를 벗는다. “나, 나는 말을 더듬으니까… 혼담은 우리 어머니가 넣기로 했어.” 종지기 어머니가 그 뒤에서 웃고 있다.`,
+ antoine:(N,old)=>`${jo(N,'이','가')} 장부 대신 혼인 계약서를 펼친다. 지참금, 과부 몫, 공동 재산. 숫자가 빼곡하다. 맨 아래 한 줄만 비어 있다. “여기는 네가 채워. 나는 셈이 안 되는 칸이야.”`,
+ gabriel:(N,old)=>`${jo(N,'은','는')} 집안 어른들 앞에서 혼담을 꺼냈다. ${noble()?'가문의 체면을 따지는 친척들이 수군거린다.':'포목 도매상 아버지가 헛기침을 한다.'} ${jo(N,'은','는')} 거울 대신 당신을 보며 말한다. “다들 뭐라고 하든, 나는 이번엔 안 달아나.”`,
+ robespierre:(N,old)=>`${jo(N,'은','는')} 오래 망설이다 편지를 보냈다. 글씨는 작고 반듯했다. ‘공화국과 약혼한 사람이라는 말이 틀렸다는 걸 증명하고 싶소. 자네가 허락한다면.’`,
+ desmoulins:(N,old)=>`${jo(N,'이','가')} 더듬거리며 혼담을 꺼냈다. “자, 장인어른 될 분 앞에서는 한 번도 안 더듬었어. 대신 너 앞에서 다 더듬는 중이야.”`};
+const R22_WED={ // 혼례
+ louise:N=>`혼례 날 아침, ${jo(N,'이','가')} 직접 구운 커다란 혼례 빵을 들고 왔다. 가운데에 두 사람 이름의 첫 글자가 반죽으로 붙어 있다. 하객들이 빵을 뜯을 때마다 ${jo(N,'은','는')} 꽁다리를 하나씩 당신 몫으로 챙겼다.`,
+ etienne:N=>`${jo(N,'은','는')} 혼례에서 계약서 조항을 하나하나 소리 내어 읽었다. 마지막 조항에서 목이 메었다. ‘두 사람은 서로의 약속을 끝까지 지킨다. 퐁뇌프에서처럼.’`,
+ jules:N=>`${jo(N,'은','는')} 혼례에서 처음으로 신랑석에 섰다. 성가대 아이들이 노래를 시작하자 ${jo(N,'은','는')} 저도 모르게 따라 불렀다. 한 번도 더듬지 않았다.`,
+ antoine:N=>`${jo(N,'은','는')} 혼례 비용 장부를 끝내 펼치지 않았다. 대신 하객들에게 은단추 하나씩을 나눠 주었다. “오늘은 남는 장사야.”`,
+ gabriel:N=>`${jo(N,'은','는')} 혼례에 가장 수수한 옷을 입고 나왔다. 하객들이 놀랐다. 손목의 푸른 리본 하나만 그대로였다. “오늘은 내가 아니라 우리가 주인공이야.”`,
+ robespierre:N=>`혼례는 조용했다. ${jo(N,'은','는')} 반지를 끼워 주는 손이 조금 떨렸다. 그 떨림을 본 사람은 당신 하나였다.`,
+ desmoulins:N=>`${jo(N,'은','는')} 혼례 축사를 직접 하겠다고 우기다가 첫 마디부터 더듬었다. 하객들이 웃었고, ${jo(N,'은','는')} 더 크게 웃었다.`};
+const R22_FOREST={ // 숲 속, 둘만의 혼례
+ louise:N=>`뱅센 숲 깊은 곳. ${jo(N,'이','가')} 바구니에서 작은 빵 하나를 꺼내 반으로 나눈다. “제단은 없어도 빵은 있어.” 둘은 같은 빵을 나눠 먹는 것으로 맹세를 대신했다.`,
+ etienne:N=>`불로뉴 숲의 오래된 떡갈나무 아래. ${jo(N,'이','가')} 종이 한 장을 펼친다. 둘이서만 아는 헌법이다. ‘제1조, 이 혼인은 누구의 허락도 받지 않는다.’ 둘은 나뭇가지로 서명했다.`,
+ jules:N=>r22Priest('jules')?`새벽의 숲. ${jo(N,'은','는')} 사제복을 벗어 나뭇가지에 걸었다. “이, 이제 이 옷은 하느님께 돌려드릴게. 나는 너한테 갈게.” 둘은 새소리를 성가 삼아 손을 맞잡았다. 그날로 ${jo(N,'은','는')} 사제의 길을 떠나 세속으로 돌아왔다.`:`새벽의 숲. ${jo(N,'은','는')} 참새 깃털 두 개를 꺼내 하나를 당신 손에 쥐여 주었다. “이게 반지야.” 그리고 낮게 성가를 불렀다. 가사 대신 두 사람의 이름이 들어 있었다.`,
+ antoine:N=>`퐁텐블로 숲. ${jo(N,'이','가')} 은단추 두 개를 실로 엮어 반지를 만들었다. “장부에는 안 적어. 이건 처음부터 끝까지 우리 둘만의 거래야.”`,
+ gabriel:N=>`생클루 숲의 연못가. ${jo(N,'은','는')} 푸른 리본을 반으로 잘라 한쪽을 당신 손목에 매었다. “거울도 하객도 없어. 그래서 이게 진짜야.”`,
+ robespierre:N=>`몽모랑시 숲. 루소가 걷던 길이다. ${jo(N,'은','는')} 『에밀』 한 구절을 읽고 책을 덮었다. “증인은 이 숲이면 되오.”`,
+ desmoulins:N=>`뫼동 숲. ${jo(N,'은','는')} 혼인 서약을 시로 써 왔다. 읽다가 세 번 더듬었고, 세 번 다 웃었다. 마지막 줄만은 더듬지 않았다.`};
+async function r22Ask(k){const r=r22R(k),N=r22N(k),old=T()<1792.7;
+  await bfScene('혼담','les accordailles',R22_ASK[k](N,old),[
+   {l:'혼담을 받아들인다',a:'family',f:()=>{r.engaged=MI();r.wedAsk=s.year;if(r22Priest('jules')&&k==='jules'){bfJob('jules','사제복을 벗은 옛 신부');bfFate('jules','사제의 길을 떠나 세속으로 돌아왔다')}
+     r22Mem('m22_ask_'+k,k,`${jo(N,'과','와')} 혼담이 오갔다. 몇 달 뒤 혼례를 올리기로 했다.`,'희망','혼담을 받아들였다. 그날부터 날짜를 세었다.');say(`날이 정해졌다. ${old?'본당 신부가 혼인 공고를 세 번 읽을 것이다.':'구청 문에 혼인 공고가 붙었다.'}`+fx({hap:6}),'big')}},
+   {l:'조금 더 기다리자고 한다',a:'safe',f:()=>{r.wedAsk=s.year;r22Rom(k,-6);say(`${jo(N,'은','는')} 고개를 끄덕였다. “기다릴게. 대신 너무 오래는 말고.”`+fx({hap:-2}))}}])}
+async function r22Wed(k){const r=r22R(k),N=r22N(k);const civ=T()>=1792.7;
+  r.role='배우자';r.engaged=null;s.married=true;s.divorced=false;s.spouse={n:r.n,age:Math.max(16,s.year-(r.by||s.by)),alive:true,pay:0,estate:r.estate||s.estate,rid:r.fid||r.pid||k};
+  bfFate(k,'당신과 혼인했다');
+  await bfScene('혼례','les noces',`${civ?'구청에서 시장이 혼인 증서를 읽었다.'+(T()>=1801.6&&!(k==='jules')?' 이튿날 성당에서도 축복을 받았다.':''):`${typeof bfPar==='function'?bfPar():'본당'}에서 혼인 미사를 올렸다.`} ${R22_WED[k](N)}`,[
+   {l:'하객들 앞에서 손을 맞잡는다',a:'family',f:()=>{r22Rel(k,{close:12,trust:10});r22Mem('m22_wed_'+k,k,`${jo(N,'과','와')} 혼례를 올렸다.`,'기쁨','그 사람과 혼례를 올렸다. 오랜 벗들이 하객석 맨 앞에 있었다.');say('하객석 맨 앞에서 오랜 벗들이 울고 웃었다.'+fx({hap:12,rfam:4}),'big')}}])}
+async function r22Forest(k){const r=r22R(k),N=r22N(k);const why=wedNow()?'당신에게는 이미 배우자가 있다':r.sex===s.sex?'세상은 두 사람의 사랑을 혼인으로 불러 주지 않는다':r.mar?`${N}에게는 이미 가정이 있다`:'당신은 서원을 한 몸이다';
+  await bfScene('숲 속의 혼례','les noces secrètes',`${why}. 그래서 둘은 아무도 모르게 숲으로 갔다. ${R22_FOREST[k](N)}`,[
+   {l:'둘만의 맹세를 한다',a:'bold family',f:()=>{r.role='연인';r.secret=1;r.secretWed=s.year;r22Rel(k,{close:12,trust:12});if(k==='jules'&&r22Priest('jules')){bfJob('jules','사제복을 벗은 옛 신부');bfFate('jules','사제의 길을 떠나 세속으로 돌아왔다')}
+     bfFate(k,'숲 속에서 당신과 둘만의 혼례를 올렸다');r22Mem('m22_forest_'+k,k,`아무도 모르게 숲 속에서 ${jo(N,'과','와')} 둘만의 혼례를 올렸다.`,'희망','숲 속에서 그 사람과 맹세했다. 증인은 나무들뿐이었다. 그래서 아무도 깨뜨릴 수 없었다.');
+     say('돌아오는 길, 둘은 숲 어귀에서 손을 놓았다. 세상 앞에서는 여전히 벗이었다. 둘만 아는 혼인이었다.'+fx({hap:12,cour:2}),'big');if(R()<.25)say('얼마 뒤 묘한 소문이 돌았다. 누군가 숲에서 둘을 보았다고 했다.'+fx({rloc:-4,rfam:wedNow()?-6:-2}),'dark')}},
+   {l:'맹세 대신 그냥 손만 잡는다',a:'safe',f:()=>{r22Rel(k,{close:6});r22Rom(k,-4);say(`${jo(N,'은','는')} 고개를 끄덕였다. “말로 안 해도 알아.” 둘은 해가 질 때까지 숲길을 걸었다.`+fx({hap:4}))}}])}
+
+/* ---------- 5. 미움과 사랑이 함께 높을 때 ---------- */
+const R22_HL={
+ louise:N=>`${jo(N,'이','가')} 빵집 문을 쾅 닫고 나와 당신 앞을 막아선다. “너 같은 사람 다시는 안 보려고 했어. 그런데 매일 아침 꽁다리를 떼면 네 생각이 나. 그게 제일 화나.”`,
+ etienne:N=>`${jo(N,'이','가')} 카페 탁자를 두드린다. “나는 너를 반혁명분자라고 적어야 할지, 사랑한다고 적어야 할지 모르겠어. 둘 다 진심이라서 미칠 것 같아.”`,
+ jules:N=>`성당 뒤뜰에서 ${jo(N,'이','가')} 묵주를 쥔 채 떨고 있다. “너, 너를 용서하려고 기도했어. 그런데 기도할수록 네가 더 보고 싶어. 이건 무슨 죄야?”`,
+ antoine:N=>`${jo(N,'이','가')} 장부를 당신 앞에 내던진다. “네가 나한테 진 빚을 다 적어 놨어. 그런데 맨 마지막 줄은 내가 너한테 진 거야. 그걸 지울 수가 없어.”`,
+ gabriel:N=>`${jo(N,'이','가')} 손거울을 바닥에 던져 깨뜨린다. “거울만 보면 네가 한 말이 들려. 그래서 깼어. 그런데 깨진 조각마다 네 얼굴이 있어.”`,
+ robespierre:N=>`${jo(N,'은','는')} 창가에 서서 등을 돌린 채 말한다. “자네는 내 원칙을 배신했소. 그런데도 자네 편지만은 태우지 못하겠소. 그게 나를 가장 괴롭히오.”`,
+ desmoulins:N=>`${jo(N,'이','가')} 신문을 구겨 쥐고 찾아왔다. “너에 대한 풍자문을 썼어. 그런데 다 쓰고 보니 연애편지더라. 어떻게 할까, 이거?”`};
+async function r22HateLove(k){const r=r22R(k),N=r22N(k);
+  await bfScene('미움과 사랑','je te hais, je t’aime',R22_HL[k](N),[
+   {l:'아무 말 없이 끌어안는다',a:'family bold',f:()=>{r.hate=Math.max(0,(r.hate||0)-25);r.cut=null;r22Rom(k,6);r22Rel(k,{close:10,trust:6});r22Mem('m22_hl_'+k,k,`미움과 사랑 사이에서 흔들리던 ${jo(N,'을','를')} 아무 말 없이 끌어안았다.`,'위로','그 사람이 끌어안았다. 미움은 그렇게 쉽게 녹았다. 그래서 더 억울했다.');say(`${jo(N,'은','는')} 처음엔 밀어냈다. 그러다 당신 어깨에 이마를 묻었다. 한참 뒤에 들린 말은 “바보.” 한마디였다.`+fx({hap:6}),'big')}},
+   {l:'지지 않고 맞서 다툰다',a:'bold',f:()=>{r.hate=clamp((r.hate||0)+6,0,100);r22Rom(k,4);r22Mem('m22_hl_'+k,k,`미움과 사랑 사이에서 흔들리던 ${jo(N,'과','와')} 지지 않고 맞서 다투었다.`,'씁쓸함','그 사람과 또 싸웠다. 그런데 싸우는 동안에도 눈을 떼지 못했다.');say(`목소리가 높아졌다. 그런데 이상하게도 다툼이 끝났을 때 둘은 서로에게서 한 걸음도 물러나 있지 않았다.`)}},
+   {l:'“이제 그만하자.”며 돌아선다',a:'safe',f:()=>{r22Rom(k,-15);r22Rel(k,{close:-5});r22Mem('m22_hl_'+k,k,`미움과 사랑 사이에서 흔들리던 ${N}에게 이제 그만하자고 했다.`,'후회','그 사람이 그만하자고 했다. 그 말이 맞았다. 그래서 오래 울었다.');say(`등 뒤에서 ${jo(N,'이','가')} 무언가를 말하려다 멈추는 소리가 들렸다. 당신은 돌아보지 않았다.`+fx({hap:-4}),'dark')}}])}
+
+/* ---------- 차례: 무도회 → (100) 혼담 → 혼례 / 숲 속 혼례, 그리고 미움과 사랑 ---------- */
+async function r22Tick(){if(!s||s.dead||sheetLive||child()||s.age<16||s.cond!=='normal')return;s.r22=s.r22||{nx:0};if(MI()<s.r22.nx)return;
+  for(const k of R22_K()){const r=r22R(k);if(!r||!r.alive||r.cond!=='normal')continue;const rom=r.rom||0;
+    // 혼담을 넣은 뒤 석 달이 지나면 혼례
+    if(r.engaged&&MI()>=r.engaged+3){if(r22CanWed(k,r)){s.r22.nx=MI()+2;await r22Wed(k);return}r.engaged=null}
+    // 미움과 사랑
+    if(!r.hl22&&(r.hate||0)>=40&&rom>=60){r.hl22=s.year;s.r22.nx=MI()+3;await r22HateLove(k);return}
+    if(r.cut||(r.hate||0)>=40)continue;
+    // 연인이 된 뒤의 무도회
+    if(!r.ball22&&r.role==='연인'&&rom>=80){r.ball22=s.year;s.r22.nx=MI()+3;await r22Ball(k);return}
+    // 로맨틱 100
+    if(rom>=100&&['연인','배우자'].includes(r.role)&&r.role!=='배우자'&&!r.secretWed&&!r.engaged&&(!r.wedAsk||s.year-r.wedAsk>=2)){
+      s.r22.nx=MI()+3;if(r22CanWed(k,r)){await r22Ask(k)}else{r.wedAsk=s.year;await r22Forest(k)}return}}}
+{const _rd22=rfDaily;rfDaily=async function(){await _rd22();if(!s||s.dead)return;try{await r22Tick();if(sheetLive)await done()}catch(e){console.error(e);if(sheetLive)sheetClose()}}}
+
+/* ---------- 4. 혼인한 뒤 가면무도회에서 만난 사람: 사랑만 ---------- */
+{const _ny22=npcYear;npcYear=async function(){await _ny22();if(!s||s.dead)return;try{
+  // 배우자를 잃거나 이혼하고 한 해가 지나면 다시 혼담을 받을 수 있다
+  if(s.married&&s.spouse&&(s.spouse.alive===false||s.divorced)&&s.year-(s.spouse.dy||s.divYear||s.year-1)>=1)s.married=false;
+  if(s.divorced&&!s.divYear)s.divYear=s.year;
+  if(!wedNow()||child()||s.age<20||s.age>55||s.cond!=='normal'||sheetLive||(typeof priest==='function'&&priest())||(typeof nun==='function'&&nun()))return;
+  if((s.rel||[]).some(r=>r.alive&&r.affair)||R()>.07)return;
+  await r22Mask()}catch(e){console.error(e);if(sheetLive)sheetClose()}}}
+async function r22Mask(){try{
+  const where=T()<1790?'오페라 극장의 가면무도회':T()>=1797&&T()<1800?'티볼리 정원의 가면무도회':T()>=1800?'오페라 극장의 사육제 가면무도회':pick(['극장 칸막이석','온천장의 저녁 모임','사육제 거리 행렬']);
+  const i=await Q(where,'le masque',`${where}. 가면을 쓴 사람이 당신 곁에 오래 머문다. 당신에게 배우자가 있다는 것을 아는지 모르는지, 그 사람은 다음 만남을 청한다.`,[{l:'가면을 벗기고 이름을 묻는다',s:'사랑만, 혼인은 없다',a:'bold social'},{l:'배우자를 생각하며 거절한다',s:'',a:'family safe'}]);
+  if(i===0){s.r22w=where;let r;try{r=npcMeet('love')}finally{delete s.r22w}if(r){r.role='연인';r.affair=1;r.secret=1;say(`가면 아래 얼굴을 보았다. 그날부터 둘만 아는 만남이 시작되었다. 혼인할 수 없는 사이라는 것을 둘 다 알고 있었다.`+fx({hap:3,cour:1}),'big')}}
+  else say('가면이 고개를 숙이고 사람들 사이로 사라졌다. 집에 돌아와 배우자의 잠든 얼굴을 오래 보았다.'+fx({vfam:1}));await done()}catch(e){console.error(e);if(sheetLive)sheetClose()}}
 
 </script>
 </body>
