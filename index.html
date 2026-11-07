@@ -12475,11 +12475,13 @@ const R22_BALLF={
  gabriel:{i:N=>`${jo(N,'은','는')} 무도회장에서 가장 눈에 띄는 사람이었다. 그런데 오늘은 누구의 눈길에도 답하지 않고 당신만 본다. 손목에 푸른 리본이 매여 있다.`,a:N=>`${jo(N,'은','는')} 춤이 끝나도 손을 놓지 않았다. “거울 볼 틈이 없었어. 처음이야.”`},
  robespierre:{i:N=>`${jo(N,'은','는')} 무도회장 벽 쪽에 꼿꼿이 서 있다. 춤은 추지 않는다고 했다. 그러다 아주 느린 곡이 시작되자 말없이 손을 내민다.`,a:N=>`${jo(N,'은','는')} 한 곡만 추고 손을 놓았다. “이걸로 충분하오.” 그 한 곡을 당신은 오래 기억했다.`},
  desmoulins:{i:N=>`${jo(N,'은','는')} 첫 곡부터 남의 발을 세 번 밟고 세 번 사과했다. 사과할 때마다 더듬었고, 그때마다 사람들이 웃었다.`,a:N=>`${jo(N,'은','는')} 땀범벅이 되어 웃었다. “다, 다음 호 신문에 쓸 거야. 무도회에서 가장 서툰 춤꾼이 가장 행복했다고.”`}};
+// 무도회·혼례 장면 뒤에 그 시대의 학술 자료 한 줄(생활사 자료의 근거 문장)을 덧붙인다
+function r22Fact(pfx,cat){try{const t=s.year;const c=LIFE_DATA.filter(e=>pfx.some(p=>e.id.startsWith(p))&&(!e.wh||((!e.wh.from||t>=e.wh.from)&&(!e.wh.to||t<=e.wh.to))));if(!c.length)return;const e=pick(c);L(e.fa,'fact',{src:e.s||[]})}catch(e){}}
 async function r22Ball(k){const r=r22R(k),N=r22N(k),E=R22_BALL[r22Era()],F=R22_BALLF[k];const hid=r.secret||r.affair||wedNow();
   await bfScene(E[0],E[1],`${E[2]} ${F.i(N)}${hid?' 둘 다 아는 사람의 눈을 피해야 하는 사이다.':''}`,[
    {l:'함께 춤을 춘다',a:'social bold',f:()=>{r22Rom(k,8);r22Rel(k,{close:6,trust:3});r22Mem('m22_ball_'+k,k,`${E[0]}에서 ${jo(N,'과','와')} 춤을 추었다.`,'기쁨','그 사람과 춤을 추었다. 그날 밤 음악이 내 편이었다.');say(F.a(N)+(hid&&R()<.3?' 돌아오는 길에 누군가 둘을 알아본 것 같았다.':'')+fx({hap:6,soc:1,rloc:hid&&R()<.3?-3:0}),'big')}},
    {l:'정원으로 빠져나가 둘이서만 이야기한다',a:'family',f:()=>{r22Rom(k,6);r22Rel(k,{close:5,trust:5});r22Mem('m22_ball_'+k,k,`${E[0]}에서 ${jo(N,'과','와')} 빠져나와 둘이서만 이야기했다.`,'그리움','음악이 멀리서 들렸다. 그게 더 좋았다.');say(`음악 소리가 멀어졌다. 등불 아래서 ${jo(N,'은','는')} 어릴 적 이야기를 했다. 당신이 기억하지 못하는 일까지 ${r22He(k)}는 다 기억하고 있었다.`+fx({hap:5}))}},
-   {l:'남의 눈이 무서워 일찍 자리를 뜬다',a:'safe',f:()=>{r22Rom(k,-3);say(`${jo(N,'은','는')} 서운한 얼굴로 손을 흔들었다. “다음엔 끝까지 있어.”`+fx({hap:-1}))}}])}
+   {l:'남의 눈이 무서워 일찍 자리를 뜬다',a:'safe',f:()=>{r22Rom(k,-3);say(`${jo(N,'은','는')} 서운한 얼굴로 손을 흔들었다. “다음엔 끝까지 있어.”`+fx({hap:-1}))}}]);r22Fact(['bal-'])}
 
 /* ---------- 3. 로맨틱 100: 혼담 → 혼례, 또는 숲 속의 혼례 ---------- */
 const R22_ASK={ // 혼담: 양가와 공증인 앞에서
@@ -12515,7 +12517,7 @@ async function r22Wed(k){const r=r22R(k),N=r22N(k);const civ=T()>=1792.7;
   r.role='배우자';r.engaged=null;s.married=true;s.divorced=false;s.spouse={n:r.n,age:Math.max(16,s.year-(r.by||s.by)),alive:true,pay:0,estate:r.estate||s.estate,rid:r.fid||r.pid||k};
   bfFate(k,'당신과 혼인했다');
   await bfScene('혼례','les noces',`${civ?'구청에서 시장이 혼인 증서를 읽었다.'+(T()>=1801.6&&!(k==='jules')?' 이튿날 성당에서도 축복을 받았다.':''):`${typeof bfPar==='function'?bfPar():'본당'}에서 혼인 미사를 올렸다.`} ${R22_WED[k](N)}`,[
-   {l:'하객들 앞에서 손을 맞잡는다',a:'family',f:()=>{r22Rel(k,{close:12,trust:10});r22Mem('m22_wed_'+k,k,`${jo(N,'과','와')} 혼례를 올렸다.`,'기쁨','그 사람과 혼례를 올렸다. 오랜 벗들이 하객석 맨 앞에 있었다.');say('하객석 맨 앞에서 오랜 벗들이 울고 웃었다.'+fx({hap:12,rfam:4}),'big')}}])}
+   {l:'하객들 앞에서 손을 맞잡는다',a:'family',f:()=>{r22Rel(k,{close:12,trust:10});r22Mem('m22_wed_'+k,k,`${jo(N,'과','와')} 혼례를 올렸다.`,'기쁨','그 사람과 혼례를 올렸다. 오랜 벗들이 하객석 맨 앞에 있었다.');say('하객석 맨 앞에서 오랜 벗들이 울고 웃었다.'+fx({hap:12,rfam:4}),'big')}}]);r22Fact(T()>=1792.7?['mrv-']:['mar-9'])}
 async function r22Forest(k){const r=r22R(k),N=r22N(k);const why=wedNow()?'당신에게는 이미 배우자가 있다':r.sex===s.sex?'세상은 두 사람의 사랑을 혼인으로 불러 주지 않는다':r.mar?`${N}에게는 이미 가정이 있다`:'당신은 서원을 한 몸이다';
   await bfScene('숲 속의 혼례','les noces secrètes',`${why}. 그래서 둘은 아무도 모르게 숲으로 갔다. ${R22_FOREST[k](N)}`,[
    {l:'둘만의 맹세를 한다',a:'bold family',f:()=>{r.role='연인';r.secret=1;r.secretWed=s.year;r22Rel(k,{close:12,trust:12});if(k==='jules'&&r22Priest('jules')){bfJob('jules','사제복을 벗은 옛 신부');bfFate('jules','사제의 길을 떠나 세속으로 돌아왔다')}
@@ -12565,7 +12567,7 @@ async function r22Mask(){try{
   const where=T()<1790?'오페라 극장의 가면무도회':T()>=1797&&T()<1800?'티볼리 정원의 가면무도회':T()>=1800?'오페라 극장의 사육제 가면무도회':pick(['극장 칸막이석','온천장의 저녁 모임','사육제 거리 행렬']);
   const i=await Q(where,'le masque',`${where}. 가면을 쓴 사람이 당신 곁에 오래 머문다. 당신에게 배우자가 있다는 것을 아는지 모르는지, 그 사람은 다음 만남을 청한다.`,[{l:'가면을 벗기고 이름을 묻는다',s:'사랑만, 혼인은 없다',a:'bold social'},{l:'배우자를 생각하며 거절한다',s:'',a:'family safe'}]);
   if(i===0){s.r22w=where;let r;try{r=npcMeet('love')}finally{delete s.r22w}if(r){r.role='연인';r.affair=1;r.secret=1;say(`가면 아래 얼굴을 보았다. 그날부터 둘만 아는 만남이 시작되었다. 혼인할 수 없는 사이라는 것을 둘 다 알고 있었다.`+fx({hap:3,cour:1}),'big')}}
-  else say('가면이 고개를 숙이고 사람들 사이로 사라졌다. 집에 돌아와 배우자의 잠든 얼굴을 오래 보았다.'+fx({vfam:1}));await done()}catch(e){console.error(e);if(sheetLive)sheetClose()}}
+  else say('가면이 고개를 숙이고 사람들 사이로 사라졌다. 집에 돌아와 배우자의 잠든 얼굴을 오래 보았다.'+fx({vfam:1}));r22Fact(['bal-']);await done()}catch(e){console.error(e);if(sheetLive)sheetClose()}}
 
 </script>
 </body>
