@@ -4336,6 +4336,68 @@ defineAct({k:'physique',g:'learn',n:'과학 실험 구경을 간다',s:'재산 1
   ['볼타 전지의 불꽃 실험을 보았다.',()=>T()>=1801],['다게르의 은판 사진을 보았다. 거리 풍경이 그대로 은판에 박혀 있었다.',()=>T()>=1839.6],
   ['순회 실험가가 공기 펌프 속에서 새가 숨이 막히는 것을 보여 주었다.']])+fx({money:-10,ksci:2,soc:1}))});
 
+/* ---------- 중요 학문과 기술 (개편 19) ----------
+   공학·천문학·신학·법학·산수와 회계, 손기술(금속 세공·목공·직조·인쇄·제빵)을 올리는 행동.
+   배움과 솜씨: 천문학 · 공학 · 법률 서적 · 장인 공방 / 신앙: 신학 책 / 돈과 땅: 복식부기 */
+defineAct({k:'astro',g:'learn',n:'천문학을 공부한다',s:'재산 20. 천문학 +4, 자연과학 +1',cost:20,c:()=>free()&&lit()&&s.age>=14&&s.age<70,f:()=>say(acPick([
+  ['콜레주 루아얄에서 랄랑드의 천문학 강의를 들었다. 행성 운행표를 밤새 베꼈다.',()=>inParis()&&T()>=1762&&T()<1792.7],
+  ['콜레주 드 프랑스에서 늙은 랄랑드의 천문학 강의를 들었다. 행성 운행표를 밤새 베꼈다.',()=>inParis()&&T()>=1795&&T()<1807.3],
+  ['파리 천문대 공개일에 큰 망원경으로 토성의 고리를 보았다.',()=>inParis()],
+  ['핼리가 예언한 혜성이 정말로 돌아왔다. 밤마다 지붕에 올라 그 꼬리를 쫓았다.',()=>T()>=1759&&T()<1759.6],
+  ['금성이 해를 가로지르는 날, 그을린 유리로 태양을 보며 시각을 적었다. 세계 곳곳에서 같은 날 잰 값으로 해까지의 거리를 셈한다고 했다.',()=>(T()>=1761.4&&T()<1761.6)||(T()>=1769.4&&T()<1769.6)],
+  ['영국의 허셜이 새 행성을 찾았다는 소식에 별자리표를 펴 놓고 그 자리를 짚어 보았다.',()=>T()>=1781.3&&T()<1792],
+  ['라플라스의 『우주 체계 해설』을 읽었다. 신의 손을 빌리지 않고도 행성은 제자리를 돈다고 했다.',()=>T()>=1796],
+  ['큰 혜성이 가을 하늘을 가로질렀다. 사람들은 전쟁의 징조라 했고, 당신은 그 궤도를 그려 보았다.',()=>T()>=1811.6&&T()<1812.1],
+  ['경도국이 펴낸 연감을 사서 달의 위치와 일식 날짜를 맞춰 보았다.',()=>T()>=1795.5],
+  ['랄랑드의 『천문학』을 펼쳐 놓고 사분의로 별의 고도를 재었다.',()=>T()>=1764],
+  ['밤마다 지붕 위에서 별자리를 익혔다. 북극성의 높이로 이 도시의 위도를 셈해 보았다.']])+fx({money:-20,kastr:4,ksci:1,edu:1}))});
+defineAct({k:'engin',g:'learn',n:'공학과 축성술을 공부한다',s:'재산 40. 공학 +4, 산수 +1',cost:40,c:()=>free()&&lit()&&s.age>=14&&s.age<60,f:()=>say(acPick([
+  ['페로네가 놓은 뇌이 다리의 받침 틀을 한꺼번에 걷어 내는 날, 구경꾼 틈에서 돌 아치가 버티는 것을 보았다.',()=>T()>=1772.6&&T()<1773],
+  ['토목학교 학생에게 빌린 다리와 도로 도면을 밤새 베꼈다.',()=>T()<1795],
+  ['보방의 축성술 책을 펴 놓고 별 모양 성채의 사격각을 그렸다.'],
+  ['벨리도르의 『건축 수력학』으로 물레방아와 펌프의 원리를 익혔다.'],
+  ['보캉송이 남긴 기계들을 모아 둔 곳에서 직조기와 자동인형의 톱니를 들여다보았다.',()=>inParis()&&T()>=1783&&T()<1799],
+  ['공예원의 기계 전시실에서 증기기관 모형을 오래 들여다보았다.',()=>inParis()&&T()>=1799],
+  ['몽주의 화법기하학 강의록을 구해 입체를 평면에 옮겨 그리는 법을 익혔다.',()=>T()>=1795.5],
+  ['이공과 학교 입학시험 문제를 풀었다. 해석기하와 역학이 절반이다.',()=>T()>=1795&&s.age<=24],
+  ['운하 공사 감독관을 따라다니며 수준기로 물길의 높낮이를 재었다.',()=>!inParis()],
+  ['기계공의 공방에서 도르래와 지레로 무거운 돌을 들어 올리는 셈을 배웠다.']])+fx({money:-40,keng:4,karith:1,edu:1}))});
+defineAct({k:'lawread',g:'learn',n:'법률 서적을 읽는다',s:'법학 +3, 철학·수사학 +1',c:()=>free()&&lit()&&s.age>=16&&s.age<70,f:()=>say(acPick([
+  ['포티에의 『채무론』을 읽었다. 빌린 돈과 맺은 약속이 법 앞에서 어떻게 되는지 적혀 있다.',()=>T()>=1761],
+  ['파리 관습법 주석서를 넘기며 상속 조항에 밑줄을 그었다. 맏아들 몫이 왜 그리 큰지 이제 알았다.',()=>T()<1792],
+  ['베카리아의 『범죄와 형벌』 번역본을 읽었다. 고문과 잔혹한 형벌을 없애야 한다고 했다.',()=>T()>=1766],
+  ['의회가 낸 법령집을 사서 새 법을 하나씩 옛 법과 맞대어 보았다.',()=>T()>=1790&&T()<1804],
+  ['새로 나온 『민법전』을 처음부터 읽었다. 이천 조가 넘는 법이 손에 쥐어지는 책 한 권에 들어 있다.',()=>T()>=1804.2],
+  ['법정 방청석에 앉아 변론을 들었다. 돌아와서 판결 이유를 따라 적어 보았다.',()=>urban()]])+fx({klaw:3,kphil:1,edu:1}))});
+defineAct({k:'atelier',g:'learn',n:'장인의 공방에서 손기술을 배운다',s:'재산 20. 고른 기술 +4, 기술 +1',cost:20,c:()=>free()&&s.age>=12&&s.age<60,inter:async()=>{
+  const P=inParis();
+  const C=[['metal','금속 세공','시계방·금은 세공소',()=>P?'시테 섬 강변의 금은 세공소에서 줄과 끌로 은을 다루는 법을 배웠다.':'시계방 작업대에서 톱니와 태엽을 맞추는 법을 배웠다.'],
+   ['wood','목공','가구·목수 공방',()=>P?'포부르 생탕투안의 가구 공방에서 대패질과 장부 맞춤을 익혔다.':'목수 공방에서 대패질과 장부 맞춤을 익혔다.'],
+   ['weave','직조','직조 공방',()=>T()>=1805?'자카르 직기의 구멍 뚫린 카드가 무늬를 짜 나가는 것을 보며 북을 던지는 손을 익혔다.':loc()==='lyon'?'리옹 견직 공방의 베틀 앞에 앉아 비단 실을 고르는 법을 배웠다.':'직조공의 집 베틀 앞에 앉아 씨실과 날실을 익혔다.'],
+   ['print','인쇄','인쇄소',()=>'인쇄소 활자 상자 앞에 서서 거꾸로 된 글자를 줍는 식자를 배웠다.'+(T()>=1789.5&&T()<1795?' 밤마다 신문과 벽보가 쏟아져 일손이 모자랐다.':'')],
+   ['cook','제빵·요리','빵집·요리점',()=>T()>=1790&&urban()?'요리점 주방에서 소스와 굽기를 배웠다. 주인을 잃은 귀족 집 요리사가 차린 가게였다.':'빵집 화덕 앞에서 반죽을 치대고 불을 다루는 법을 배웠다.']];
+  const i=await Q('장인의 공방','l’atelier','어느 공방에서 배울까?',C.map(c=>({l:c[1],s:`${c[2]} · 숙련 ${s.sk[c[0]]||0}`,a:'work'})));
+  const c=C[i];say(c[3]()+fx({money:-20,[c[0]]:4,dex:1}));await done()}});
+defineAct({k:'theo',g:'faith',n:'신학 책을 읽는다',s:'신학 +4, 신앙 +1',c:()=>free()&&lit()&&s.age>=14,f:()=>{const fk=s.faithKind;say((fk==='jewish'?acPick([
+    ['랍비에게 탈무드 한 장을 배웠다. 질문에 질문으로 답하는 법부터 익혔다.'],['멘델스존의 글을 읽었다. 신앙과 이성이 함께 갈 수 있다고 했다.',()=>T()>=1783]]):
+  fk==='protestant'?acPick([
+    ['칼뱅의 『기독교 강요』를 한 장씩 읽었다.'],['광야의 목사들이 몰래 돌려 보는 설교집을 읽었다.',()=>T()<1787.9],['성경을 처음부터 다시 읽으며 여백에 묵상을 적었다.']]):
+  acPick([
+    ['보쉬에의 설교집을 소리 내어 읽었다. 문장이 대성당처럼 높았다.'],
+    ['아우구스티누스의 『고백록』을 읽었다. “우리 마음은 당신 안에서 쉬기까지 쉬지 못합니다.”'],
+    ['파스칼의 『팡세』를 읽었다. 내기 이야기에서 오래 머물렀다.'],
+    ['얀센파와 예수회의 은총 논쟁을 다룬 소책자들을 나란히 놓고 읽었다.',()=>T()<1790],
+    ['토마스 아퀴나스 『신학대전』의 한 문항을 붙들고 반론과 답변을 따라갔다.',()=>s.st.edu>=45],
+    ['선서 사제와 선서 거부 사제가 서로를 반박하는 소책자를 읽었다. 둘 다 같은 교부를 인용했다.',()=>T()>=1791&&T()<1801.6],
+    ['샤토브리앙의 『그리스도교의 정수』를 읽었다. 성당의 아름다움으로 신앙을 변호하는 책이다.',()=>T()>=1802.3]]))+fx({ktheo:4,faith:1,klat:1}))}});
+defineAct({k:'ledger',g:'money',n:'복식부기와 셈을 익힌다',s:'재산 10. 산수·회계 +4, 장사 +1',cost:10,c:()=>free()&&lit()&&s.age>=12&&s.age<65,f:()=>say(acPick([
+  ['사바리의 『완전한 상인』을 펴 놓고 차변과 대변을 맞추는 복식부기를 익혔다.'],
+  ['환어음 계산과 이자 셈을 연습했다. 정기시 결제일에 맞춰 날수를 셌다.'],
+  ['리브르와 수와 드니에를 오가는 셈을 손가락 없이 해내게 되었다.',()=>T()<1795],
+  ['아시냐 시세표를 날마다 적어 물가와 맞춰 보았다. 숫자가 무서울 만큼 빨리 움직였다.',()=>T()>=1790.3&&T()<1796.2],
+  ['새 프랑과 상팀으로 옛 장부를 옮겨 적었다. 십진법이라 셈이 훨씬 쉬웠다.',()=>T()>=1795.5],
+  ['상점 주인에게 재고 장부와 외상 장부를 따로 적는 법을 배웠다.']])+fx({money:-10,karith:4,trade:1}))});
+
 /* ---------- 몸과 마음 ---------- */
 defineAct({k:'hunt',g:'body',n:'사냥을 나간다',s:'승마·무예 +. 다칠 수 있다',c:()=>free()&&s.age>=16&&s.age<65&&((noble()&&T()<1789.6)||(T()>=1789.6&&(noble()||s.land>=100||rich()))),inter:async()=>{
   const {m,why}=md([[s.sk.ride>=40,1,'말을 잘 탐'],[s.sk.arms>=35,1,'총 솜씨'],[s.st.str>=55,1,'체력'],[s.sk.ride<15,-1,'서툰 말솜씨'],[s.st.hp<35,-1,'병약']]);const r=await roll(m,{label:'사냥',why});
@@ -9966,7 +10028,8 @@ const RF2_FAC=[['gym','체육관','la salle d’armes'],['lib','도서관','la b
 const RF2_FK={train:'gym',labor:'gym',spa:'gym',hunt:'gym',read:'lib',cabinet:'lib',latin:'lib',paper:'lib',
   learn:'lec',skill:'lec',orat:'lec',study:'lec',lang:'lec',math:'lec',lecture:'lec',drawl:'lec',musicl:'lec',dance:'lec',physique:'lec',
   salon:'soc',visit:'soc',charity:'soc',theatre:'soc',guing:'soc',billet:'soc',mediate:'soc',mutual:'soc',lodge:'soc',lodgem:'soc',lavoir:'soc',marche:'soc',salon_f:'soc',cabaret:'soc',gamble:'soc',lottery:'soc',bfvisit:'soc',
-  mass:'church',pilgr:'church',confr:'church',worship:'church',hotel:'church'};
+  mass:'church',pilgr:'church',confr:'church',worship:'church',hotel:'church',
+  astro:'lec',engin:'lec',lawread:'lib',theo:'church',atelier:'shop',ledger:'shop'};
 const rf2FacOf=a=>RF2_FK[a.k]||({body:'gym',learn:'lec',social:'soc',faith:'church'})[a.g||actGroup(a)]||'etc';
 let rf2Fac=null;
 const RF2_SHOP=[
@@ -10000,7 +10063,7 @@ function rf2FacBody(W){W.innerHTML='';const list=ACTS.filter(a=>{try{return !a.h
     const b=el('button','fac'+(rf2Fac===k?' on':''));b.type='button';b.innerHTML=`<b>${n}</b><small>${fr}</small>`;b.setAttribute('aria-pressed',String(rf2Fac===k));
     b.onclick=()=>{rf2Fac=rf2Fac===k?null:k;rf2FacBody(W)};grid.appendChild(b)});W.appendChild(grid);
   if(!rf2Fac)return;const box=el('div','acts fac-acts');W.appendChild(box);
-  if(rf2Fac==='shop'){rf2Shop(box);return}
+  if(rf2Fac==='shop'){const sS=list.filter(a=>rf2FacOf(a)==='shop');if(sS.length){box.appendChild(el('div','lab','배우기'));actButtons(sS,box);box.appendChild(el('div','lab','사치품'))}rf2Shop(box);return}
   const sub=list.filter(a=>rf2FacOf(a)===rf2Fac);if(!sub.length){box.appendChild(el('p','mut','지금 이곳에서 할 수 있는 일이 없다.'));return}actButtons(sub,box)}
 {const _ba=buildActs;buildActs=function(pin){if(!s)return;if(child())return _ba(pin);
   if(s.cond!=='normal'){const list=ACTS.filter(a=>{try{return !a.hide&&a.c()}catch(e){return false}});const box=el('div','acts');
