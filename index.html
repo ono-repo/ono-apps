@@ -9117,7 +9117,9 @@ function gLine(r,quiet){if(quiet)return;L(`${jo(r.n,'이','가')} 세상을 떠�
 
 /* ---------- 태어남 ---------- */
 async function gBirth(k){const son=k.sex==='M',w=son?'아들':'딸',id='g_birth_'+k.n+k.y;const civ=gTerror(),prot=s.faithKind==='protestant'&&T()<1788;
-  const T0=`${w} ${jo(k.n,'이','가')} 태어났다. 작은 주먹이 당신의 손가락을 꽉 쥐었다. ${civ?'성당 문은 닫혔고, 구청에 가서 시민 명부에 이름을 올려야 한다.':prot?'신교도의 아이라 숲속 비밀 예배에서 몰래 세례를 받아야 한다.':`${typeof bfPar==='function'?bfPar():'본당'}에서 세례를 받을 것이다.`}`;
+  const nth=s.kids.indexOf(k)+1,lost=s.kids.some(x=>x!==k&&!x.alive&&x.dy>=s.year-3),older=s.kids.filter(x=>x!==k&&x.alive&&x.y<k.y);
+  const intro=lost?`${w} ${jo(k.n,'이','가')} 태어났다. 지난번에 잃은 아이 생각에 당신은 밤새 아기의 숨소리만 들었다.`:nth===1?(isM()?`첫아이였다. ${w} ${jo(k.n,'이','가')} 태어났다. 산파가 아기를 건네주자 당신은 어떻게 안아야 할지 몰라 팔을 어정쩡하게 벌렸다.`:`첫아이였다. 긴 밤이 지나고 산파가 ${w} ${jo(k.n,'을','를')} 가슴에 올려 주었다. 울음소리가 생각보다 컸다.`):nth===2?`둘째 ${w} ${jo(k.n,'이','가')} 태어났다. 첫아이 때보다 손이 덜 떨렸다.${older.length?` ${jo(older[0].n,'이','가')} 요람 옆에서 동생 손가락을 세었다.`:''}`:`${nth}번째 아이, ${w} ${jo(k.n,'이','가')} 태어났다. ${[older.length>=2?'위의 아이들이 서로 먼저 안아 보겠다고 다투었다.':'요람은 위의 아이들이 차례로 쓰던 것이라 칠이 다 벗겨져 있었다.','요람은 위의 아이들이 차례로 쓰던 것이라 칠이 다 벗겨져 있었다.','이름을 정하는 데만 사흘이 걸렸다. 쓸 만한 성인 이름은 위의 아이들이 다 가져갔다.'][nth%3]}`;
+  const T0=`${intro} ${civ?'성당 문은 닫혔고, 구청에 가서 시민 명부에 이름을 올려야 한다.':prot?'신교도의 아이라 숲속 비밀 예배에서 몰래 세례를 받아야 한다.':`${typeof bfPar==='function'?bfPar():'본당'}에서 세례를 받을 것이다.`}`;
   const fr=(typeof BF_KEYS!=='undefined'?BF_KEYS:[]).map(bfR).filter(r=>r&&r.alive&&r.cond==='normal'&&r.core!=='jules').sort((a,b)=>b.close-a.close)[0];
   const ju=typeof bfR==='function'?bfR('jules'):null;const juOK=ju&&ju.alive&&ju.cond==='normal'&&/신부/.test(ju.job||'')&&!civ;
   const REV=son?['브루투스','리베르테','메시도르','그라쿠스']:['리베르테','에갈리테','플로레알','로즈마랭'];
@@ -12004,7 +12006,7 @@ async function r16After(x){const v=r16Victim(x);if(!v||!bfMet(v))return;const V=
   const opp=k=>x.dir>0?r16Pol(k)<0:r16Pol(k)>=30,ally=k=>x.dir>0?r16Pol(k)>=30:r16Pol(k)<0;
   const crit=others.filter(opp).slice(0,2),nod=others.filter(ally).slice(0,1);
   if(crit.length){const names=crit.length>1?`${jo(bN(crit[0]),'과','와')} ${bN(crit[1])}`:bN(crit[0]);
-    await bfScene('벗들의 비난','le reproche',`한 달 뒤. ${state} ${crit.map(k=>R16_BLAME[k](V,x.what)).join(' ')}${nod.length?' '+R16_NOD[nod[0]]():''}`,[
+    await bfScene(`${V}의 일로`,'le reproche',`한 달 뒤. ${state} ${crit.map(k=>R16_BLAME[k](V,x.what)).join(' ')}${nod.length?' '+R16_NOD[nod[0]]():''}`,[
      {l:'“공화국을 위해서였다. 너희도 언젠가 알게 될 거다.”',a:x.dir>0?'radical bold':'safe royal',f:()=>{crit.forEach(k=>{bfRel(k,{close:-8,trust:-8,riv:4});bfMem('m16_j_'+k+'_'+v,k,`${jo(V,'을','를')} 고발한 일을 두고 ${bN(k)}에게 정당화했다. “나라를 위해서였다.”`,{tone:'씁쓸함',their:'그 사람은 끝까지 옳았다고 했다. 그 말을 믿고 싶어 하는 얼굴이었다.'})});
        say(`당신 목소리는 단단했다. 너무 단단해서, 말하는 동안 스스로 그 말을 붙잡고 있는 것 같았다. ${crit.length>1?'둘은':crit.map(bU)[0]} 아무 대답 없이 돌아갔다.`+fx({pol:x.dir*3,hap:-2,cour:1}))}},
      {l:'고개를 숙이고 “내가 틀렸다.”고 말한다',a:'family',f:()=>{crit.forEach(k=>{bfRel(k,{trust:3,close:-2});bfMem('m16_r_'+k+'_'+v,k,`${jo(V,'을','를')} 고발한 일을 두고 ${bN(k)} 앞에서 내가 틀렸다고 말했다.`,{tone:'죄책감',their:'그 사람이 틀렸다고 했다. 쉬운 말이 아니었을 것이다. 그래도 돌이킬 수는 없었다.'})});bfReg('r16_regret_'+v,v,`${jo(V,'을','를')} 고발했다. 벗들 앞에서 틀렸다고 말했다.`);
@@ -12334,7 +12336,7 @@ function r21Cold(k,title,fr,text,recon,quarrel){const N=bN(k),Nu=jo(N,'은','는
 r21('louise','r21_lo',1795.8,1797.4,async r=>{const N=bN('louise'),Nu=jo(N,'은','는'),Ni=jo(N,'이','가');
   if(!r.alive){await bfScene('남의 화덕','le four d’un autre',`${Ni} 떠난 지 ${r21Gone(r)}. 빵집 간판이 바뀌었다. 새 주인은 빵을 정직하게 달아 판다. 그러나 꽁다리를 떼어 내미는 사람은 이제 없다.`,[
      {l:'빵을 사서 꽁다리를 뒷계단에 두고 온다',a:'family',f:()=>{r21Mem('louise',`${N}의 빵집이 남의 손에 넘어간 뒤, 빵 꽁다리를 뒷계단에 두고 왔다.`,'그리움');say('뒷계단에 꽁다리를 올려 두었다. 참새 두 마리가 내려와 쪼아 먹었다. 당신은 그것이 나쁘지 않다고 생각했다.'+fx({hap:1}))}},
-     {l:'동생 피에르를 찾아가 돕는다',a:'family social',f:()=>{r21Mem('louise',`${N}의 동생 피에르를 찾아가 그의 아이 몫으로 돈을 쥐여 주었다.`,'위로');say('피에르는 짐마차꾼이 되어 있었다. 누나 이야기를 하자 그는 모자를 벗었다. 당신은 그의 아이 몫으로 몇 리브르를 쥐여 주었다.'+fx({money:-50,rloc:1,hap:1}))}},
+     {l:'동생 피에르를 찾아가 돕는다',a:'family social',f:()=>{r21Mem('louise',`${N}의 동생 피에르를 찾아가 그의 아이 몫으로 돈을 쥐여 주었다.`,'위로');say(`피에르는 ${jo(r23PierreJob(),'이','가')} 되어 있었다. 누나 이야기를 하자 그는 모자를 벗었다.`+' 당신은 그의 아이 몫으로 몇 리브르를 쥐여 주었다.'+fx({money:-50,rloc:1,hap:1}))}},
      {l:'그냥 지나간다',a:'safe',f:()=>say('빵집 앞을 지나쳤다. 냄새만은 예전 그대로였다.')}]);return}
   const m=r21Mood('louise',r);
   if(m==='guilt')return r21Guilt('louise','빵 한 덩이 값이 종이돈으로 수백 리브르인 겨울.');
@@ -12511,7 +12513,7 @@ async function r22Dance(k){const r=r22R(k),N=r22N(k),hid=r.secret||r.affair||wed
 /* ---------- 3. 로맨틱 100: 혼례 대신, 평생의 연인이 되어 달라는 고백 ---------- */
 // 오랜 벗과는 혼인하지 않는다. 당신이 혼인한 몸이면 이 사랑은 불륜이 된다.
 const R22_VOW={
- louise:N=>`동생 피에르를 장가보낸 밤, 잔치가 끝난 빈 탁자에 ${jo(N,'이','가')} 혼자 앉아 있다. “남 배부르게 하는 일만 하면서 살았어. 한 번쯤은 내가 누구 곁에 있고 싶은지 말해 볼래.” 당신 손을 잡는다. “평생, 네 곁. 내 연인이 돼 줘.”`,
+ louise:N=>`${r23P().pWed?'동생 피에르를 장가보낸 밤, 잔치가 끝난':r23P().pJour?'동생 피에르가 직인이 된 날 밤, 축하가 끝난':'가게 문을 닫은 밤, 손님이 다 돌아간'} 빈 탁자에 ${jo(N,'이','가')} 혼자 앉아 있다. “${r23P().pWed?'동생까지 보냈으니 이제 나만 남았네. ':''}남 배부르게 하는 일만 하면서 살았어. 한 번쯤은 내가 누구 곁에 있고 싶은지 말해 볼래.” 당신 손을 잡는다. “평생, 네 곁. 내 연인이 돼 줘.”`,
  etienne:N=>`${jo(N,'이','가')} 낡은 법학 공책을 하나씩 난롯불에 넣는다. “이건 다 남을 심판하려고 적은 거야. 이제 필요 없어.” 마지막 공책이 타오를 때 당신을 본다. “앞으로 내가 지킬 약속은 하나면 돼. 평생 네 연인으로 남는 거.”`,
  jules:N=>r22Priest('jules')?`${jo(N,'이','가')} 처음으로 고해소 문을 열고 나와, 당신 옆 신자석에 앉는다. 사제의 자리가 아니다. “나, 나는 서원을 지킬 거야. 그래도 이 마음은 고해하지 않을래. 죄가 아니니까. 평생 내 마음속 연인으로 있어 줄래?”`:`눈 오는 밤, ${jo(N,'이','가')} 당신 집 문 앞에 서 있다. 모자 위에 눈이 소복하다. 몇 시간을 서성였는지 모른다. “무, 문 두드리는 것도 무서웠어. 그런데 오늘 안 두드리면 평생 못 할 것 같아서. 평생 내 곁에 있어 줘.”`,
  antoine:N=>`${jo(N,'이','가')} 누렇게 바랜 빚 문서 한 장을 내민다. 아버지를 감옥에 보냈던 바로 그 빚이다. 몇 해에 걸쳐 마지막 한 푼까지 갚았다고 한다. “이제 우리 집엔 빚이 없어. 처음으로 아무것도 안 걸고 뭔가를 원할 수 있게 됐어. 그게 너야. 평생 내 사람이 돼 줘.”`,
@@ -12579,6 +12581,118 @@ async function r22Mask(){try{
   const i=await Q(where,'le masque',`${where}. 가면을 쓴 사람이 당신 곁에 오래 머문다. 당신에게 배우자가 있다는 것을 아는지 모르는지, 그 사람은 다음 만남을 청한다.`,[{l:'가면을 벗기고 이름을 묻는다',s:'사랑만, 혼인은 없다',a:'bold social'},{l:'배우자를 생각하며 거절한다',s:'',a:'family safe'}]);
   if(i===0){s.r22w=where;let r;try{r=npcMeet('love')}finally{delete s.r22w}if(r){r.role='연인';r.affair=1;r.secret=1;say(`가면 아래 얼굴을 보았다. 그날부터 둘만 아는 만남이 시작되었다. 혼인할 수 없는 사이라는 것을 둘 다 알고 있었다.`+fx({hap:3,cour:1}),'big')}}
   else say('가면이 고개를 숙이고 사람들 사이로 사라졌다. 집에 돌아와 배우자의 잠든 얼굴을 오래 보았다.'+fx({vfam:1}));r22Fact(['bal-']);await done()}catch(e){console.error(e);if(sheetLive)sheetClose()}}
+
+/* ================= 개편 23 =================
+   1. 세례 장면을 몇째 아이인지, 앞서 잃은 아이가 있는지, 아버지인지 어머니인지에 따라 다르게.
+   2. 루이즈의 동생 피에르: 도제 → 제빵 직인 → 혼인. 그 뒤의 장면들이 이 흐름을 따른다.
+   3. 벗들의 비난: 벗마다 말이 여럿이고, 같은 벗이 같은 말을 되풀이하지 않는다.
+   4. 1804년 봄, 마지막으로 벗들과 모이는 장면.
+   5. 엘리즈(여자 에티엔)의 1795년: 여자들이 회의장에서도 쫓겨난 뒤, 누구로 살 것인가.
+   6. 배우자와의 장면: 이혼법, 빵 줄, 들킨 편지, 콩코르다 뒤의 저녁.
+   근거: 1795년 5월 23일(프레리알 4일) 국민공회 법령은 여자들의 의회 방청을 막고 거리에서 다섯 명 넘게 모인 여자들을 흩어지게 했다
+   (Dominique Godineau, Citoyennes tricoteuses, 1988). 1792년 9월 20일 이혼법, 1801년 콩코르다. */
+
+/* ---------- 2. 피에르의 흐름 ---------- */
+const r23P=()=>bfF('louise').fl;
+{const sc=(typeof RF2_SIDE!=='undefined'?RF2_SIDE:[]).find(x=>x.id==='lo_pierre');if(sc){const f=sc.run;sc.run=async function(){await f.apply(this,arguments);const P=r23P();const m=bfS().mem.find(x=>x.id==='m_lo_pierre');if(!P.pAp)P.pAp=s.year+(m&&/거절/.test(m.t)?1:0)}}}
+function r23Pierre(){if(!bfMet('louise'))return;const P=r23P(),L0=bN('louise');
+  if(P.pAp&&!P.pJour&&s.year-P.pAp>=7){P.pJour=s.year;L(`${L0}의 동생 피에르가 칠 년 도제를 마치고 제빵 직인이 되었다. ${bfAlive('louise')?`${jo(L0,'은','는')} 그날 가게 문에 동생 이름을 분필로 써 붙였다.`:'누나가 보았으면 좋았을 날이었다.'}`,'ev')}
+  else if(P.pJour&&!P.pWed&&s.year-P.pJour>=2&&R()<.35){P.pWed=s.year;L(`${L0}의 동생 피에르가 혼인했다.${bfAlive('louise')?` 혼례 빵은 ${L0}가 구웠다. 밤새 화덕 앞에 서 있었다고 한다.`:''}`,'ev')}}
+const r23PierreJob=()=>{const P=r23P();return P.pWed?'제 빵집을 연 제빵 장인':P.pJour?'제빵 직인':P.pAp?'제빵 도제':'짐마차꾼'};
+
+/* ---------- 3. 벗들의 비난: 여러 말 ---------- */
+const R23_BLAME={
+ louise:[(V,w,vr)=>`${bU('louise')} 앞치마를 움켜쥐고 서 있었다. “${V}… 우리 골목에서 같이 큰 애야. 같이 빵 나눠 먹던 애를, 네가.” 목소리가 떨렸다. 화가 나서가 아니라, 당신이 낯설어서.`,
+  (V,w,vr)=>`${bU('louise')} 반죽을 치대던 손을 멈추지 않았다. “${V}네 식구들, 요즘 우리 빵집에 외상을 달고 가. 그 집 아이들 얼굴 볼 때마다 네 생각이 나.”`,
+  (V,w,vr)=>`${bU('louise')} 당신이 늘 사 가던 빵을 말없이 다른 손님에게 내주었다. “오늘은 다 팔렸어.” 진열대에는 빵이 남아 있었다.`],
+ etienne:[(V,w,vr)=>`${bU('etienne')} 문간에 기대어 한참 당신을 보았다. “명단에 이름을 적는 게 얼마나 쉬운지 이제 알았지? 나도 알아. 그래서 무서운 거야.”`,
+  (V,w,vr)=>`${bU('etienne')} 위원회 띠를 만지작거렸다. “고발은 시민의 의무라고 내가 연설했지. 그런데 네 입에서 ${V}의 이름이 나왔다니까 처음으로 그 연설이 부끄러워.”`,
+  (V,w,vr)=>T()>=1794.6?`${bU('etienne')} 문간에 기대어 웃었다. 웃음이 아니었다. “혁명이 끝났다고 우리가 한 일까지 지워질 줄 알았어? 너는 이긴 쪽에 줄을 섰을 뿐이야. 나도 그랬지. 그래서 알아.”`:null],
+ jules:[(V,w,vr)=>`${bU('jules')} 당신 앞에 섰다. 손이 떨렸지만 이번에는 말을 더듬지 않았다. “하느님 앞에서도 똑같이 말할 수 있어? ${V}의 이름을 부를 때, 네 목소리가 어땠는지.”`,
+  (V,w,vr)=>`${bU('jules')} 묵주를 쥔 손을 펴지 않았다. “${V}${jo(V,'을','를').slice(-1)} 위해 기도할게. 그, 그리고 너를 위해서도. 둘 중 누가 더 필요한지는 모르겠어.”`,
+  (V,w,vr)=>`${bU('jules')} 당신을 보자 길을 돌아갔다. 겁이 나서가 아니었다. 처음으로 일부러 피한 것이었다.`],
+ antoine:[(V,w,vr)=>`${bU('antoine')} 탁 소리를 내며 말했다. “장사꾼도 친구는 안 팔아. ${V}의 값이 얼마였어? 혐의 몇 점이 깎였는데?”`,
+  (V,w,vr)=>`${bU('antoine')} 당신이 맡겨 둔 물건값을 그 자리에서 셈해 돌려주었다. “우리 거래는 여기까지야. 친구 이름으로 장사하는 사람하고는 안 해.”`,
+  (V,w,vr)=>`${bU('antoine')} 쓴웃음을 지었다. “나도 매점꾼으로 몰릴 뻔한 적이 있어. 그때 누가 내 이름을 댔는지 아직 몰라. 이제는 너였을 수도 있겠다 싶어.”`],
+ gabriel:[(V,w,vr)=>`${bU('gabriel')} 웃으려다 그만두었다. “얼음이 깨지던 날 나는 달아났어. 평생 그게 부끄러웠지. 그런데 너는 달아나지도 않고 ${jo(V,'을','를')} 밀어 넣었구나.”`,
+  (V,w,vr)=>vr&&vr.cond==='prison'?`${bU('gabriel')} 넥타이도 매지 않고 나타났다. “${V}에게 면회 다녀왔어. 너는 안 갔더라. 못 갔겠지.”`:null,
+  (V,w,vr)=>`${bU('gabriel')} 당신 옷차림을 위아래로 훑어보았다. 예전처럼 놀리지 않았다. “나는 남들 눈을 신경 쓰며 살았지. 너는 남들 눈을 피해 사람을 팔았고. 누가 더 나쁜지 모르겠어.”`]};
+{for(const k in R23_BLAME)R16_BLAME[k]=(V,w)=>{s.r23bl=s.r23bl||{};const vr=(s.rel||[]).find(r=>r.core&&bN(r.core)===V)||null;const L0=R23_BLAME[k].map(f=>f(V,w,vr)).filter(Boolean);const i=s.r23bl[k]||0;s.r23bl[k]=i+1;return L0[i%L0.length]}}
+
+/* ---------- 4. 1804년 봄, 마지막 모임 ---------- */
+const R23_LAST={
+ louise:()=>`${bU('louise')} 빵을 잘라 모두의 접시에 나눠 담았다. “황제든 왕이든, 빵값만 안 오르면 돼.”`,
+ etienne:()=>`${bU('etienne')} 오래 말이 없다가 입을 열었다. “우리가 왕을 없앤 게 황제를 세우려고였나.”`,
+ jules:()=>`${bU('jules')} 다시 문을 연 성당 이야기를 했다. “조, 종은 다시 울려. 그거면 됐어.”`,
+ antoine:()=>`${bU('antoine')} 잔을 들었다. “누가 다스리든 장사는 계속돼. 우리도 계속되고.”`,
+ gabriel:()=>`${bU('gabriel')} 새 궁정 예복 이야기를 하다가 웃음을 멈췄다. “옛날 것들이 다 돌아오네. 우리만 늙었어.”`,
+ robespierre:()=>'',desmoulins:()=>''};
+async function r23Last(){s.last04=s.year;const ks=BF_KEYS.filter(k=>bfMet(k)),live=ks.filter(k=>bfAlive(k)&&bfR(k).cond==='normal'&&!bfR(k).cut&&(bfR(k).hate||0)<40&&R23_LAST[k]&&R23_LAST[k]()),gone=ks.filter(k=>!bfAlive(k)),cut=ks.filter(k=>bfAlive(k)&&(bfR(k).cut||(bfR(k).hate||0)>=40));
+  const list=bfList(live);
+  const head=`1804년 봄. 원로원이 제1통령을 황제로 세우려 한다는 소문이 파리에 가득하다.`;
+  const body=live.length?` 오랜만에 ${jo(list,'이','가')} 당신 집 식탁에 모였다.${cut.length?` ${cut.map(bN).join(', ')}의 자리는 비어 있다.`:''}`:` 함께 모일 벗이 이제 아무도 없다. 당신은 혼자 퐁뇌프 난간에 섰다.${gone.length?` ${gone.map(bN).join(', ')}. 이름을 하나씩 불러 보았다.`:''}`;
+  const opts=[];
+  if(live.length)opts.push({l:'1789년 그 여름 이야기를 꺼낸다',a:'family',f:()=>{live.forEach(k=>bfRel(k,{close:4}));bfMem('m23_last',['group'].concat(live),`1804년 봄, ${bfListW(live)} 마지막으로 한 식탁에 모여 1789년 여름 이야기를 했다.`,{tone:'그리움'});
+    say(`바스티유 이야기가 나오자 다들 잠시 말이 없었다. ${live.map(k=>R23_LAST[k]()).join(' ')}`+fx({hap:5}),'big')}});
+  if(live.length)opts.push({l:'“우리가 원한 게 이거였을까?” 하고 묻는다',a:'radical',f:()=>{bfMem('m23_last',['group'].concat(live),`1804년 봄, 마지막 식탁에서 우리가 원한 게 이것이었느냐고 물었다.`,{tone:'씁쓸함'});
+    say(`아무도 바로 대답하지 않았다. ${live.map(k=>R23_LAST[k]()).join(' ')} 그날 밤 당신은 오래 잠들지 못했다.`+fx({hap:2}),'big')}});
+  if(gone.length)opts.push({l:'떠난 이들을 위해 잔을 든다',a:'family pious',f:()=>{bfMem('m23_last',['group'].concat(gone),`1804년 봄, 먼저 떠난 ${jo(bfList(gone),'을','를')} 위해 잔을 들었다.`,{tone:'그리움'});
+    say(`잔을 ${gone.length+1}개 채웠다. ${gone.map(bN).join(', ')}. 이름을 부를 때마다 촛불이 조금씩 흔들렸다.`+fx({hap:3}),'big')}});
+  opts.push({l:'아무 말 없이 창밖의 봄을 본다',a:'safe',f:()=>{say('창밖으로 마차들이 지나갔다. 새 시대의 마차들이었다. 당신은 그 소리를 오래 들었다.'+fx({hap:1}))}});
+  await bfScene('1804년 봄','le printemps 1804',head+body,opts)}
+
+/* ---------- 5. 엘리즈의 1795년 ---------- */
+async function r23Elise(r){const E=bN('etienne');s.el95=s.year;
+  await bfScene('누구로 살 것인가','qui être',`1795년 봄. 프레리알 봉기가 진압된 뒤 국민공회는 여자들이 회의를 방청하는 것조차 막았다. 거리에 다섯 명 넘게 모인 여자들은 흩어지라는 명령이 붙었다. 감옥에서 나온 ${jo(E,'이','가')} 짧은 머리를 쓸어 넘긴다. “위원회도, 클럽도 없어졌어. 남자 옷을 입어도 이제 들어갈 데가 없어. 나는 누구로 살아야 할까. 에티엔? 아니면 ${E}?”`,[
+   {l:`“${E}로 돌아와.”`,a:'family',f:()=>{bfSet('etienne','el95','name');bfJob('etienne','여자아이들에게 글을 가르치는 선생');bfFate('etienne','1795년, 남장을 벗고 제 이름으로 돌아와 여자아이들에게 글을 가르쳤다');bfRel('etienne',{close:8,trust:6});
+     bfMem('m23_elise','etienne',`1795년, 남장을 벗을지 고민하던 ${E}에게 제 이름으로 돌아오라고 했다.`,{tone:'희망',their:'그 사람이 내 이름을 불렀다. 몇 해 만에 듣는 내 이름이었다.'});
+     say(`${jo(E,'은','는')} 머리를 다시 길렀다. 이듬해 라탱 구역 셋집 아래층에 작은 교실을 열었다. 여자아이들에게 글을 가르쳤다. 첫 수업에서 칠판에 쓴 낱말은 ‘시민’이었다. 그 뒤에 작게 ‘여자’라고 덧붙였다.`+fx({hap:4}),'big')}},
+   {l:'“에티엔으로 살아.”',a:'bold',f:()=>{bfSet('etienne','el95','man');bfJob('etienne','에티엔이라는 이름으로 일하는 필경사');bfFate('etienne','1795년 뒤에도 남자 옷을 벗지 않고 에티엔이라는 이름으로 필경사 일을 했다');bfRel('etienne',{close:5,resp:5});
+     bfMem('m23_elise','etienne',`1795년, ${E}에게 에티엔으로 살라고 했다.`,{tone:'희망',their:'그 사람은 에티엔으로 살라고 했다. 그 이름이 이제 나였다.'});
+     say(`${jo(E,'은','는')} 고개를 끄덕였다. 공증인 사무실의 필경사 자리를 얻었다. 아무도 묻지 않았다. 다만 당신 앞에서만은 가끔 ${E}라는 이름에 대답했다.`+fx({hap:3}))}},
+   {l:'“파리를 떠나. 아무도 너를 모르는 데로.”',a:'safe',f:()=>{bfSet('etienne','el95','leave');bfFate('etienne','1795년, 파리를 떠나 루아르 강가의 작은 읍에서 새로 살기 시작했다');bfRel('etienne',{close:-2,trust:4});
+     bfMem('m23_elise','etienne',`1795년, ${E}에게 파리를 떠나라고 했다.`,{tone:'그리움',their:'그 사람 말대로 떠났다. 편지 겉봉에는 늘 내 진짜 이름을 썼다.'});
+     say(`${jo(E,'은','는')} 가을에 루아르 강가의 작은 읍으로 떠났다. 편지가 왔다. 겉봉의 보낸 사람 이름은 늘 ‘${E}’였다.`+fx({hap:-1}))}}])}
+
+/* ---------- 6. 배우자와의 장면 ---------- */
+const r23Sp=()=>s.spouse&&s.spouse.n?s.spouse.n.split(' ')[0]:(isM()?'아내':'남편');
+const r23SpW=()=>isM()?'아내':'남편';
+async function r23Divorce(){s.sp23=s.sp23||{};s.sp23.div=s.year;const N=r23Sp(),W=r23SpW(),aff=(s.rel||[]).some(r=>r.alive&&r.role==='연인'&&(r.affair||r.secret));
+  await bfScene('이혼법이 붙은 날','la loi du divorce',`구청 문에 이혼법이 붙었다. 저녁 식탁에서 ${W} ${jo(N,'이','가')} 그 이야기를 꺼낸다. “맞은편 집 마르트는 벌써 서류를 냈대. 남편이 술만 마시면 때렸다니까.” 그러고는 당신을 본다. 오래.${aff?' 당신 품 안쪽 주머니에 든 편지가 갑자기 무겁게 느껴진다.':''}`,[
+   {l:'“우리는 그럴 일 없어.”',a:'family',f:()=>{say(`${jo(N,'은','는')} 고개를 끄덕였다. 그러고는 수프를 한 국자 더 떠 주었다.${aff?' 당신은 그 수프를 다 먹지 못했다.':''}`+fx({vfam:2,hap:aff?-2:2}))}},
+   {l:'“당신은 어떻게 생각해?” 하고 묻는다',a:'social',f:()=>{say(`${jo(N,'은','는')} 숟가락을 내려놓았다. ${isM()?'“여자도 나갈 문이 생긴 거지. 나갈 생각이 없어도, 문이 있다는 건 다른 거야.”':'“이제 당신도 마음만 먹으면 나갈 수 있는 거네.” 웃으려 했지만 잘 되지 않는 얼굴이었다.'} 둘은 처음으로 서로의 혼인에 대해 오래 이야기했다.`+fx({hap:3}))}},
+   {l:'대답 대신 웃어넘긴다',a:'safe',f:()=>{say(`${jo(N,'은','는')} 따라 웃지 않았다. 그날 밤 등을 돌리고 누웠다.`+fx({hap:-1}))}}])}
+async function r23Bread(){s.sp23=s.sp23||{};s.sp23.bread=s.year;const N=r23Sp(),W=r23SpW();
+  await bfScene('새벽 네 시','la queue',`새벽 네 시. ${W} ${jo(N,'이','가')} 빵집 줄에 서려고 어둠 속에서 외투를 걸친다. 최고가격제 아래 빵값은 묶였지만 빵이 모자라, 늦게 가면 빈손으로 돌아온다.`,[
+   {l:'“오늘은 내가 설게.”',a:'family',f:()=>{say(`당신은 세 시간을 줄에 서 있었다. 집에 돌아오니 ${jo(N,'이','가')} 불을 피워 놓고 기다리고 있었다. 빵은 반 덩이였다. 둘이 나눠 먹었다.`+fx({hp:-1,vfam:2,hap:2}))}},
+   {l:'같이 나가 줄에 선다',a:'social',f:()=>{say(`둘은 줄에서 이웃들 이야기를 들었다. 누가 잡혀갔고, 누가 숨었는지. ${jo(N,'이','가')} 당신 손을 외투 주머니 속에서 꼭 쥐었다.`+fx({hap:2,rloc:1}))}},
+   {l:'모른 척 다시 잠든다',a:'safe',f:()=>{say(`${jo(N,'이','가')} 문을 닫고 나가는 소리가 들렸다. 돌아온 ${W}의 손은 얼음장이었다.`+fx({hap:-1,vfam:-1}))}}])}
+async function r23Found(lv){s.sp23=s.sp23||{};s.sp23.found=s.year;lv.found23=s.year;const N=r23Sp(),W=r23SpW(),Lv=lv.core?bN(lv.core):lv.n.split(' ')[0];
+  await bfScene('서랍 속의 편지','les lettres',`${W} ${jo(N,'이','가')} 당신 서랍에서 편지 묶음을 찾아냈다. 맨 위 편지의 서명은 ${jo(Lv,'이다','다')}. ${jo(N,'은','는')} 편지를 식탁에 내려놓고 아무 말도 하지 않는다. 그게 더 무섭다.`,[
+   {l:'모두 털어놓고 끝내겠다고 한다',a:'family',f:()=>{lv.role='친구';lv.rom=Math.max(0,(lv.rom||0)-35);lv.affair=0;lv.secret=0;if(lv.core)bfRel(lv.core,{close:-6});say(`${jo(N,'은','는')} 끝까지 들었다. 울지 않았다. “편지는 당신 손으로 태워.” 당신은 그렇게 했다. 그 뒤로 ${jo(W,'은','는')} 오래 당신을 똑바로 보지 않았다.`+fx({hap:-4,vfam:2,rfam:-1}),'big')}},
+   {l:'털어놓되, 끝낼 수는 없다고 한다',a:'bold',f:()=>{say(`${jo(N,'은','는')} 편지를 집어 당신 가슴에 밀어 넣었다. “그럼 숨기지나 말아.” 그날부터 한 지붕 아래 두 사람은 남처럼 지냈다.`+fx({hap:-6,rfam:-4,vfam:-2}),'dark')}},
+   {l:'옛 친구의 편지일 뿐이라고 둘러댄다',a:'safe',f:()=>{const ok=R()<.45;say(ok?`${jo(N,'은','는')} 한참 당신을 보다가 편지를 서랍에 도로 넣었다. 믿은 것인지, 믿기로 한 것인지 당신은 끝내 몰랐다.`+fx({hap:-2}):`${jo(N,'은','는')} 편지 한 장을 소리 내어 읽기 시작했다. 두 줄째에서 당신이 그만하라고 했다.`+fx({hap:-5,rfam:-3}),ok?'ev':'dark')}}])}
+async function r23Evening(){s.sp23=s.sp23||{};s.sp23.eve=s.year;const N=r23Sp(),W=r23SpW(),civ=s.flags&&s.flags.civWed;
+  await bfScene('콩코르다 뒤의 저녁','un soir',`콩코르다 뒤 성당 문이 다시 열렸다. 저녁 난롯가에서 ${W} ${jo(N,'이','가')} ${isM()?'뜨개질을 멈춘다':'파이프를 내려놓는다'}. “우리가 혼인한 지 몇 해더라. 그 사이에 왕도, 공화국도 지나갔네.” 잠시 뒤 묻는다. “우리, 성당에 가서 축복 한번 받을까?”`,[
+   {l:'“그러자. 이번엔 우리 둘이 원해서.”',a:'family pious',f:()=>{say(`다음 일요일, 둘은 다시 연 성당 맨 뒷자리에서 신부의 축복을 받았다. 하객은 없었다. ${jo(N,'이','가')} 성당을 나서며 웃었다. 처음 혼인하던 날보다 더 젊어 보였다.`+fx({hap:5,faith:2,vfam:2}),'big')}},
+   {l:'“축복 없이도 여기까지 왔잖아.”',a:'radical',f:()=>{say(`${jo(N,'은','는')} 웃으며 ${isM()?'다시 뜨개질을 시작했다':'파이프에 다시 불을 붙였다'}. “하긴. 그랬지.” 난롯불이 둘의 그림자를 하나로 겹쳐 놓았다.`+fx({hap:3}))}}])}
+{const _ny23=npcYear;npcYear=async function(){await _ny23.apply(this,arguments);if(!s||s.dead)return;try{
+  r23Pierre();
+  if(child()||s.cond!=='normal'||sheetLive||!bfRev())return;s.sp23=s.sp23||{};const t=T();
+  if(wedNow()){
+    const lv=(s.rel||[]).find(r=>r.alive&&r.role==='연인'&&(r.affair||r.secret)&&!r.found23);
+    if(lv&&!s.sp23.found&&R()<.22){await r23Found(lv);await done();return}
+    if(!s.sp23.div&&t>=1792.7&&t<1793.8){await r23Divorce();await done();return}
+    if(!s.sp23.bread&&t>=1793.7&&t<1795.4){await r23Bread();await done();return}
+    if(!s.sp23.eve&&t>=1801.6&&t<1804.3){await r23Evening();await done();return}}
+}catch(e){console.error(e);if(sheetLive)sheetClose()}}}
+// 마지막 봄과 엘리즈의 1795년은 그달그달 살핀다
+{const _rd23=rfDaily;rfDaily=async function(){await _rd23();if(!s||s.dead)return;try{
+  if(sheetLive||child()||s.cond!=='normal')return;const t=T();
+  if(bfRev()&&!s.last04&&t>=1804.0&&t<tm(1804,6)){await r23Last();if(sheetLive)await done();return}
+  const r=bfR('etienne');
+  if(!s.el95&&bfRev()&&r&&r.alive&&r.cond==='normal'&&r.sex==='F'&&bfFl('etienne','garb')&&t>=1795.38&&t<1797.5){await r23Elise(r);if(sheetLive)await done();return}
+}catch(e){console.error(e);if(sheetLive)sheetClose()}}}
 
 </script>
 </body>
