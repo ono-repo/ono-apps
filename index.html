@@ -4336,6 +4336,68 @@ defineAct({k:'physique',g:'learn',n:'과학 실험 구경을 간다',s:'재산 1
   ['볼타 전지의 불꽃 실험을 보았다.',()=>T()>=1801],['다게르의 은판 사진을 보았다. 거리 풍경이 그대로 은판에 박혀 있었다.',()=>T()>=1839.6],
   ['순회 실험가가 공기 펌프 속에서 새가 숨이 막히는 것을 보여 주었다.']])+fx({money:-10,ksci:2,soc:1}))});
 
+/* ---------- 중요 학문과 기술 (개편 19) ----------
+   공학·천문학·신학·법학·산수와 회계, 손기술(금속 세공·목공·직조·인쇄·제빵)을 올리는 행동.
+   배움과 솜씨: 천문학 · 공학 · 법률 서적 · 장인 공방 / 신앙: 신학 책 / 돈과 땅: 복식부기 */
+defineAct({k:'astro',g:'learn',n:'천문학을 공부한다',s:'재산 20. 천문학 +4, 자연과학 +1',cost:20,c:()=>free()&&lit()&&s.age>=14&&s.age<70,f:()=>say(acPick([
+  ['콜레주 루아얄에서 랄랑드의 천문학 강의를 들었다. 행성 운행표를 밤새 베꼈다.',()=>inParis()&&T()>=1762&&T()<1792.7],
+  ['콜레주 드 프랑스에서 늙은 랄랑드의 천문학 강의를 들었다. 행성 운행표를 밤새 베꼈다.',()=>inParis()&&T()>=1795&&T()<1807.3],
+  ['파리 천문대 공개일에 큰 망원경으로 토성의 고리를 보았다.',()=>inParis()],
+  ['핼리가 예언한 혜성이 정말로 돌아왔다. 밤마다 지붕에 올라 그 꼬리를 쫓았다.',()=>T()>=1759&&T()<1759.6],
+  ['금성이 해를 가로지르는 날, 그을린 유리로 태양을 보며 시각을 적었다. 세계 곳곳에서 같은 날 잰 값으로 해까지의 거리를 셈한다고 했다.',()=>(T()>=1761.4&&T()<1761.6)||(T()>=1769.4&&T()<1769.6)],
+  ['영국의 허셜이 새 행성을 찾았다는 소식에 별자리표를 펴 놓고 그 자리를 짚어 보았다.',()=>T()>=1781.3&&T()<1792],
+  ['라플라스의 『우주 체계 해설』을 읽었다. 신의 손을 빌리지 않고도 행성은 제자리를 돈다고 했다.',()=>T()>=1796],
+  ['큰 혜성이 가을 하늘을 가로질렀다. 사람들은 전쟁의 징조라 했고, 당신은 그 궤도를 그려 보았다.',()=>T()>=1811.6&&T()<1812.1],
+  ['경도국이 펴낸 연감을 사서 달의 위치와 일식 날짜를 맞춰 보았다.',()=>T()>=1795.5],
+  ['랄랑드의 『천문학』을 펼쳐 놓고 사분의로 별의 고도를 재었다.',()=>T()>=1764],
+  ['밤마다 지붕 위에서 별자리를 익혔다. 북극성의 높이로 이 도시의 위도를 셈해 보았다.']])+fx({money:-20,kastr:4,ksci:1,edu:1}))});
+defineAct({k:'engin',g:'learn',n:'공학과 축성술을 공부한다',s:'재산 40. 공학 +4, 산수 +1',cost:40,c:()=>free()&&lit()&&s.age>=14&&s.age<60,f:()=>say(acPick([
+  ['페로네가 놓은 뇌이 다리의 받침 틀을 한꺼번에 걷어 내는 날, 구경꾼 틈에서 돌 아치가 버티는 것을 보았다.',()=>T()>=1772.6&&T()<1773],
+  ['토목학교 학생에게 빌린 다리와 도로 도면을 밤새 베꼈다.',()=>T()<1795],
+  ['보방의 축성술 책을 펴 놓고 별 모양 성채의 사격각을 그렸다.'],
+  ['벨리도르의 『건축 수력학』으로 물레방아와 펌프의 원리를 익혔다.'],
+  ['보캉송이 남긴 기계들을 모아 둔 곳에서 직조기와 자동인형의 톱니를 들여다보았다.',()=>inParis()&&T()>=1783&&T()<1799],
+  ['공예원의 기계 전시실에서 증기기관 모형을 오래 들여다보았다.',()=>inParis()&&T()>=1799],
+  ['몽주의 화법기하학 강의록을 구해 입체를 평면에 옮겨 그리는 법을 익혔다.',()=>T()>=1795.5],
+  ['이공과 학교 입학시험 문제를 풀었다. 해석기하와 역학이 절반이다.',()=>T()>=1795&&s.age<=24],
+  ['운하 공사 감독관을 따라다니며 수준기로 물길의 높낮이를 재었다.',()=>!inParis()],
+  ['기계공의 공방에서 도르래와 지레로 무거운 돌을 들어 올리는 셈을 배웠다.']])+fx({money:-40,keng:4,karith:1,edu:1}))});
+defineAct({k:'lawread',g:'learn',n:'법률 서적을 읽는다',s:'법학 +3, 철학·수사학 +1',c:()=>free()&&lit()&&s.age>=16&&s.age<70,f:()=>say(acPick([
+  ['포티에의 『채무론』을 읽었다. 빌린 돈과 맺은 약속이 법 앞에서 어떻게 되는지 적혀 있다.',()=>T()>=1761],
+  ['파리 관습법 주석서를 넘기며 상속 조항에 밑줄을 그었다. 맏아들 몫이 왜 그리 큰지 이제 알았다.',()=>T()<1792],
+  ['베카리아의 『범죄와 형벌』 번역본을 읽었다. 고문과 잔혹한 형벌을 없애야 한다고 했다.',()=>T()>=1766],
+  ['의회가 낸 법령집을 사서 새 법을 하나씩 옛 법과 맞대어 보았다.',()=>T()>=1790&&T()<1804],
+  ['새로 나온 『민법전』을 처음부터 읽었다. 이천 조가 넘는 법이 손에 쥐어지는 책 한 권에 들어 있다.',()=>T()>=1804.2],
+  ['법정 방청석에 앉아 변론을 들었다. 돌아와서 판결 이유를 따라 적어 보았다.',()=>urban()]])+fx({klaw:3,kphil:1,edu:1}))});
+defineAct({k:'atelier',g:'learn',n:'장인의 공방에서 손기술을 배운다',s:'재산 20. 고른 기술 +4, 기술 +1',cost:20,c:()=>free()&&s.age>=12&&s.age<60,inter:async()=>{
+  const P=inParis();
+  const C=[['metal','금속 세공','시계방·금은 세공소',()=>P?'시테 섬 강변의 금은 세공소에서 줄과 끌로 은을 다루는 법을 배웠다.':'시계방 작업대에서 톱니와 태엽을 맞추는 법을 배웠다.'],
+   ['wood','목공','가구·목수 공방',()=>P?'포부르 생탕투안의 가구 공방에서 대패질과 장부 맞춤을 익혔다.':'목수 공방에서 대패질과 장부 맞춤을 익혔다.'],
+   ['weave','직조','직조 공방',()=>T()>=1805?'자카르 직기의 구멍 뚫린 카드가 무늬를 짜 나가는 것을 보며 북을 던지는 손을 익혔다.':loc()==='lyon'?'리옹 견직 공방의 베틀 앞에 앉아 비단 실을 고르는 법을 배웠다.':'직조공의 집 베틀 앞에 앉아 씨실과 날실을 익혔다.'],
+   ['print','인쇄','인쇄소',()=>'인쇄소 활자 상자 앞에 서서 거꾸로 된 글자를 줍는 식자를 배웠다.'+(T()>=1789.5&&T()<1795?' 밤마다 신문과 벽보가 쏟아져 일손이 모자랐다.':'')],
+   ['cook','제빵·요리','빵집·요리점',()=>T()>=1790&&urban()?'요리점 주방에서 소스와 굽기를 배웠다. 주인을 잃은 귀족 집 요리사가 차린 가게였다.':'빵집 화덕 앞에서 반죽을 치대고 불을 다루는 법을 배웠다.']];
+  const i=await Q('장인의 공방','l’atelier','어느 공방에서 배울까?',C.map(c=>({l:c[1],s:`${c[2]} · 숙련 ${s.sk[c[0]]||0}`,a:'work'})));
+  const c=C[i];say(c[3]()+fx({money:-20,[c[0]]:4,dex:1}));await done()}});
+defineAct({k:'theo',g:'faith',n:'신학 책을 읽는다',s:'신학 +4, 신앙 +1',c:()=>free()&&lit()&&s.age>=14,f:()=>{const fk=s.faithKind;say((fk==='jewish'?acPick([
+    ['랍비에게 탈무드 한 장을 배웠다. 질문에 질문으로 답하는 법부터 익혔다.'],['멘델스존의 글을 읽었다. 신앙과 이성이 함께 갈 수 있다고 했다.',()=>T()>=1783]]):
+  fk==='protestant'?acPick([
+    ['칼뱅의 『기독교 강요』를 한 장씩 읽었다.'],['광야의 목사들이 몰래 돌려 보는 설교집을 읽었다.',()=>T()<1787.9],['성경을 처음부터 다시 읽으며 여백에 묵상을 적었다.']]):
+  acPick([
+    ['보쉬에의 설교집을 소리 내어 읽었다. 문장이 대성당처럼 높았다.'],
+    ['아우구스티누스의 『고백록』을 읽었다. “우리 마음은 당신 안에서 쉬기까지 쉬지 못합니다.”'],
+    ['파스칼의 『팡세』를 읽었다. 내기 이야기에서 오래 머물렀다.'],
+    ['얀센파와 예수회의 은총 논쟁을 다룬 소책자들을 나란히 놓고 읽었다.',()=>T()<1790],
+    ['토마스 아퀴나스 『신학대전』의 한 문항을 붙들고 반론과 답변을 따라갔다.',()=>s.st.edu>=45],
+    ['선서 사제와 선서 거부 사제가 서로를 반박하는 소책자를 읽었다. 둘 다 같은 교부를 인용했다.',()=>T()>=1791&&T()<1801.6],
+    ['샤토브리앙의 『그리스도교의 정수』를 읽었다. 성당의 아름다움으로 신앙을 변호하는 책이다.',()=>T()>=1802.3]]))+fx({ktheo:4,faith:1,klat:1}))}});
+defineAct({k:'ledger',g:'money',n:'복식부기와 셈을 익힌다',s:'재산 10. 산수·회계 +4, 장사 +1',cost:10,c:()=>free()&&lit()&&s.age>=12&&s.age<65,f:()=>say(acPick([
+  ['사바리의 『완전한 상인』을 펴 놓고 차변과 대변을 맞추는 복식부기를 익혔다.'],
+  ['환어음 계산과 이자 셈을 연습했다. 정기시 결제일에 맞춰 날수를 셌다.'],
+  ['리브르와 수와 드니에를 오가는 셈을 손가락 없이 해내게 되었다.',()=>T()<1795],
+  ['아시냐 시세표를 날마다 적어 물가와 맞춰 보았다. 숫자가 무서울 만큼 빨리 움직였다.',()=>T()>=1790.3&&T()<1796.2],
+  ['새 프랑과 상팀으로 옛 장부를 옮겨 적었다. 십진법이라 셈이 훨씬 쉬웠다.',()=>T()>=1795.5],
+  ['상점 주인에게 재고 장부와 외상 장부를 따로 적는 법을 배웠다.']])+fx({money:-10,karith:4,trade:1}))});
+
 /* ---------- 몸과 마음 ---------- */
 defineAct({k:'hunt',g:'body',n:'사냥을 나간다',s:'승마·무예 +. 다칠 수 있다',c:()=>free()&&s.age>=16&&s.age<65&&((noble()&&T()<1789.6)||(T()>=1789.6&&(noble()||s.land>=100||rich()))),inter:async()=>{
   const {m,why}=md([[s.sk.ride>=40,1,'말을 잘 탐'],[s.sk.arms>=35,1,'총 솜씨'],[s.st.str>=55,1,'체력'],[s.sk.ride<15,-1,'서툰 말솜씨'],[s.st.hp<35,-1,'병약']]);const r=await roll(m,{label:'사냥',why});
@@ -9966,7 +10028,8 @@ const RF2_FAC=[['gym','체육관','la salle d’armes'],['lib','도서관','la b
 const RF2_FK={train:'gym',labor:'gym',spa:'gym',hunt:'gym',read:'lib',cabinet:'lib',latin:'lib',paper:'lib',
   learn:'lec',skill:'lec',orat:'lec',study:'lec',lang:'lec',math:'lec',lecture:'lec',drawl:'lec',musicl:'lec',dance:'lec',physique:'lec',
   salon:'soc',visit:'soc',charity:'soc',theatre:'soc',guing:'soc',billet:'soc',mediate:'soc',mutual:'soc',lodge:'soc',lodgem:'soc',lavoir:'soc',marche:'soc',salon_f:'soc',cabaret:'soc',gamble:'soc',lottery:'soc',bfvisit:'soc',
-  mass:'church',pilgr:'church',confr:'church',worship:'church',hotel:'church'};
+  mass:'church',pilgr:'church',confr:'church',worship:'church',hotel:'church',
+  astro:'lec',engin:'lec',lawread:'lib',theo:'church',atelier:'shop',ledger:'shop'};
 const rf2FacOf=a=>RF2_FK[a.k]||({body:'gym',learn:'lec',social:'soc',faith:'church'})[a.g||actGroup(a)]||'etc';
 let rf2Fac=null;
 const RF2_SHOP=[
@@ -10000,7 +10063,7 @@ function rf2FacBody(W){W.innerHTML='';const list=ACTS.filter(a=>{try{return !a.h
     const b=el('button','fac'+(rf2Fac===k?' on':''));b.type='button';b.innerHTML=`<b>${n}</b><small>${fr}</small>`;b.setAttribute('aria-pressed',String(rf2Fac===k));
     b.onclick=()=>{rf2Fac=rf2Fac===k?null:k;rf2FacBody(W)};grid.appendChild(b)});W.appendChild(grid);
   if(!rf2Fac)return;const box=el('div','acts fac-acts');W.appendChild(box);
-  if(rf2Fac==='shop'){rf2Shop(box);return}
+  if(rf2Fac==='shop'){const sS=list.filter(a=>rf2FacOf(a)==='shop');if(sS.length){box.appendChild(el('div','lab','배우기'));actButtons(sS,box);box.appendChild(el('div','lab','사치품'))}rf2Shop(box);return}
   const sub=list.filter(a=>rf2FacOf(a)===rf2Fac);if(!sub.length){box.appendChild(el('p','mut','지금 이곳에서 할 수 있는 일이 없다.'));return}actButtons(sub,box)}
 {const _ba=buildActs;buildActs=function(pin){if(!s)return;if(child())return _ba(pin);
   if(s.cond!=='normal'){const list=ACTS.filter(a=>{try{return !a.hide&&a.c()}catch(e){return false}});const box=el('div','acts');
@@ -10749,6 +10812,7 @@ function rf7RomAdd(r,n){if(child())return '';r.rom=clamp(rf7Rom(r)+n,0,100);retu
   // 편지·선물: 횟수 제한 없음
   [...pin.querySelectorAll('button')].filter(x=>/편지 보내기/.test(x.textContent)).forEach(x=>x.remove());pin.querySelectorAll('.letter-ch').forEach(x=>x.remove());
   [...pin.querySelectorAll('p.mut.small.center')].filter(x=>/편지/.test(x.textContent)).forEach(x=>x.remove());
+  if(s.dead){if(r.alive)pin.appendChild(el('p','mut small center','세상을 떠난 뒤에는 편지도 선물도 보낼 수 없다.'));return}
   if(!r.alive||child()||s.cond==='prison')return;
   const b=el('button','pill pri wide','✉ 편지 · 선물 보내기');b.type='button';
   b.onclick=()=>{const box=el('div','letter-ch');const sec=(t,list,gift)=>{box.appendChild(el('div','lab',t));list.forEach(o=>{const c=el('button','opt row');c.type='button';const sp=el('span');sp.appendChild(el('span','ol',o.l));sp.appendChild(el('small',null,o.s+(gift?` · ${o.p} ${money()}`:'')));c.appendChild(sp);
@@ -12036,6 +12100,86 @@ cs('etienne','c17_etcit',1793.22,1793.75,etF,async()=>{const E=bN('etienne');bfJ
   for(const x of R17_C.slice().sort((a,b)=>a.b-b.b)){if(s.r17.d[x.id])continue;if(t>=x.b){s.r17.d[x.id]='miss';continue}if(t<x.a||!r17Ok(x.k))continue;let ok=false;try{ok=x.c()}catch(e){}if(!ok)continue;
     s.r17.d[x.id]=s.year;s.r17.nx=MI()+2;await x.run();return}
 }catch(e){console.error(e);if(sheetLive)sheetClose()}}}
+
+
+/* ================= 개편 18: 세상을 떠난 뒤 =================
+   1. 주인공이 죽으면 행동·계획·편지·선물 단추가 눌리지 않는다. 기록과 탭은 그대로 둘러볼 수 있다.
+   2. 그때 살아 있는 오랜 벗(다섯 사람)마다, 성격과 함께 지나온 일과 지금의 관계에 맞는 두 줄의 애도가 쌓인다. */
+const R18_MSG='세상을 떠난 뒤에는 할 수 없습니다.';
+{const st=document.createElement('style');st.textContent=
+  'body.deceased .letter-ch,body.deceased #panel .opt,body.deceased #panel .plan,body.deceased #panel .fopt,body.deceased #panel .node{opacity:.45;pointer-events:none}'+
+  '.ob-mourn{list-style:none;margin:0;padding:0;display:grid;gap:12px}.ob-mourn li{text-align:left;font-size:.92rem;line-height:1.6;border-left:2px solid var(--line);padding-left:10px}.ob-mourn li b{display:block;font-family:var(--fd);font-size:.86rem;color:var(--mut)}';
+  document.head.appendChild(st)}
+// 죽은 뒤에 눌린 행동 단추는 여기서 막는다(보기만 하는 단추는 그대로)
+document.addEventListener('click',e=>{if(!s||!s.dead)return;const b=e.target.closest&&e.target.closest('button');if(!b)return;
+  if(b.closest('#end,#title,.nav,.seg,#menu,#obBack,.logmore'))return;
+  const act=b.matches('.opt,.plan,.fopt,.node')||!!b.closest('.letter-ch')||/편지|선물/.test(b.textContent||'');
+  if(act){e.preventDefault();e.stopImmediatePropagation();try{toast(R18_MSG)}catch(x){}}},true);
+{const _ab=actButtons;actButtons=function(list,box){_ab(list,box);if(s&&s.dead)box.querySelectorAll('button').forEach(b=>b.disabled=true)}}
+{const _ba=buildActs;buildActs=function(pin){if(s&&s.dead){pin.appendChild(el('p','mut','세상을 떠났다. 이제 할 수 있는 일은 없다.'));return}return _ba(pin)}}
+{const _rd=render;render=function(){const r=_rd.apply(this,arguments);try{document.body.classList.toggle('deceased',!!(s&&s.dead))}catch(e){}return r}}
+
+/* ---------- 애도: [하는 일, 남기는 말] 두 줄 ---------- */
+function r18Tier(r){const b=relBond(r);if(r.cut||(r.hate||0)>=40||b==='혐오')return 'cold';if(r.close>=60||b==='친우'||b==='연인'||rf7Rom(r)>=60)return 'warm';return 'mid'}
+function r18Lines(k,r,used=new Set()){const N=bN(k),Nu=jo(N,'은','는'),Ni=jo(N,'이','가'),F=r.sex==='F',T0=r18Tier(r),fl=f=>bfFl(k,f),young=s.age<30;
+  const B=bfS(),mo=B.mem.filter(m=>m.k.includes(k)&&m.obj).pop();const L={warm:[],mid:[],cold:[]};
+  if(k==='louise'){
+    L.warm.push([`${Nu} 그날 아침 화덕에 불을 넣지 않았다. 대신 어제 구운 빵의 꽁다리 하나를 떼어 관 위에 올려놓았다.`,`“제일 바삭한 데야. 아무한테나 안 줘. 그건 끝까지 네 몫이었어.”`]);
+    L.warm.push(fl('taught')?[`${Nu} 부고를 남에게 읽어 달라고 하지 않았다. 당신에게 배운 글자로 한 자 한 자 소리 내어 읽었다.`,`읽다가 당신 이름에서 오래 멈추었다.`]:[`${Nu} 부고를 받아 들고 한참 서 있었다. 이제 그 종이를 읽어 줄 사람이 없었다.`,`“네가 읽어 주던 목소리로 들리는 것 같아. 아무것도 안 적혀 있어도.”`]);
+    L.mid.push([`${Nu} 장례가 끝난 뒤 빵 한 덩이를 당신 집 문 앞에 두고 갔다.`,`“남은 사람들이라도 배는 곯지 마.”`]);
+    L.cold.push([`${Nu} 장례에 오지 않았다.`,`다만 그 주 내내 빵 하나를 덜 구웠다고, 빵집 심부름꾼이 전했다.`])}
+  if(k==='etienne'){
+    L.warm.push([`${Nu} 관 위에 『텔레마코스의 모험』을 올려놓았다.`,`“퐁뇌프에서 한 약속, 나 혼자서라도 마저 지킬게.”`]);
+    if(F&&fl('garb'))L.warm.push([`${Nu} 그날만은 남자 옷을 벗고 치마를 입은 채 장례에 섰다.`,`“나를 ${N}라고 불러 준 마지막 사람이 너였어.”`]);
+    L.mid.push([`${Nu} 추도사를 쓰다가 세 번 찢었다.`,`“너에 대해서는 연설이 안 돼. 보고 싶다는 말밖에.”`]);
+    L.cold.push([`${Nu} 부고를 끝까지 읽고 반듯하게 접었다.`,`“우리는 같은 약속을 하고 다른 길로 갔지. 그래도 출발한 자리는 같았어.”`])}
+  if(k==='jules'){const pr=/신부/.test(r.job||'');
+    L.warm.push(pr?[`${Nu} 장례 미사를 직접 집전했다. 강론 내내 한 번도 말을 더듬지 않았다.`,`“하, 하느님께 너를 부탁드렸어. 나보다 너를 더 잘 아시니까.”`]:[`${Nu} 종탑에 올라 혼자 조종을 울렸다. 종소리 사이사이 당신 이름을 불렀다.`,`노래할 때처럼, 그 이름만은 더듬지 않았다.`]);
+    L.warm.push([`${Nu} 관 속에 참새 깃털 하나를 넣어 주었다.`,`“머, 먼저 가서 기다려. 나는 노래하면서 갈게.”`]);
+    L.mid.push([`${Nu} 저녁마다 당신을 위해 기도를 올렸다.`,`“네가 믿든 안 믿든, 이건 내가 할 수 있는 유일한 일이야.”`]);
+    L.cold.push([`${Nu} 장례 대신 성당 맨 뒷자리에서 혼자 묵주를 돌렸다.`,`용서는 기도 속에서만 했다. 입 밖으로는 끝내 하지 못했다.`])}
+  if(k==='antoine'){
+    L.warm.push([`${Nu} 장례비를 아무도 모르게 치렀다.`,`장부의 그 줄에는 ‘갚을 것 없음’이라고만 적었다.`]);
+    L.warm.push([`${Nu} 조끼에서 은단추 하나를 떼어 관 위에 올려놓았다.`,`“어릴 때 구슬 내기에서 진 거, 이제야 갚는다.”`]);
+    L.mid.push([`${Nu} 가장 좋은 검은 외투를 입고 장례에 왔다.`,`“사람이 가도 셈은 남는다는데, 너한텐 받을 게 하나도 없네.”`]);
+    L.cold.push([`${Nu} 장례에 화환만 보냈다.`,`화환값은 장부의 ‘손실’ 칸에 적혔다가, 나중에 조용히 지워졌다.`])}
+  if(k==='gabriel'){
+    L.warm.push([`${Nu} 처음으로 거울을 보지 않고 집을 나섰다. 관 위에 푸른 리본을 매어 두었다.`,`“이번엔 안 달아났어. 끝까지 있었어.”`]);
+    if(fl('hid'))L.warm.push([`${Nu} 다락방 문을 열어 둔 채 장례에 갔다.`,`“문은 닫을 때보다 열어 둘 때가 더 무섭다는 거, 너한테 배웠어.”`]);
+    L.mid.push([`${Nu} 장례식에서 누구보다 단정한 상복을 입었다.`,`그런데 넥타이가 비뚤어진 것을 끝내 알아차리지 못했다.`]);
+    L.cold.push([`${Nu} 장례에 오지 않았다.`,`대신 그날 밤, 얼음이 깨지던 그 연못가를 오래 걸었다고 한다.`])}
+  // 아이로 죽었으면, 아이의 슬픔으로
+  if(child()){const C={louise:[`${Nu} 빵집 뒷계단에 앉아 꽁다리 두 개를 떼어 놓았다.`,`하나는 저녁이 될 때까지 아무도 먹지 않았다.`],
+    etienne:[`${Nu} 한 책상을 쓰던 자리 옆을 비워 두었다.`,`선생이 다른 아이를 앉히려 하자 처음으로 대들었다.`],
+    jules:[`${Nu} 종탑 계단 아래에서 오래 울었다.`,`그날 저녁 종은 평소보다 한 번 적게 울렸다.`],
+    antoine:[`${Nu} 아끼던 은단추를 당신 무덤가 흙에 묻었다.`,`“이건 셈 안 해. 그냥 주는 거야.”`],
+    gabriel:[`${Nu} 한동안 새 옷 대신 검은 리본을 달고 다녔다.`,`어른들이 이유를 물어도 대답하지 않았다.`]};return C[k]}
+  // 함께 간직한 물건이 있으면
+  if(mo&&T0!=='cold')L[T0].push([`${Nu} ${jo(mo.obj,'을','를')} 꺼내 오래 들여다보았다.`,`${mo.y}년의 일이었다. 그 일을 기억하는 사람이 이제 하나뿐이다.`,'obj']);
+  // 연인이었다면
+  if(rf7Rom(r)>=60&&T0==='warm')L.warm.push([`${Nu} 당신이 보낸 편지 묶음을 끝내 태우지 못했다.`,`“답장을 보낼 곳이 이제 없네.”`,'rom']);
+  // 너무 일찍 떠났다면
+  if(young&&T0!=='cold')L[T0].push([`${Ni} 말했다. “우리 중에 네가 제일 먼저일 줄은 몰랐어.”`,`${jo(bHe(k),'은','는')} 그 말을 하고 나서야 울었다.`,'young']);
+  const pool=L[T0].filter(x=>!x[2]||!used.has(x[2]));let [a,b,tg]=pick(pool.length?pool:L[T0]);if(tg)used.add(tg);
+  // 소식을 들은 자리
+  const dc=s.death&&s.death.cause;
+  if(dc==='guillotine'&&T0!=='cold'){const G={louise:[`${Nu} 그날 빵 하나를 따로 구워, 이름 없는 묘지 담장 밑에 두고 왔다.`,`“거기선 아무도 이름을 불러 주지 않는대. 그러니까 내가 불러.”`],
+    etienne:[`${Nu} 판결문 사본을 구해 밤새 읽었다.`,`“법이 너를 죽였어. 우리가 같이 쓰자던 그 법이.”`],
+    jules:[`${Nu} 숨어서 당신을 위한 미사를 드렸다. 이름 대신 ‘하느님이 아시는 그 사람’이라고 불렀다.`,`그 미사에서만은 한 번도 더듬지 않았다.`],
+    antoine:[`${Nu} 사형 집행인의 조수에게 몰래 돈을 쥐여 주고 당신의 유품을 찾아왔다.`,`그 돈은 장부에 적지 않았다.`],
+    gabriel:[`${Nu} 처형 날 혁명 광장의 군중 맨 앞줄에 섰다. 수레가 지나가는 동안 한 번도 눈을 돌리지 않았다.`,`“이번엔 안 달아났어. 끝까지 봤어.”`]};[a,b]=G[k]}
+  if(r.cond==='prison'){a=`${Nu} 감옥에서 소식을 들었다.`;b=T0==='warm'?`“나가면 제일 먼저 너한테 가려고 했는데.” 그날 밤 ${jo(bHe(k),'은','는')} 벽을 보고 누워 한 번도 돌아눕지 않았다.`:T0==='mid'?`소식을 전한 간수에게 고맙다는 말만 하고 오래 말이 없었다.`:`“그래.” 한마디뿐이었다. 그 뒤로 며칠 동안 아무것도 먹지 않았다.`}
+  else if(s.cond==='emigre'){a=`부고는 몇 달이 지나서야 국경 너머에서 ${N}에게 닿았다.`;b=T0==='cold'?`${Nu} 편지를 끝까지 읽고 서랍에 넣었다.`:`“배웅도 못 했네. 너는 늘 나를 배웅해 줬는데.”`}
+  return [a,b]}
+function r18Mourn(){if(!s||!s.dead||s.r18m)return;s.r18m=[];
+  const used=new Set();for(const k of BF_KEYS){const r=bfR(k);if(!r||!r.alive)continue;let ab;try{ab=r18Lines(k,r,used)}catch(e){console.error(e);continue}
+    s.r18m.push({k,n:r.n,t:ab.join(' ')})}
+  for(const m of s.r18m)L(m.t,'ev');
+  if(s.r18m.length)L(`살아 있는 오랜 벗 ${s.r18m.length}명이 당신을 애도했다.`,'sys')}
+{const _se=showEnd;showEnd=function(){try{r18Mourn()}catch(e){console.error(e)}_se.apply(this,arguments);try{
+  let sec=$('#obMournSec');const ul0=$('#obRels');if(!sec&&ul0){sec=el('div','ob-sec');sec.id='obMournSec';sec.appendChild(el('h3',null,'오랜 벗들의 애도'));const u=el('ul','ob-mourn');u.id='obMourn';sec.appendChild(u);const host=ul0.closest('.ob-sec')||ul0.parentNode;host.after(sec)}
+  if(sec){const u=$('#obMourn');u.innerHTML='';const ms=s.r18m||[];sec.hidden=!ms.length;ms.forEach(m=>{const li=el('li');li.appendChild(el('b',null,m.n));li.appendChild(document.createTextNode(m.t));u.appendChild(li)})}
+  }catch(e){console.error(e)}}}
 
 </script>
 </body>
