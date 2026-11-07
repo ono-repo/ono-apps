@@ -8460,6 +8460,8 @@ function bfJob(k,j){const r=bfR(k);if(r)r.job=j}
 function bfDie(k,cause,t,quiet){const r=bfR(k);if(!r||!r.alive)return;r.alive=false;r.dead=s.year;r.dc=cause;bfFate(k,t);
   // 그와 함께한 기억은 모두 다시 떠오르고, 다른 의미가 된다
   bfS().mem.filter(m=>m.k.includes(k)).forEach(m=>{m.w=100});
+  try{s.mourn30=Math.max(s.mourn30||0,MI()+6)}catch(e){}
+  if(!quiet&&typeof r30DieHold==='function'&&r30DieHold(k,`${bU(k)} ${t}`))return;
   if(!quiet&&!(cause==='guillotine'&&k==='etienne'&&bfM('m_cart'))&&!(cause==='guillotine'&&['robespierre','desmoulins'].includes(k)&&typeof r15Ok==='function'&&r15Ok()))say(`${bU(k)} ${t}`,'big')}
 
 /* ---------- 기억 · 의미 · 비밀 · 질문 · 후회 · 물건 · 편지 ---------- */
@@ -8556,7 +8558,7 @@ beat('antoine','an_meet',{when:()=>s.age>=9&&bfHere(),run:async()=>{bfMake('anto
    {l:'내기를 하고, 딴 단추를 돌려준다',a:'social',f:()=>{bfSet('antoine','gave');bfMem('m_button','antoine',`구슬 내기에서 ${A}의 은단추를 땄다가 돌려주었다. ${bU('antoine')} 한참 단추를 만지작거리다 “빚진 거야.”라고 했다.`,{obj:'은단추',place:'생드니 거리',their:'그 아이는 단추를 돌려주었다. 나는 그 빚을 평생 기억했다. 빚은 갚아야 하는 거니까.'});bfRel('antoine',{close:8,resp:10});say(`${bU('antoine')} 단추를 주머니 깊숙이 넣었다.`)}},
    {l:'내기를 하지 않는다',a:'safe',f:()=>{bfMem('m_button','antoine',`${bI('antoine')} 은단추를 걸고 구슬 내기를 하자고 했지만 하지 않았다.`,{tone:'그리움',place:'생드니 거리',their:'그 아이는 내기를 하지 않았다. 조심성 많은 아이였다. 나는 그런 사람이 부러웠다.'});bfRel('antoine',{close:3});say(`${bU('antoine')} 어깨를 으쓱하더니 다른 아이와 내기를 했다. 그리고 졌다.`)}}])}});
 
-beat('gabriel','ga_meet',{when:()=>s.age>=10&&bfHere()&&[11,0,1].includes(s.month),run:async()=>{bfMake('gabriel');const Ga=bN('gabriel');bfJob('gabriel',noble()?'이웃 저택의 아이':'도매상의 아이');
+beat('gabriel','ga_meet',{gap:0,when:()=>s.age>=9&&bfHere()&&[11,0,1].includes(s.month),run:async()=>{bfMake('gabriel');const Ga=bN('gabriel');bfJob('gabriel',noble()?'이웃 저택의 아이':'도매상의 아이');
   fx({hp:-3});
   await bfScene('얼어붙은 연못','la glace',`겨울, 튈르리 정원의 연못이 얼었다. 이웃 ${noble()?'저택':'도매상'}의 아이, ${jo(Ga,'이다','다')}. 얼음이 쩍 갈라졌다. ${bU('gabriel')} 달아났고, 당신은 물에 빠졌다. 이튿날 아이들이 묻는다. “누가 먼저 도망쳤어?” 저만치 ${bI('gabriel')} 굳은 얼굴로 서 있다.`,[
    {l:'“둘 다 도망쳤어.”라고 말한다',a:'social',f:()=>{bfSet('gabriel','kept');bfKnow('gabriel','dog',1);bfMem('m_dog','gabriel',`튈르리 정원의 얼음이 깨지던 날 ${bU('gabriel')} 달아났고, 당신은 물에 빠졌다. 아이들에게는 둘 다 도망쳤다고 말했다.`,{tone:'그리움',place:'튈르리 정원 연못',their:'그 아이는 내가 먼저 도망쳤다고 말하지 않았다. 나는 평생 그 거짓말에 빚졌다.'});bfObj('ribbon',`${bI('gabriel')} 말없이 쥐여 준 푸른 리본`,{from:'gabriel'});bfRel('gabriel',{close:10,trust:12,riv:-10});say(`며칠 뒤 ${bI('gabriel')} 말없이 푸른 리본 하나를 당신 손에 쥐여 주었다.`)}},
@@ -8578,7 +8580,7 @@ beat('etienne','et_promise',{when:()=>s.age>=10&&s.year>=bfR('etienne').y+1&&bfH
     {tone:'희망',place:'퐁뇌프',their:law==='seize'?'그 아이가 나더러 고르라고 했다. 그래서 그 법을 말해 버렸다. 왜 그 법이었는지는 묻지 않았다. 고마웠다.':'그날 그 아이가 고른 법보다, 내가 차마 말하지 못한 법이 더 오래 생각났다.'});
   bfRel('etienne',{close:8,trust:8});say(law==='seize'?`${bI('etienne')} 고른 법을 듣고, 당신은 왜 하필 그 법이냐고 묻지 않았다.`:`${bU('etienne')} 진지하게 고개를 끄덕였다. “좋아. 약속이야.”`)}});
 
-beat('group','g_scold',{when:()=>s.age>=11&&bfMetN()>=3&&bfHere(),until:()=>s.age>=14,run:async()=>{const ks=BF5.filter(k=>bfMet(k)&&bfAlive(k));const who=bfList(ks);const tch=noble()?'가정교사':'본당 신부';
+beat('group','g_scold',{when:()=>s.age>=11&&bfMetN()>=3&&(bfMet('gabriel')||s.age>=13)&&bfHere(),until:()=>s.age>=14,run:async()=>{const ks=BF5.filter(k=>bfMet(k)&&bfAlive(k));const who=bfList(ks);const tch=noble()?'가정교사':'본당 신부';
   const TH={louise:'사과 맛밖에 기억나지 않는다. 그렇게 단 사과는 그 뒤로 없었다.',etienne:'그 아이가 나섰을 때 나는 나서지 못했다. 그게 오래 부끄러웠다.',jules:'신부님이 “용기는 매를 맞는 쪽에 있다”고 하셨다. 그 말을 평생 외웠다.',antoine:'사실 담을 넘자고 한 건 나였다. 다들 그걸 알면서 아무도 말하지 않았다.',gabriel:'아버지가 돈을 보내 나만 빠졌다. 그날 다른 아이들의 손바닥이 부어 있었다.'};
   const mk=(t,ov={})=>{const m=bfMem('m_apple',ks,t,{place:'카르투지오 수도원 과수원',tone:'기쁨'});if(m){m.their=Object.assign({},TH,ov);Object.keys(m.their).forEach(k=>{if(!ks.includes(k))delete m.their[k]})}ks.forEach(k=>bfRel(k,{close:4}))};
   await bfScene('수도원 과수원','les pommes des Chartreux',`${who}, 그리고 당신. 카르투지오 수도원 담을 넘어 사과를 따다 붙잡혔다. ${tch} 앞에 줄지어 선다. “누가 먼저 넘자고 했느냐?”`,[
@@ -10089,7 +10091,7 @@ const RF2_FK={train:'gym',labor:'gym',spa:'gym',hunt:'gym',read:'lib',cabinet:'l
   salon:'soc',visit:'soc',charity:'soc',theatre:'soc',guing:'soc',billet:'soc',mediate:'soc',mutual:'soc',lodge:'soc',lodgem:'soc',lavoir:'soc',marche:'soc',salon_f:'soc',cabaret:'soc',gamble:'soc',lottery:'soc',bfvisit:'soc',
   mass:'church',pilgr:'church',confr:'church',worship:'church',hotel:'church',
   astro:'lec',engin:'lec',lawread:'lib',theo:'church',atelier:'shop',ledger:'shop'};
-const rf2FacOf=a=>RF2_FK[a.k]||({body:'gym',learn:'lec',social:'soc',faith:'church'})[a.g||actGroup(a)]||'etc';
+const rf2FacOf=a=>(typeof R30_POL_ACTS!=='undefined'&&R30_POL_ACTS.includes(a.k))?'none':RF2_FK[a.k]||({body:'gym',learn:'lec',social:'soc',faith:'church'})[a.g||actGroup(a)]||'etc';
 let rf2Fac=null;
 const RF2_SHOP=[
  {k:'coffee',n:'모카 커피와 설탕 한 봉',p:25,rep:1,fx:{soc:1,hp:1},t:'카페 드 라 레장스에서 산 모카 원두를 집에서 볶았다. 설탕을 두 덩이나 넣었다.'},
@@ -10122,7 +10124,7 @@ function rf2FacBody(W){W.innerHTML='';const list=ACTS.filter(a=>{try{return !a.h
     const b=el('button','fac'+(rf2Fac===k?' on':''));b.type='button';b.innerHTML=`<b>${n}</b><small>${fr}</small>`;b.setAttribute('aria-pressed',String(rf2Fac===k));
     b.onclick=()=>{rf2Fac=rf2Fac===k?null:k;rf2FacBody(W)};grid.appendChild(b)});W.appendChild(grid);
   if(!rf2Fac)return;const box=el('div','acts fac-acts');W.appendChild(box);
-  if(rf2Fac==='shop'){const sS=list.filter(a=>rf2FacOf(a)==='shop');if(sS.length){box.appendChild(el('div','lab','배우기'));actButtons(sS,box);box.appendChild(el('div','lab','사치품'))}rf2Shop(box);return}
+  if(rf2Fac==='shop'){const sS=list.filter(a=>rf2FacOf(a)==='shop');if(sS.length){box.appendChild(el('div','lab','재산'));actButtons(sS,box);box.appendChild(el('div','lab','사치품'))}rf2Shop(box);return}
   const sub=list.filter(a=>rf2FacOf(a)===rf2Fac);if(!sub.length){box.appendChild(el('p','mut','지금 이곳에서 할 수 있는 일이 없다.'));return}actButtons(sub,box)}
 {const _ba=buildActs;buildActs=function(pin){if(!s)return;if(child())return _ba(pin);
   if(s.cond!=='normal'){const list=ACTS.filter(a=>{try{return !a.hide&&a.c()}catch(e){return false}});const box=el('div','acts');
@@ -10858,7 +10860,7 @@ function rf7Minimize(on){const sh=$('#sheet');let pill=$('#shBack');
   const g=h.nextElementSibling;const d=el('details','fold');d.appendChild(el('summary',null,'재능'));h.replaceWith(d);if(g&&g.tagName!=='H3'&&g.tagName!=='DETAILS')d.appendChild(g)}catch(e){console.error(e)}}}
 
 /* ================= 관계 탭: 편지 · 선물 · 로맨틱 ================= */
-const romBan=r=>!!(r&&['robespierre','desmoulins'].includes(r.core||r.pid)&&!(typeof s!=='undefined'&&s&&s.by===1758));
+const romBan=r=>!!(r&&(r.core||r.pid)==='desmoulins')||!!(r&&['robespierre'].includes(r.core||r.pid)&&!(typeof s!=='undefined'&&s&&s.by===1758));
 const rf7Rom=r=>romBan(r)?0:(r.rom||0);
 const RF7_LET=[
  {l:'안부를 묻는다',s:'친밀 +',lit:1,f:r=>`${r.n}에게 안부 편지를 보냈다. 날씨와 빵값과 식구들 이야기를 적었다.`+fx({pen:1})+relFx(r,{close:4,trust:1})},
@@ -10885,8 +10887,8 @@ function rf7RomAdd(r,n){if(child()||romBan(r))return '';r.rom=clamp(rf7Rom(r)+n,
   if(!r.alive||child()||s.cond==='prison')return;
   const b=el('button','pill pri wide','✉ 편지 · 선물 보내기');b.type='button';
   b.onclick=()=>{const box=el('div','letter-ch');const sec=(t,list,gift)=>{box.appendChild(el('div','lab',t));list.forEach(o=>{const c=el('button','opt row');c.type='button';const sp=el('span');sp.appendChild(el('span','ol',o.l));sp.appendChild(el('small',null,o.s+(gift?` · ${o.p} ${money()}`:'')));c.appendChild(sp);
-      c.disabled=(o.lit&&!lit())||(gift&&s.money<o.p);c.onclick=()=>{s.acts['let_'+(r.fid||r.pid)]=s.year;if(gift)s.money-=o.p;const t=o.f(r);L(t+(gift?` (재산 -${o.p})`:''),'ev');save();toast(t.replace(/\s*\([^()]*\)/g,''));personPage(r);render();rf7RomCheck()};box.appendChild(c)})};
-    sec('편지',RF7_LET);sec('선물',RF7_GIFT,true);if(!lit())box.appendChild(el('p','mut small','글을 몰라 편지는 쓸 수 없다. 선물은 보낼 수 있다.'));b.replaceWith(box)};
+      const gk='gift_'+(r.fid||r.pid);if(gift&&s.acts[gk]===s.year){sp.lastChild.textContent='올해는 이미 선물을 보냈다'}c.disabled=(o.lit&&!lit())||(gift&&(s.money<o.p||s.acts[gk]===s.year));c.onclick=()=>{s.acts['let_'+(r.fid||r.pid)]=s.year;if(gift){s.money-=o.p;s.acts[gk]=s.year}const t=o.f(r);L(t+(gift?` (재산 -${o.p})`:''),'ev');save();toast(t.replace(/\s*\([^()]*\)/g,''));personPage(r);render();rf7RomCheck()};box.appendChild(c)})};
+    sec('편지',RF7_LET);sec('선물 (한 해에 한 번)',RF7_GIFT,true);if(!lit())box.appendChild(el('p','mut small','글을 몰라 편지는 쓸 수 없다. 선물은 보낼 수 있다.'));b.replaceWith(box)};
   pin.appendChild(b)}catch(e){console.error(e)}}}
 
 /* ---------- 로맨틱 사건: 로맨틱 80 이상, 방해물 계산 ---------- */
@@ -11362,7 +11364,7 @@ const RF11_QV={
 
 /* ---------- 8. 사건 창 사이의 쉼: 7초쯤 ---------- */
 const RF11_GAP=5000;let rf11Last=0;
-const rf11Gap=()=>(typeof window!=='undefined'&&window.__nogap)?0:(s&&T()>=1789&&T()<1795?4000:0);
+const rf11Gap=()=>(typeof window!=='undefined'&&window.__nogap)?0:((s&&T()>=1789&&T()<1795?4000:2500)+(typeof r30Q!=='undefined'?r30Q.length*r30Step():0));
 const hasLover=()=>!!(typeof s!=='undefined'&&s&&(s.rel||[]).some(r=>r.alive&&r.role==='연인'&&!r.cut));
 {const _so=sheetOpen;sheetOpen=function(t,fr){_so(t,fr);try{const w=rf11Last+rf11Gap()-Date.now();if(w>0&&rf11Last){const sh=$('#sheet');sh.hidden=true;document.body.classList.remove('modal');
     setTimeout(()=>{if(sheetLive&&!($('#shBack')&&!$('#shBack').hidden)){if(paused){pzHold=true;return}sh.hidden=false;document.body.classList.add('modal')}},w)}}catch(e){}}}
@@ -11650,8 +11652,7 @@ rm12('desmoulins','rm_ds4',80,()=>r12Lover('desmoulins')&&T()>=1789.45&&T()<1794
 /* reform11.js의 rf11Gap에서 처리한다. */
 
 /* ---------- 2. 시설: 예전 일곱 곳으로 되돌리고, 온천만 따로 둔다 ---------- */
-RF2_FAC.splice(RF2_FAC.findIndex(x=>x[0]==='shop'),0,['spa','온천','les eaux']);
-RF2_FK.spa='spa';
+/* 온천 시설은 없앤다(개편 30) */
 
 /* ---------- 3. 새 직업 열 갈래 ---------- */
 const r13Court=()=>T()<1792.6||T()>=1804.4;
@@ -12902,6 +12903,69 @@ const romOffNow=r=>!!(r&&r.romOff&&s.year-r.romOff<6&&r.role!=='연인');
 {const _rg28=rf4Guillo;rf4Guillo=async function(r){try{if(r&&r.pid&&!r.core&&RF9_DD[r.pid]&&typeof r15Ok==='function'&&r15Ok())return;if(r&&r.core==='etienne'&&bfM('m_cart'))return}catch(e){}return _rg28(r)}}
 
 
+
+/* ================= 개편 30: 시설 자리 정리 · 선물 · 정치 성향 · 데물랭 =================
+   온천 없앰 · 청원서는 정치 탭으로 · 배우기는 강의실 · 땅/국채는 상점 · 공부하기는 도서관. */
+try{const sp=ACTS.find(a=>a.k==='spa');if(sp)sp.hide=true}catch(e){}
+Object.assign(RF2_FK,{atelier:'lec',ledger:'lec',rente:'shop',land:'shop',buy:'shop',study:'lib',math:'lib',astro:'lib',engin:'lib'});
+const R30_POL_ACTS=['petition','rx_petit'];
+{const _sp=buildPolitics;buildPolitics=function(pin){_sp.apply(this,arguments);try{if(!s||!pin)return;const list=ACTS.filter(a=>R30_POL_ACTS.includes(a.k)&&!a.hide&&(()=>{try{return a.c()}catch(e){return false}})());if(!list.length)return;
+  pin.appendChild(el('h3',null,'시민 활동'));const box=el('div','acts');actButtons(list,box);pin.appendChild(box)}catch(e){console.error(e)}}}
+// 데물랭은 로맨스 지수가 없다
+// 오랜 벗들의 정치 성향
+const R30_FAC={etienne:'공화주의 · 적극적인 로베스피에르파',louise:'공화주의 · 소극적인 당통파',gabriel:'세속적인 입헌군주주의',jules:'가톨릭주의'};
+const R30_POL={etienne:70,louise:25,gabriel:-12,jules:-45};
+{const _bm=bfMake;bfMake=function(k){const r=_bm(k);try{if(R30_POL[k]!=null)r.pol=R30_POL[k];r.fac30=R30_FAC[k]||null}catch(e){}return r}}
+{const _pp30=personPage;personPage=function(r){_pp30(r);try{if(!r||!r.core||!R30_FAC[r.core]||child()||T()<1788)return;const pin=$('#pin');if(pin.querySelector('.fac30'))return;const p=el('p','mut small center fac30',`정치 성향: ${R30_FAC[r.core]}`);const g=pin.querySelector('.pf-stats');if(g)g.after(p);else pin.appendChild(p)}catch(e){}}}
+
+/* ---------- 일상 기록의 속도: 새해·살림·그달의 역사·그에 대한 벗들의 반응은 한꺼번에, 나머지는 같은 간격으로 한 줄씩.
+   사건 창이 떠 있는 동안에는 멈추고, 창이 닫히면 결과부터 한 줄씩 보여 준 뒤 다음 사건 창이 뜬다. ---------- */
+let r30Q=[],r30Next=0,r30Tm=null,r30Imm=false,r30Bulk=false;
+const r30Step=()=>{const sp=(typeof speed!=='undefined'&&speed)||1;return r30Q.length>8?150:Math.round(900/Math.max(1,sp/2))};
+const r30IsImm=e=>e.k==='yr'||e.k==='hist'||e.imm||(e.k==='sys'&&/^한 해 살림/.test(e.t||''));
+function r30Show(e){const box=logBox||$('#log');if(!box)return;box.prepend(entryNode(e));while(box.childElementCount>360)box.lastElementChild.remove()}
+function r30Pump(){clearTimeout(r30Tm);r30Tm=null;if(!r30Q.length)return;
+  if(sheetLive&&!(s&&s.dead)){r30Tm=setTimeout(r30Pump,300);return}
+  const now=Date.now();if(now<r30Next){r30Tm=setTimeout(r30Pump,r30Next-now);return}
+  r30Show(r30Q.shift());while(r30Q.length&&r30IsImm(r30Q[0]))r30Show(r30Q.shift());foldLog();
+  r30Next=Date.now()+r30Step();if(r30Q.length)r30Tm=setTimeout(r30Pump,r30Step())}
+flushLog=function(){const box=logBox||$('#log');if(!box||!s)return;
+  for(;shown<s.log.length;shown++){const e=s.log[shown];if(r30Imm)e.imm=1;
+    if(r30Bulk||s.dead||(typeof window!=='undefined'&&window.__nogap)){r30Show(e);continue}
+    if(r30IsImm(e)&&!r30Q.length){r30Show(e);continue}
+    r30Q.push(e)}
+  foldLog();if(r30Q.length&&!r30Tm)r30Pump()};
+{const _rb=rebuildLog;rebuildLog=function(){r30Q=[];clearTimeout(r30Tm);r30Tm=null;r30Bulk=true;try{return _rb.apply(this,arguments)}finally{r30Bulk=false}}}
+{const _r9=rf9React;rf9React=async function(){r30Imm=true;try{return await _r9.apply(this,arguments)}finally{r30Imm=false}}}
+
+/* ---------- 1795년부터는 그달 역사에 대한 '나의 반응' 창을 띄우지 않는다. 역사 줄과 벗들의 반응만 남는다.
+   (선택이 필요한 일은 조용히 무난한 쪽으로 처리하고, 큰일(big·dark)만 기록에 남긴다) ---------- */
+let r30Silent=false;
+try{for(const h of HIST){if(h.mi>=1795*12&&h.fn&&!h.r30){const f=h.fn;h.r30=1;h.fn=async function(){r30Silent=true;try{return await f.apply(this,arguments)}finally{r30Silent=false}}}}}catch(e){console.error(e)}
+{const _q30=Q;Q=async function(title,fr,text,opts){if(r30Silent){const L0=(opts||[]).map((o,i)=>[o,i]).filter(([o])=>o&&!o.dis);const sf=L0.find(([o])=>/safe/.test(o.a||''));return sf?sf[1]:(L0.length?L0[L0.length-1][1]:0)}return _q30.apply(this,arguments)}}
+{const _L30=L;L=function(t,k='ev',d){if(r30Silent&&!['big','dark','hist','yr'].includes(k))return;return _L30.call(this,t,k,d)}}
+
+/* ---------- 생애의 큰일(죽음·애도·연애)은 따로 관리한다
+   · 벗이 죽으면 사망 보고 줄은 잠시 붙들어 둔다. 부고/마지막 수레 장면이 뜨면 그 장면 하나로 대신하고, 장면이 없으면 계절이 끝날 때 한 줄로 낸다.
+   · 그 달에는 다른 벗 장면·로맨스 장면이 겹쳐 뜨지 않는다. 벗을 잃은 뒤 여섯 달 동안은 로맨스·무도회·고백이 쉬어 간다. ---------- */
+function r30DieHold(k,line){s.dh30=s.dh30||{};s.dh30[k]=line;s.grief30=MI();return true}
+function r30DieDone(k){if(s&&s.dh30&&s.dh30[k]){delete s.dh30[k]}if(s)s.grief30=MI()}
+{const _gc=gCore;gCore=async function(r){try{if(r&&r.core)r30DieDone(r.core)}catch(e){}return _gc.apply(this,arguments)}}
+{const _rg30=rf4Guillo;rf4Guillo=async function(r){try{if(r&&r.core)r30DieDone(r.core)}catch(e){}return _rg30.apply(this,arguments)}}
+{const _as30=advanceSeason;advanceSeason=async function(){await _as30.apply(this,arguments);try{if(s&&!s.dead&&s.dh30){for(const k of Object.keys(s.dh30)){const ln=s.dh30[k];delete s.dh30[k];if(!(bfM('m_cart')&&k==='etienne'))L(ln,'big')}}}catch(e){console.error(e)}}}
+const r30Quiet=()=>!!(s&&(s.grief30===MI()));
+const r30Mourn=()=>!!(s&&s.mourn30&&MI()<s.mourn30);
+{const _r2s=rf2Side;rf2Side=async function(){if(r30Quiet()||r30Mourn())return;return _r2s.apply(this,arguments)}}
+{const _rm=r12RomTick;r12RomTick=async function(){if(r30Quiet()||r30Mourn())return;return _rm.apply(this,arguments)}}
+{const _r22=r22Tick;r22Tick=async function(){if(r30Quiet()||r30Mourn())return;return _r22.apply(this,arguments)}}
+{const _rc30=rf7RomCheck;rf7RomCheck=async function(){if(r30Quiet()||r30Mourn())return;return _rc30.apply(this,arguments)}}
+{const _r24=r24Tick;r24Tick=async function(){if(r30Quiet())return;return _r24.apply(this,arguments)}}
+
+// 죽음은 하나만: 부고·장례·마지막 수레 장면이 뜨면, 같은 달에 먼저 나간 같은 사람의 사망 줄은 거둔다
+{const _bs30=bfScene;bfScene=async function(title,fr,text,opts){try{if(s&&/(부고|장례|마지막 수레)$/.test(title||'')){const who=String(title).replace(/의 (부고|장례|마지막 수레)$/,'').trim();const tx=typeof text==='function'?'':String(text||'');const s1=tx.split(/(?<=\.) /)[0];
+    const recent=s.log.slice(-12).filter(e=>e.a===s.age&&e.m===s.month&&e.k!=='hist'&&e.k!=='yr'&&((s1&&e.t.startsWith(s1))||(who&&e.t.includes(who)&&/세상을 떠|숨을 거|단두대에 올랐|처형되었/.test(e.t))));
+    for(const e of recent){e.dup=1;const i=r30Q.indexOf(e);if(i>=0)r30Q.splice(i,1);else{const box=logBox||$('#log');if(box)[...box.children].slice(0,12).forEach(n=>{if(n.textContent&&n.textContent.includes(e.t.slice(0,24)))n.remove()})}}}}catch(e){console.error(e)}return _bs30.apply(this,arguments)}}
+{const _en=entryNode;entryNode=function(e){const n=_en(e);if(e&&e.dup&&n)n.hidden=true;return n}}
 </script>
 </body>
 </html>
