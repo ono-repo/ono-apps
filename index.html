@@ -11362,7 +11362,7 @@ const RF11_GAP=5000;let rf11Last=0;
 const rf11Gap=()=>(typeof window!=='undefined'&&window.__nogap)?0:(s&&T()>=1789&&T()<1795?4000:0);
 const hasLover=()=>!!(typeof s!=='undefined'&&s&&(s.rel||[]).some(r=>r.alive&&r.role==='연인'&&!r.cut));
 {const _so=sheetOpen;sheetOpen=function(t,fr){_so(t,fr);try{const w=rf11Last+rf11Gap()-Date.now();if(w>0&&rf11Last){const sh=$('#sheet');sh.hidden=true;document.body.classList.remove('modal');
-    setTimeout(()=>{if(sheetLive&&!($('#shBack')&&!$('#shBack').hidden)){sh.hidden=false;document.body.classList.add('modal')}},w)}}catch(e){}}}
+    setTimeout(()=>{if(sheetLive&&!($('#shBack')&&!$('#shBack').hidden)){if(paused){pzHold=true;return}sh.hidden=false;document.body.classList.add('modal')}},w)}}catch(e){}}}
 {const _sc=sheetClose;sheetClose=function(){_sc();rf11Last=Date.now()}}
 
 /* ---------- 9·10. 단두대: 마지막 수레와 애도 ---------- */
@@ -12772,6 +12772,16 @@ async function r24Tick(){if(sheetLive||child()||s.age<16||s.cond!=='normal')retu
     if(r24Gap(r)<R24_GAP||(R24_OK[k]&&!R24_OK[k](r)))continue;s.r24.nx=MI()+6;await r24Rift(k);if(sheetLive)await done();return}}
 // 결별한 미움은 두 해 뒤부터 해마다 조금씩 가라앉는다
 {const _ny24=npcYear;npcYear=async function(){await _ny24.apply(this,arguments);try{if(!s||s.dead)return;for(const k of BF_KEYS){const r=bfR(k);if(r&&r.alive&&r.rift24&&s.year-r.rift24>=2&&(r.hate||0)>0)r24Hate(r,-4)}}catch(e){console.error(e)}}}
+
+/* ================= 개편 25: 일시정지하면 사건도 멈춘다 =================
+   재생을 멈춘 동안 새로 열리는 사건 창은 숨겨 두었다가, 다시 재생하면 그때 띄운다. 자동 선택도 멈춘 동안에는 고르지 않는다. */
+let pzHold=false;
+{const _so25=sheetOpen;sheetOpen=function(t,fr){_so25(t,fr);try{if(paused){pzHold=true;$('#sheet').hidden=true;document.body.classList.remove('modal')}}catch(e){}}}
+{const _sc25=sheetClose;sheetClose=function(){pzHold=false;_sc25()}}
+{const _sp25=setPaused;setPaused=function(p){_sp25(p);try{if(!p&&pzHold){pzHold=false;if(sheetLive){const w=rf11Last?rf11Last+rf11Gap()-Date.now():0;const show=()=>{if(paused){pzHold=true;return}if(sheetLive&&!($('#shBack')&&!$('#shBack').hidden)){$('#sheet').hidden=false;document.body.classList.add('modal')}};if(w>0)setTimeout(show,w);else show()}}}catch(e){}}}
+arm=function(fn){pend=fn;if(!autoMode)return;const fire=()=>{if(!autoMode||pend!==fn)return;if(paused||pzHold){setTimeout(fire,300);return}fn()};setTimeout(fire,r14Wait()+ad())};
+{const _sa25=setAuto;setAuto=function(on){autoMode=on;$('#autoT').setAttribute('aria-pressed',String(on));$('#autoT').textContent=on?'자동 선택 켜짐':'자동 선택 꺼짐';
+  if(on&&pend){const f=pend;const fire=()=>{if(!autoMode||pend!==f)return;if(paused||pzHold){setTimeout(fire,300);return}f()};setTimeout(fire,r14Wait()+ad())}}}
 </script>
 </body>
 </html>
