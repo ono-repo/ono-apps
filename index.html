@@ -11249,7 +11249,7 @@ const RF10_ROM={
  desmoulins:{in:N=>`${jo(N,'이','가')} 더듬으며 말을 꺼냈다. “편, 편지를 쓰다 보면 말이 다 나와. 그런데 마, 막상 앞에 서면…” 그는 시 한 장을 내밀었다. 첫 줄의 첫 글자들을 이으면 당신 이름이 되었다.`,yes:N=>`카미유는 소리 내어 웃더니 그 시를 신문에 싣겠다고 했다. 이름은 빼고.`},
  danton:{in:N=>`${jo(N,'이','가')} 술잔을 내려놓고 커다란 손으로 당신 손을 덮었다. “나는 말로 사람을 움직여 왔지. 그런데 너한테는 말이 안 나와. 이상하지.”`,yes:N=>`당통은 천장이 울리도록 웃었다. 그러고는 아주 작게, 아무도 못 듣게 다시 한 번 말했다.`},
  saintjust:{in:N=>`${jo(N,'이','가')} 늘 그렇듯 표정 없이 말했다. “혁명가는 사사로운 감정을 버려야 하오.” 그러고는 당신의 편지를 한 장도 버리지 않고 모아 둔 상자를 열어 보였다.`,yes:N=>`생쥐스트는 처음으로 웃었다. 스물다섯 살다운 웃음이었다.`}};
-{const _rc=rf7RomCheck;rf7RomCheck=async function(){if(!s||s.dead||sheetLive||child()||s.cond!=='normal')return;const r=(s.rel||[]).find(r=>r.alive&&(r.rom||0)>=80&&!r.romEv);if(!r)return;
+{const _rc=rf7RomCheck;rf7RomCheck=async function(){if(!s||s.dead||sheetLive||child()||s.cond!=='normal')return;const r=(s.rel||[]).find(r=>r.alive&&(r.rom||0)>=80&&(!r.romEv||(r.role!=='연인'&&(r.core||r.pid)&&(r.rom||0)>=90&&s.year-r.romEv>=3)));if(!r)return;if(r.core||r.pid)r22Pass(r.core||r.pid,79);
   const k=r.core||r.pid,R0=RF10_ROM[k];if(!R0)return _rc();r.romEv=s.year;const N=r.n.split(' ')[0],obs=rf7Obstacles(r);
   if(!obs.length){const i=await Q('고백',"l’aveu",R0.in(N),[{l:'“나도 같은 마음이야.”라고 말한다',a:'social family'},{l:'“오래 곁에 있어 줘.”라고 한다',s:'연인이 된다',a:'family'},{l:'아직은 친구로 남자고 한다',a:'safe'}]);
     if(i===0){r.role='연인';say(R0.yes(N)+relFx(r,{close:10,trust:8})+fx({hap:8}),'big')}
@@ -11534,7 +11534,7 @@ const rm12=(k,id,th,when,run)=>RM12.push({k,id,th,when,run});
 const r12Lover=k=>{const r=r12R(k);return !!(r&&['연인','배우자'].includes(r.role))};
 async function r12RomTick(){if(!s||s.dead||sheetLive||child()||s.age<16||s.cond!=='normal')return;s.rm12=s.rm12||{d:{},nx:0};if(MI()<s.rm12.nx)return;
   for(const x of RM12){if(s.rm12.d[x.id]||!r12Ok(x.k))continue;const r=r12R(x.k);if((r.rom||0)<x.th)continue;let ok=false;try{ok=x.when()}catch(e){}if(!ok)continue;
-    s.rm12.d[x.id]=s.year;s.rm12.nx=MI()+3;try{await x.run()}catch(e){console.error('rm',x.id,e);sheetClose()}return}}
+    s.rm12.d[x.id]=s.year;r22Pass(x.k,x.th-1);s.rm12.nx=MI()+3;try{await x.run()}catch(e){console.error('rm',x.id,e);sheetClose()}return}}
 {const _rd12=rfDaily;rfDaily=async function(){await _rd12();if(!s||s.dead)return;try{await r12RomTick()}catch(e){console.error(e)}}}
 const rmo12=(k,l,a,t,o={})=>({l,a,f:()=>{r12Rel(k,o.rel||{close:3});r12Rom(k,o.rom||0);if(o.mem)bfMem(o.mem[0],k,o.mem[1],{tone:o.mem[2]||'기쁨',their:o.mem[3]||null});say(t+fx(Object.assign({hap:o.hap||2},o.fx||{})))}});
 // 루이즈
@@ -12527,7 +12527,7 @@ const R22_VOWYES={
  robespierre:N=>`그는 대답 대신 당신 손등에 아주 잠깐 손을 얹었다. 그것이 그가 할 수 있는 가장 큰 고백이었다.`,
  desmoulins:N=>`${jo(N,'은','는')} 소리 내어 웃더니 그 시를 당신 외투 안주머니에 넣어 주었다. “이, 이건 둘만 읽는 신문이야.”`};
 async function r22Vow(k){const r=r22R(k),N=r22N(k),aff=wedNow();const why=aff?' 당신에게는 배우자가 있다. 이 사랑은 세상이 불륜이라 부를 것이다.':r.mar?` ${N}에게는 가정이 있다. 둘 다 그것을 안다.`:'';
-  await bfScene('고백','l’aveu',R22_VOW[k](N)+why,[
+  await bfScene('평생의 연인','l’aveu',R22_VOW[k](N)+why,[
    {l:'“그래. 네 연인이 될게.”',a:'family bold',f:()=>{r.role='연인';r.vow22=s.year;if(aff||r.mar){r.secret=1;r.affair=1}r22Rel(k,{close:12,trust:10});r22Rom(k,0);
      bfFate(k,aff||r.mar?'당신과 남몰래 평생의 연인이 되기로 약속했다':'당신과 평생의 연인이 되기로 약속했다');
      r22Mem('m22_vow_'+k,k,`${jo(N,'이','가')} 평생의 연인이 되어 달라고 고백했다. 그러겠다고 했다.`,'희망','그 사람이 그러겠다고 했다. 혼인 증서는 없지만, 나한테는 그게 더 단단했다.');
@@ -12551,15 +12551,19 @@ async function r22HateLove(k){const r=r22R(k),N=r22N(k);
    {l:'“이제 그만하자.”며 돌아선다',a:'safe',f:()=>{r22Rom(k,-15);r22Rel(k,{close:-5});r22Mem('m22_hl_'+k,k,`미움과 사랑 사이에서 흔들리던 ${N}에게 이제 그만하자고 했다.`,'후회','그 사람이 그만하자고 했다. 그 말이 맞았다. 그래서 오래 울었다.');say(`등 뒤에서 ${jo(N,'이','가')} 무언가를 말하려다 멈추는 소리가 들렸다. 당신은 돌아보지 않았다.`+fx({hap:-4}),'dark')}}])}
 
 /* ---------- 차례: 무도회 → (100) 평생의 연인 고백, 그리고 미움과 사랑 ---------- */
+// 로맨틱 단계(30·55·80) 장면을 본 적이 있는가, 그리고 어떤 단계까지 지나갔는가
+function r22Seen(k,th){s.rm12=s.rm12||{d:{},nx:0};const L=(typeof RM12!=='undefined'?RM12:[]).filter(x=>x.k===k&&x.th===th);return !L.length||L.every(x=>s.rm12.d[x.id])}
+function r22Pass(k,th){if(typeof RM12==='undefined')return;s.rm12=s.rm12||{d:{},nx:0};for(const x of RM12)if(x.k===k&&x.th<=th&&!s.rm12.d[x.id])s.rm12.d[x.id]='miss'}
 async function r22Tick(){if(!s||s.dead||sheetLive||child()||s.age<16||s.cond!=='normal')return;s.r22=s.r22||{nx:0};if(MI()<s.r22.nx)return;
   for(const k of R22_K()){const r=r22R(k);if(!r||!r.alive||r.cond!=='normal')continue;const rom=r.rom||0;
     // 미움과 사랑
     if(!r.hl22&&(r.hate||0)>=40&&rom>=60){r.hl22=s.year;s.r22.nx=MI()+3;await r22HateLove(k);return}
     if(r.cut||(r.hate||0)>=40)continue;
     // 연인이 된 뒤의 무도회
-    if(!r.ball22&&r.role==='연인'&&rom>=80){r.ball22=s.year;s.r22.nx=MI()+3;await r22Dance(k);return}
+    if(r.role==='연인'&&!r.lovY)r.lovY=s.year;
+    if(!r.ball22&&r.role==='연인'&&rom>=80&&(r22Seen(k,80)||s.year-r.lovY>=1)){r.ball22=s.year;r22Pass(k,80);s.r22.nx=MI()+3;await r22Dance(k);return}
     // 로맨틱 100: 평생의 연인이 되어 달라는 고백(혼인은 하지 않는다)
-    if(rom>=100&&r.role!=='배우자'&&!r.vow22){s.r22.nx=MI()+3;await r22Vow(k);return}}}
+    if(rom>=100&&r.role==='연인'&&!r.vow22&&s.year-(r.lovY||s.year)>=1&&(r.ball22||s.year-(r.lovY||s.year)>=2)){r22Pass(k,100);s.r22.nx=MI()+3;await r22Vow(k);return}}}
 {const _rd22=rfDaily;rfDaily=async function(){await _rd22();if(!s||s.dead)return;try{await r22Tick();if(sheetLive)await done()}catch(e){console.error(e);if(sheetLive)sheetClose()}}}
 
 /* ---------- 4. 혼인한 뒤 가면무도회에서 만난 사람: 사랑만 ---------- */
