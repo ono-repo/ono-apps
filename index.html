@@ -8920,7 +8920,7 @@ async function bfTick(){if(!s||s.dead)return;const B=bfS();const now=MI();
       if(k!=='group'&&st>0&&(!bfAlive(k)||bfR(k).cut)&&!b.dead){st++;continue}
       let exp=false;try{exp=b.until&&b.until()}catch(e){exp=true}
       if(exp){try{b.miss&&b.miss()}catch(e){console.error(e)}st++;continue}break}
-    B.st[k]=st;const b=L0[st];if(!b)continue;let ok=false;try{ok=b.when()}catch(e){}if(ok)ready.push(b)}
+    B.st[k]=st;const b=L0[st];if(!b)continue;if(k!=='group'&&b.gap!==0&&bfHot(k))continue;let ok=false;try{ok=b.when()}catch(e){}if(ok)ready.push(b)}
   if(!ready.length)return;
   // 역사적 날짜에 묶인 장면(gap 0)은 쉬는 틈과 상관없이, 나머지는 몇 달씩 띄운다
   const urgent=ready.filter(b=>b.gap===0);const pickB=urgent.length?urgent[0]:(now>=(B.nx||0)?ready.sort((a,b)=>BF_KEYS.indexOf(a.k)-BF_KEYS.indexOf(b.k))[0]:null);
@@ -9575,7 +9575,7 @@ function ssDraft(){if(!s)return null;const from=s.stMark||0,to=s.log.length;cons
    한 해 가운데 무작위 달에 신분과 나이에 맞는 일상 한 줄을, 또 다른 달에 가끔 벗의 일상 한 줄을 넣는다(reform2.js의 rfDaily가 부른다). */
 function mixClass(){if(!s||s.dead||s.age<1)return;const c=ssClassLines(s.year,s.age,1)[0];if(c)L(c,'story')}
 function mixFriend(){try{if(!s||s.dead||s.age<1)return;
-  if(s.age>=7&&R()<.6&&typeof BF_KEYS!=='undefined'){const ks=BF_KEYS.filter(k=>bfMet(k)&&bfAlive(k)&&bfR(k).cond==='normal'&&!bfR(k).cut);if(ks.length){const k=pick(ks);const ph=s.age<14?0:s.age<23?1:2;const t=stPick('mix'+k+ph,ST_BF[k][ph].map(x=>typeof x==='function'?x():x));if(t)L(t,'story')}}}catch(e){console.error(e)}}
+  if(s.age>=7&&R()<.6&&typeof BF_KEYS!=='undefined'){const ks=BF_KEYS.filter(k=>bfMet(k)&&bfAlive(k)&&bfR(k).cond==='normal'&&!bfR(k).cut&&(bfR(k).hate||0)<40);if(ks.length){const k=pick(ks);const ph=s.age<14?0:s.age<23?1:2;const t=stPick('mix'+k+ph,ST_BF[k][ph].map(x=>typeof x==='function'?x():x));if(t)L(t,'story')}}}catch(e){console.error(e)}}
 
 /* ================= 화면 정리 =================
    프로필: ‘성격 · 신념 · 지위’ 카드를 뺀다. 세부 정보에서 건강·평판·명성·가치와 의지를 빼고(위 카드들과 겹친다), 재능의 별을 지우고, 분야별 숙련은 접어 둔다.
@@ -10215,7 +10215,7 @@ defineAct({k:'bfvisit',g:'social',n:'벗을 찾아간다',s:'벗 한 사람과 �
 /* ---------- f. 곁가지 장면: 한 해에 한두 번, 무작위 달에 ---------- */
 const RF2_SIDE=[];
 const side=(k,id,when,run)=>RF2_SIDE.push({k,id,when,run});
-async function rf2Side(){const B=bfS();B.side=B.side||{};const ok=RF2_SIDE.filter(x=>!B.side[x.id]&&(x.k==='group'||(bfMet(x.k)&&bfAlive(x.k)&&!bfR(x.k).cut&&bfR(x.k).cond!=='prison'))&&(()=>{try{return x.when()}catch(e){return false}})());
+async function rf2Side(){const B=bfS();B.side=B.side||{};const ok=RF2_SIDE.filter(x=>!B.side[x.id]&&(x.k==='group'||(bfMet(x.k)&&bfAlive(x.k)&&!bfR(x.k).cut&&!bfHot(x.k)&&bfR(x.k).cond!=='prison'))&&(()=>{try{return x.when()}catch(e){return false}})());
   if(!ok.length||!bfHere()||sheetLive)return;const pr=ok.filter(x=>x.pri);const x=pick(pr.length?pr:ok);B.side[x.id]=s.year;try{await x.run()}catch(e){console.error('side',x.id,e);sheetClose()}}
 const aB=k=>s.year-(bfR(k)?bfR(k).by:s.by);
 
@@ -11145,7 +11145,7 @@ async function rf9React(key){if(!s||s.dead||child()||s.age<12)return;const L0=RF
   let n=0;for(const [k,f] of L0){if(n>=2)break;if(!rf9Ok(k))continue;let t='';try{t=f()}catch(e){continue}if(!t)continue;
     // 당신이 고른 태도와 그 사람의 성향
     const r=['danton','robespierre','desmoulins','saintjust'].includes(k)?rvR(k):bfR(k);const fp=r?(r.pol||0):0;const rad=/radical/.test(rf9Tag),roy=/royal|pious/.test(rf9Tag);
-    let tail='';if(rad&&fp>=30||roy&&fp<=-20){tail=` ${U9(k)} 당신의 대답을 듣고 고개를 끄덕였다.`;try{if(r&&RV_BFK&&!RV_BFK[k]&&!['danton','robespierre','desmoulins','saintjust'].includes(k))bfRel(k,{close:2});else rvRel(k,{close:2})}catch(e){}}
+    let tail='';if((r&&(r.hate||0)>=40)){}else if(rad&&fp>=30||roy&&fp<=-20){tail=` ${U9(k)} 당신의 대답을 듣고 고개를 끄덕였다.`;try{if(r&&RV_BFK&&!RV_BFK[k]&&!['danton','robespierre','desmoulins','saintjust'].includes(k))bfRel(k,{close:2});else rvRel(k,{close:2})}catch(e){}}
     else if(rad&&fp<=-20||roy&&fp>=30){tail=` 당신의 대답에 ${U9(k)} 말없이 눈길을 돌렸다.`;try{if(['danton','robespierre','desmoulins','saintjust'].includes(k))rvRel(k,{close:-2});else bfRel(k,{close:-2})}catch(e){}}
     L(t+tail,'ev');n++}}
 {const _rh9b=runHistory;runHistory=async function(a,b){const hs=HIST.filter(h=>h.mi>a&&h.mi<=b&&!h.mute&&!h.day9);rf9Tag='';await _rh9b(a,b);if(!s||s.dead)return;
@@ -11252,7 +11252,7 @@ const RF10_ROM={
  desmoulins:{in:N=>T()<1785.5?`팔레루아얄 회랑. ${jo(N,'이','가')} 새로 쓴 풍자시를 낭독하다가 당신을 보고 멈춘다. “이, 이 시의 마지막 줄은 아직 없어. 네가 대답해 주면 그게 마지막 줄이야.” 그가 숨을 고른다. “너를 좋아해.”`:T()<1789.4?`일감 없는 변호사 ${jo(N,'이','가')} 빈 법정 복도에서 당신을 붙잡는다. “벼, 변론은 늘 망쳐. 그런데 오늘은 망치기 싫은 말이 있어.” 그가 숨을 고른다. “너를 좋아해. …바, 방금 안 더듬었지?”`:`${jo(N,'이','가')} 잉크 묻은 손으로 인쇄소에서 뛰어나왔다. “조판공이 내 원고에서 오자를 찾았대. 문장마다 네 이름이 잘못 들어가 있었대.” 그가 웃다가, 갑자기 진지해진다. “그, 그런데 오자가 아니야.”`,yes:N=>`${jo(N,'은','는')} 잉크 묻은 손으로 당신 손을 잡았다. 둘의 손바닥에 같은 글자가 거꾸로 찍혔다.`},
  danton:{in:N=>`${jo(N,'이','가')} 술잔을 내려놓고 커다란 손으로 당신 손을 덮었다. “나는 말로 사람을 움직여 왔지. 그런데 너한테는 말이 안 나와. 이상하지.”`,yes:N=>`당통은 천장이 울리도록 웃었다. 그러고는 아주 작게, 아무도 못 듣게 다시 한 번 말했다.`},
  saintjust:{in:N=>`${jo(N,'이','가')} 늘 그렇듯 표정 없이 말했다. “혁명가는 사사로운 감정을 버려야 하오.” 그러고는 당신의 편지를 한 장도 버리지 않고 모아 둔 상자를 열어 보였다.`,yes:N=>`생쥐스트는 처음으로 웃었다. 스물다섯 살다운 웃음이었다.`}};
-{const _rc=rf7RomCheck;rf7RomCheck=async function(){if(!s||s.dead||sheetLive||child()||s.cond!=='normal')return;const r=(s.rel||[]).find(r=>r.alive&&rf7Rom(r)>=80&&!(hasLover()&&r.role!=='연인')&&(!r.romEv||(r.role!=='연인'&&(r.core||r.pid)&&(r.rom||0)>=90&&s.year-r.romEv>=3)));if(!r)return;if(r.core||r.pid)r22Pass(r.core||r.pid,79);
+{const _rc=rf7RomCheck;rf7RomCheck=async function(){if(!s||s.dead||sheetLive||child()||s.cond!=='normal')return;const r=(s.rel||[]).find(r=>r.alive&&rf7Rom(r)>=80&&(r.hate||0)<40&&!(hasLover()&&r.role!=='연인')&&(!r.romEv||(r.role!=='연인'&&(r.core||r.pid)&&(r.rom||0)>=90&&s.year-r.romEv>=3)));if(!r)return;if(r.core||r.pid)r22Pass(r.core||r.pid,79);
   const k=r.core||r.pid,R0=RF10_ROM[k];if(!R0)return _rc();r.romEv=s.year;const N=r.n.split(' ')[0],obs=rf7Obstacles(r);
   if(!obs.length){const i=await Q('고백',"l’aveu",R0.in(N),[{l:'“나도 같은 마음이야.”라고 말한다',a:'social family'},{l:'“오래 곁에 있어 줘.”라고 한다',s:'연인이 된다',a:'family'},{l:'아직은 친구로 남자고 한다',a:'safe'}]);
     if(i===0){r.role='연인';say(R0.yes(N)+relFx(r,{close:10,trust:8})+fx({hap:8}),'big')}
@@ -11320,7 +11320,7 @@ try{ACTS.forEach(a=>{if(typeof rf2FacOf==='function'&&rf2FacOf(a)==='soc'){if(a.
 {const _ny10=newYear;newYear=function(){_ny10();try{rf10HapInit();const h=s.st.hap;s.st.hap=clamp(h+(h<50?3:h>70?-2:0),0,100)}catch(e){}}}
 // 20 이하: 우울
 const RF10_BLUE=['아침에 눈을 떠도 일어날 이유가 떠오르지 않았다. 창밖의 소리가 멀게만 들렸다.','식탁에 앉아 수프가 식는 것을 보고만 있었다. 숟가락을 들 기운이 없었다.','거리에서 아는 얼굴을 보고 일부러 길을 건넜다. 누구와도 말하고 싶지 않았다.','밤마다 같은 생각이 맴돌았다. 다 무슨 소용인가.','좋아하던 일도 손에 잡히지 않았다. 하루가 길고, 한 해는 짧았다.'];
-function rf10Mood(){if(child()||s.st.hap>20)return;let t=pick(RF10_BLUE);try{const fr=(typeof BF_KEYS!=='undefined'?BF_KEYS:[]).filter(k=>bfMet(k)&&bfAlive(k)&&!bfR(k).cut&&bfR(k).close>=50);
+function rf10Mood(){if(child()||s.st.hap>20)return;let t=pick(RF10_BLUE);try{const fr=(typeof BF_KEYS!=='undefined'?BF_KEYS:[]).filter(k=>bfMet(k)&&bfAlive(k)&&!bfR(k).cut&&(bfR(k).hate||0)<40&&bfR(k).close>=50);
   if(fr.length){const k=pick(fr);t+=` ${jo(bN(k),'이','가')} 요즘 왜 그렇게 말이 없느냐고 물었다. 당신은 대답하지 못했다.`;bfRel(k,{close:2})}}catch(e){}L(t+fx({hp:-1}),'dark')}
 
 /* ================= 개편 11 =================
@@ -11428,7 +11428,7 @@ let rf11G=null;
 
 const R12_FIG={robespierre:1,desmoulins:1,danton:1,saintjust:1};
 const r12R=k=>R12_FIG[k]&&typeof rvR==='function'?rvR(k):bfR(k);
-const r12Ok=k=>{const r=r12R(k);return !!(r&&r.alive&&!r.cut&&r.cond!=='prison')};
+const r12Ok=k=>{const r=r12R(k);return !!(r&&r.alive&&!r.cut&&(r.hate||0)<40&&r.cond!=='prison')};
 const r12N=k=>R12_FIG[k]?rvN(k):bN(k);
 const r12U=k=>jo(r12N(k),'은','는'),r12I=k=>jo(r12N(k),'이','가'),r12W=k=>jo(r12N(k),'과','와'),r12L=k=>jo(r12N(k),'을','를');
 const r12H=k=>{const r=r12R(k);return r&&r.sex==='F'?'그녀':'그'};
@@ -12052,7 +12052,7 @@ async function r16After(x){const v=r16Victim(x);if(!v||!bfMet(v))return;const V=
    · Michael Fitzsimmons, The Parisian Order of Barristers and the French Revolution (1987) · Jean Vidalenc, Les Émigrés français (1963). */
 
 const R17_CORE=['louise','etienne','jules','antoine','gabriel'];
-const r17Ok=k=>bfMet(k)&&bfAlive(k)&&!bfR(k).cut&&bfR(k).cond==='normal';
+const r17Ok=k=>bfMet(k)&&bfAlive(k)&&!bfR(k).cut&&(bfR(k).hate||0)<40&&bfR(k).cond==='normal';
 
 /* ---------- 1. 누가 고발당했고, 언제 풀려났나 ---------- */
 function r17Mark(v,how){if(!v||v==='?list'||!bfMet(v))return;s.r16den=s.r16den||{};if(!s.r16den[v])s.r16den[v]={how,y:s.year,jail:0,rel:0,done:0}}
@@ -12554,7 +12554,7 @@ const R22_HL={
  robespierre:N=>`${jo(N,'은','는')} 창가에 서서 등을 돌린 채 말한다. “자네는 내 원칙을 배신했소. 그런데도 자네 편지만은 태우지 못하겠소. 그게 나를 가장 괴롭히오.”`,
  desmoulins:N=>`${jo(N,'이','가')} 신문을 구겨 쥐고 찾아왔다. “너에 대한 풍자문을 썼어. 그런데 다 쓰고 보니 연애편지더라. 어떻게 할까, 이거?”`};
 async function r22HateLove(k){const r=r22R(k),N=r22N(k);
-  await bfScene('미움과 사랑','je te hais, je t’aime',R22_HL[k](N),[
+  await bfScene('미움과 사랑','je te hais, je t’aime',(r.rift24&&typeof R24_HL!=='undefined'&&R24_HL[k]?R24_HL[k]:R22_HL[k])(N),[
    {l:'아무 말 없이 끌어안는다',a:'family bold',f:()=>{r.hate=Math.max(0,(r.hate||0)-25);r.cut=null;r22Rom(k,6);r22Rel(k,{close:10,trust:6});r22Mem('m22_hl_'+k,k,`미움과 사랑 사이에서 흔들리던 ${jo(N,'을','를')} 아무 말 없이 끌어안았다.`,'위로','그 사람이 끌어안았다. 미움은 그렇게 쉽게 녹았다. 그래서 더 억울했다.');say(`${jo(N,'은','는')} 처음엔 밀어냈다. 그러다 당신 어깨에 이마를 묻었다. 한참 뒤에 들린 말은 “바보.” 한마디였다.`+fx({hap:6}),'big')}},
    {l:'지지 않고 맞서 다툰다',a:'bold',f:()=>{r.hate=clamp((r.hate||0)+6,0,100);r22Rom(k,4);r22Mem('m22_hl_'+k,k,`미움과 사랑 사이에서 흔들리던 ${jo(N,'과','와')} 지지 않고 맞서 다투었다.`,'씁쓸함','그 사람과 또 싸웠다. 그런데 싸우는 동안에도 눈을 떼지 못했다.');say(`목소리가 높아졌다. 그런데 이상하게도 다툼이 끝났을 때 둘은 서로에게서 한 걸음도 물러나 있지 않았다.`)}},
    {l:'“이제 그만하자.”며 돌아선다',a:'safe',f:()=>{r22Rom(k,-15);r22Rel(k,{close:-5});r22Mem('m22_hl_'+k,k,`미움과 사랑 사이에서 흔들리던 ${N}에게 이제 그만하자고 했다.`,'후회','그 사람이 그만하자고 했다. 그 말이 맞았다. 그래서 오래 울었다.');say(`등 뒤에서 ${jo(N,'이','가')} 무언가를 말하려다 멈추는 소리가 들렸다. 당신은 돌아보지 않았다.`+fx({hap:-4}),'dark')}}])}
@@ -12566,7 +12566,7 @@ function r22Pass(k,th){if(typeof RM12==='undefined')return;s.rm12=s.rm12||{d:{},
 async function r22Tick(){if(!s||s.dead||sheetLive||child()||s.age<16||s.cond!=='normal')return;s.r22=s.r22||{nx:0};if(MI()<s.r22.nx)return;
   for(const k of R22_K()){const r=r22R(k);if(!r||!r.alive||r.cond!=='normal')continue;const rom=rf7Rom(r);
     // 미움과 사랑
-    if(!r.hl22&&(r.hate||0)>=40&&rom>=60&&!(hasLover()&&r.role!=='연인')){r.hl22=s.year;s.r22.nx=MI()+3;await r22HateLove(k);return}
+    if((r.rift24?!r.hl24:!r.hl22)&&(r.hate||0)>=40&&rom>=60&&!(hasLover()&&r.role!=='연인')){if(r.rift24)r.hl24=s.year;else r.hl22=s.year;s.r22.nx=MI()+3;await r22HateLove(k);return}
     if(r.cut||(r.hate||0)>=40)continue;
     // 연인이 된 뒤의 무도회
     if(r.role==='연인'&&!r.lovY)r.lovY=s.year;
@@ -12701,6 +12701,77 @@ async function r23Evening(){s.sp23=s.sp23||{};s.sp23.eve=s.year;const N=r23Sp(),
   if(!s.el95&&bfRev()&&r&&r.alive&&r.cond==='normal'&&r.sex==='F'&&bfFl('etienne','garb')&&t>=1795.38&&t<1797.5){await r23Elise(r);if(sheetLive)await done();return}
 }catch(e){console.error(e);if(sheetLive)sheetClose()}}}
 
+
+/* ================= 개편 24: 정치가 갈라놓은 벗 =================
+   1. 혁명기(1789년 여름~1799년)에 주인공과 벗의 정치 성향 차이가 크게 벌어지면, 벗마다 한 번 그 사람다운 결별 장면이 온다. 미움이 오른다.
+   2. 그 결별 뒤 미움이 높은데 로맨틱도 높으면, 벗마다 한 번 그 갈등에서 이어지는 애증 장면이 온다.
+   3. 미움이 40 이상인 동안에는 그 벗의 다정한 일상·로맨스·고백·위로 장면이 나오지 않는다. 결별한 미움은 두 해가 지나면 해마다 조금씩 가라앉는다. */
+const R24_GAP=55;
+const bfHot=k=>{const r=typeof r12R==='function'?r12R(k):bfR(k);return !!(r&&(r.hate||0)>=40)};
+const r24Gap=r=>Math.abs((s.pol||0)-(r.pol||0));
+const r24Rad=r=>(s.pol||0)>(r.pol||0); // 주인공이 그 벗보다 급진적인가
+function r24Hate(r,n){r.hate=clamp((r.hate||0)+n,0,100);try{r.bd=relBond(r)}catch(e){}}
+const r24o=(k,l,a,t,o)=>({l,a,f:()=>{const r=r12R(k);if(!r)return;r.rift24=s.year;r24Hate(r,o.hate);if(o.close)r12Rel(k,{close:o.close});if(o.pol)s.pol=clamp((s.pol||0)+o.pol,-100,100);
+  bfMem('m24_rift_'+k,k,o.mem,{tone:o.tone||'씁쓸함',their:o.their||null});say(t+fx(o.fx||{hap:-4}),'dark')}});
+const R24_OK={antoine:r=>r24Rad(r)||T()>=1790.3,gabriel:r=>!r24Rad(r)||T()>=1790.45};
+const R24={
+ louise:r=>r24Rad(r)?{t:'징발',fr:'la réquisition',x:`구 위원회 사람들이 빵집 밀가루 포대를 징발해 간다. 앞장선 사람들 사이에 당신이 있다. ${r12I('louise')} 앞치마를 움켜쥔다. “너는 우리 집 화덕에서 자랐어. 그런데 이제 우리 빵을 남이 정한 값에 팔라고?”`,
+   o:[[`“다 같이 먹자는 거야.”라고 맞선다`,'radical bold',`${r12U('louise')} 포대 하나를 당신 발 앞에 내던졌다. “가져가. 너도 같이 가져가.”`,45,-8,0,`징발하던 날, ${r12I('louise')} 밀가루 포대를 내 발 앞에 던졌다.`],
+      [`포대 하나를 몰래 남겨 둔다`,'family',`${r12U('louise')} 남은 포대를 보고도 고맙다고 하지 않았다. “동정은 필요 없어.”`,20,-4,-6,`징발하던 날 루이즈네 밀가루 한 포대를 몰래 남겼다. 고맙다는 말은 듣지 못했다.`],
+      [`눈을 피하고 위원들을 따라 나간다`,'safe',`등 뒤에서 덧문이 쾅 닫혔다. 그날부터 빵집 뒷문은 당신에게 열리지 않았다.`,50,-12,0,`징발하던 날 ${r12L('louise')} 외면했다.`]]}
+  :{t:'빵값',fr:'le prix du pain',x:`빵값이 또 올랐다. 줄 선 아낙들이 매점매석꾼을 욕한다. 당신이 ‘가격은 시장이 정한다’고 말하자 ${r12I('louise')} 빵칼을 내려놓는다. “시장? 그 시장에서 굶는 건 우리야. 너는 어느 편이야?”`,
+   o:[[`“굶주림은 법으로 못 고쳐.”라고 맞선다`,'royalist bold',`${r12U('louise')} 대답 대신 당신 몫의 빵을 다시 진열대에 올려놓았다.`,45,-8,0,`빵값을 두고 ${r12W('louise')} 다퉜다. 그녀는 내 빵을 진열대에 도로 올려놓았다.`],
+      [`“네 말이 맞아.”라고 한발 물러선다`,'family',`${r12U('louise')} 끄덕였지만 눈빛이 식어 있었다. “말로는 다 맞지.”`,20,-4,6,`빵값을 두고 ${r12W('louise')} 다투다 내가 물러섰다.`],
+      [`줄을 빠져나와 다른 빵집으로 간다`,'safe',`그날 이후 당신은 다른 빵집에서 빵을 샀다. 루이즈네 줄은 일부러 피해 다녔다.`,50,-12,0,`빵값을 두고 다툰 뒤 ${r12I('louise')} 있는 빵집을 피해 다녔다.`]]},
+ etienne:r=>({t:T()>=1793?'시민증 투표':'구 회의의 표결',fr:'le certificat de civisme',x:`구 회의. ${T()>=1793?'당신의 시민증 발급을':'당신을 구 위원으로 뽑을지를'} 두고 거수 표결을 한다. 맨 앞줄의 ${r12I('etienne')} 일어선다. “이 사람은 내 오랜 벗이오. 그래서 더 잘 아오. 온건파요.” ${jo(r12N('etienne'),'이','가')} 반대에 손을 든다.`,
+   o:[[`단상에 올라 그를 마주 고발한다`,'bold',`회의장이 술렁였다. 둘은 서로를 노려본 채 투표가 끝날 때까지 앉지 않았다.`,45,-10,0,`구 회의에서 ${r12I('etienne')} 내 시민증에 반대했다. 나는 맞서 그를 고발했다.`,{sus:4,hap:-4}],
+      [`“나를 설득해 봐.”라고 밖에서 기다린다`,'social',`${r12U('etienne')} 끝내 나오지 않았다. 다음 날 아침 문틈에 혁명 교리문답 한 권이 끼워져 있었다.`,20,-4,8,`시민증 표결 뒤 ${r12L('etienne')} 기다렸지만 오지 않았다.`],
+      [`말없이 회의장을 나온다`,'safe',`시민증은 다음 회의에서 겨우 나왔다. ${r12I('etienne')} 그날 결석했다는 걸 나중에 알았다.`,50,-12,0,`${r12I('etienne')} 내 시민증에 반대표를 던졌다. 말없이 나왔다.`,{sus:3,hap:-4}]]}),
+ jules:r=>({t:'닫힌 고해소',fr:'le confessionnal fermé',x:`${r12Priest()?'성당':'성당 뒤뜰'}. 당신이 ${T()>=1793.7?'구 회의에서 성당 폐쇄에 찬성했다':'선서 거부 사제를 몰아내자는 청원에 서명했다'}는 말이 돌았다. ${r12I('jules')} 당신을 보더니 고해소 문을 닫는다. 처음으로 더듬지 않는다. “하느님을 판 사람의 죄는 내가 들을 수 없어.”`,
+   o:[[`“네 하느님이 굶는 사람을 먹였어?”라고 맞선다`,'radical bold',`${r12U('jules')} 하얗게 질린 얼굴로 묵주를 쥐었다. 그 손이 떨리는 걸 당신은 끝까지 보았다.`,45,-10,0,`${r12I('jules')} 고해소 문을 닫았다. 나는 그의 하느님을 모욕했다.`],
+      [`고해소 문 앞에 무릎을 꿇는다`,'pious',`문은 열리지 않았다. 다만 안에서 아주 작게, 더듬는 기도 소리가 들렸다.`,20,-3,-8,`${r12I('jules')} 닫은 고해소 문 앞에 무릎을 꿇었다.`,{faith:2,hap:-3}],
+      [`등을 돌려 성당을 나온다`,'safe',`성당 문이 등 뒤에서 무겁게 닫혔다. 그 종소리가 처음으로 당신을 부르지 않는 것 같았다.`,50,-12,0,`${r12I('jules')} 고해소 문을 닫았다. 나는 돌아서 나왔다.`]]}),
+ antoine:r=>r24Rad(r)?{t:'창고 수색',fr:'la visite domiciliaire',x:`매점매석 혐의로 ${r12N('antoine')}의 창고를 수색하는 날. 명단을 넘긴 구 위원들 가운데 당신 이름이 있다. ${r12I('antoine')} 장부를 끌어안고 웃는다. “셈은 정확해야지. 너는 내 친구 몫을 얼마로 쳤어?”`,
+   o:[[`“숨긴 게 없으면 겁낼 것도 없잖아.”라고 한다`,'radical bold',`창고에선 설탕 두 통이 나왔다. ${r12U('antoine')} 벌금을 내고 돌아서며 당신을 보지 않았다.`,45,-10,0,`${r12N('antoine')}의 창고를 수색하던 날, 나는 그의 편에 서지 않았다.`],
+      [`수색 전에 몰래 귀띔해 준다`,'bold family',`${r12U('antoine')} 설탕 통을 옮겨 화를 면했다. 그런데 고맙다는 대신 말했다. “명단엔 왜 이름을 올렸는데.”`,20,-4,-6,`창고 수색 전에 ${r12W('antoine')}에게 귀띔했다. 그래도 그는 나를 용서하지 않았다.`,{sus:3,hap:-3}],
+      [`수색대 뒤에 서서 지켜보기만 한다`,'safe',`${r12U('antoine')} 마지막 통이 실려 나갈 때까지 장부에 숫자를 적었다. 당신 이름 옆에도 무언가를 적었다.`,50,-12,0,`${r12N('antoine')}의 창고가 수색당하는 것을 지켜보기만 했다.`]]}
+  :{t:'아시냐 지폐',fr:'l’assignat',x:`${r12N('antoine')}의 가게. 당신이 손님들 앞에서 아시냐는 휴지 조각이라며 금화만 내밀자, 줄 선 상퀼로트들이 웅성댄다. ${r12I('antoine')} 금화를 밀어낸다. “여기선 공화국 돈만 받아. 네가 내 가게를 망치려고 왔어?”`,
+   o:[[`“네가 언제부터 공화국 편이었어?”라고 비웃는다`,'royalist bold',`${r12U('antoine')} 당신 몫의 물건을 진열대에 도로 올렸다. “이제 넌 손님 아니야.”`,45,-10,0,`${r12N('antoine')}의 가게에서 아시냐를 비웃었다. 그는 나를 손님으로 받지 않았다.`],
+      [`사람들 앞에서 아시냐로 다시 낸다`,'social',`${r12U('antoine')} 거스름돈을 세며 낮게 말했다. “다음부턴 뒷문으로 와.” 눈은 웃지 않았다.`,20,-4,6,`${r12N('antoine')}의 가게에서 금화를 거두고 아시냐로 냈다.`],
+      [`금화를 집어 들고 나가 버린다`,'safe',`문을 나서는데 등 뒤로 웃음소리가 터졌다. ${r12I('antoine')} 손님들과 같이 웃고 있었다.`,50,-12,0,`${r12N('antoine')}의 가게에서 웃음거리가 되어 나왔다.`]]},
+ gabriel:r=>r24Rad(r)?{t:'불타는 문장',fr:'les armoiries',x:`광장에서 귀족 문장과 칭호 증서를 태운다. 불길 속에 ${r12N('gabriel')} 집안의 문장도 있다. 군중이 웃으며 박수를 치고, 그 맨 앞에 당신이 있다. 군중 너머에서 ${r12I('gabriel')} 당신을 보고 있다.`,
+   o:[[`보란 듯이 박수를 친다`,'radical bold',`${r12U('gabriel')} 눈을 떼지 않았다. 웃음거리가 되는 게 가장 무섭다던 사람이었다.`,45,-10,0,`문장을 태우던 날, ${r12I('gabriel')} 웃는 군중 맨 앞의 나를 보았다.`],
+      [`박수를 멈추고 그에게 다가간다`,'family',`${r12U('gabriel')} 한 걸음 물러섰다. “지금 오면 더 비참해.” 그리고 사람들 사이로 사라졌다.`,20,-4,-6,`문장을 태우던 날, ${r12W('gabriel')}에게 다가갔지만 그는 물러섰다.`],
+      [`모른 척 불길만 본다`,'safe',`불이 꺼진 뒤 그가 서 있던 자리엔 아무도 없었다. 재 위에 푸른 리본 한 가닥이 떨어져 있었다.`,50,-12,0,`문장을 태우던 날, ${r12L('gabriel')} 모른 척했다.`]]}
+  :{t:'변절자',fr:'le girouette',x:`살롱. 삼색 모표를 단 ${r12I('gabriel')} 들어서자 당신이 큰 소리로 말한다. “풍향계가 오셨군. 바람 따라 잘도 돈다.” 사람들이 웃는다. ${r12I('gabriel')} 그 자리에 굳는다. 웃음거리가 되는 것이 그가 세상에서 가장 무서워하는 일이다.`,
+   o:[[`“살아남으려고 영혼을 팔았잖아.”라고 몰아붙인다`,'royalist bold',`${r12U('gabriel')} 웃으려다 실패했다. 그날 이후 그 살롱에 다시 오지 않았다.`,45,-10,0,`살롱에서 ${r12L('gabriel')} 풍향계라고 비웃었다.`],
+      [`곧장 “농담이야.”라며 잔을 건넨다`,'social',`${r12U('gabriel')} 잔을 받았지만 마시지 않았다. “농담은 원래 진심이 반이지.”`,20,-4,6,`살롱에서 ${r12L('gabriel')} 비웃었다가 농담이라고 얼버무렸다.`],
+      [`웃음소리 속에서 그냥 자리를 뜬다`,'safe',`문을 나서며 돌아보니 ${r12I('gabriel')} 아직 혼자 서 있었다. 아무도 그에게 말을 걸지 않았다.`,50,-12,0,`살롱에서 ${r12L('gabriel')} 웃음거리로 만들고 자리를 떴다.`]]},
+ robespierre:r=>({t:'뜯지 않은 편지',fr:'les lettres',x:`${T()>=1791.55?'뒤플레 집':'그의 하숙집'}에서 꾸러미가 왔다. 당신이 보낸 편지들이다. 하나도 뜯지 않았다. 맨 위에 그의 단정한 글씨. “자네는 이제 내 벗이 아니라 공화국이 물어야 할 질문이오. 질문에게 사사로운 편지를 쓸 수는 없소.”`,
+   o:[[`자코뱅 클럽에 가서 그를 공개적으로 반박한다`,'bold',`방청석이 야유를 퍼부었다. 연단의 그는 끝까지 당신 쪽을 보지 않았다.`,45,-10,0,`${r12I('robespierre')} 내 편지를 뜯지도 않고 돌려보냈다. 나는 자코뱅 클럽에서 그를 반박했다.`,{sus:6,hap:-4}],
+      [`편지를 다시 봉해 그의 문 앞에 둔다`,'family',`이튿날 편지는 그 자리에 없었다. 답장도 없었다. 뜯었는지는 끝내 알 수 없었다.`,20,-3,8,`돌려받은 편지를 다시 ${r12N('robespierre')}의 문 앞에 두었다.`],
+      [`편지 꾸러미를 난롯불에 넣는다`,'safe',`종이가 타는 동안 루이르그랑의 겨울이 떠올랐다. 그것도 같이 탔다.`,50,-12,0,`${r12I('robespierre')} 돌려보낸 편지를 태웠다.`]]}),
+ desmoulins:r=>({t:'풍자의 과녁',fr:'la satire',x:`${T()<1791.6?'『프랑스와 브라방의 혁명』':'카미유의 새 신문'} 새 호. ${r12N('desmoulins')}의 풍자 한 단이 당신을 겨눈다. 이름만 살짝 비틀었을 뿐, 누가 봐도 당신이다. “살롱의 귀족 흉내쟁이.” 카페마다 그 대목을 소리 내어 읽으며 웃는다.`,
+   o:[[`반박 팸플릿을 써서 그를 조롱한다`,'bold study',`카미유는 답장 대신 다음 호에 두 단을 더 썼다. 둘의 싸움을 파리가 구경했다.`,45,-10,0,`${r12I('desmoulins')} 신문에서 나를 조롱했다. 나도 팸플릿으로 맞받았다.`,{sus:4,hap:-3}],
+      [`신문사로 찾아가 “왜 그랬어?” 묻는다`,'social',`카미유는 더듬었다. “너, 너는 웃어넘길 줄 알았어.” 둘 다 웃지 않았다.`,20,-4,8,`${r12I('desmoulins')} 나를 풍자했다. 찾아가 이유를 물었지만 둘 다 웃지 못했다.`],
+      [`신문을 접어 버리고 그의 이름을 입에 올리지 않는다`,'safe',`그 뒤로 누가 카미유 이야기를 꺼내면 당신은 자리를 떴다.`,50,-12,0,`${r12I('desmoulins')} 나를 풍자한 뒤로 그의 이름을 입에 올리지 않았다.`]]})};
+async function r24Rift(k){const r=r12R(k);const S=R24[k](r);
+  await bfScene(S.t,S.fr,S.x,S.o.map(([l,a,t,hate,close,pol,mem,f])=>r24o(k,l,a,t,{hate,close,pol,mem,fx:f})))}
+// 결별 뒤의 애증: 그 갈등에서 이어진다
+const R24_HL={
+ louise:N=>`${jo(N,'이','가')} 밤늦게 빵 한 덩이를 들고 찾아왔다. 문간에 그것을 내려놓고 돌아서다 멈춘다. “미워 죽겠어. 그런데 네가 굶는 건 더 못 보겠어. 이게 뭐야, 나.”`,
+ etienne:N=>`${jo(N,'이','가')} 구 회의의 투표 명부를 들고 왔다. 당신 이름 옆, 자기가 그었던 반대 표시를 손가락으로 문지른다. “원칙대로 했어. 그런데 그날부터 잠을 못 자. 원칙엔 이런 조항이 없는데.”`,
+ jules:N=>`닫혔던 고해소 문이 열려 있다. 안에서 ${jo(N,'이','가')} 말한다. “고, 고해할 사람은 나야. 너를 미워하는 동안에도 너를 위해 기도했어. 그게 제일 큰 죄 같아.”`,
+ antoine:N=>`${jo(N,'이','가')} 장부 한 장을 찢어 내민다. 당신 이름 옆에 적어 둔 빚 목록이다. 맨 아래 한 줄만 지워져 있지 않다. “이건 내가 너한테 진 거야. 아직도 못 갚았어. 그래서 더 미워.”`,
+ gabriel:N=>`텅 빈 극장 분장실. ${jo(N,'이','가')} 거울 앞에서 분을 지우고 있다. 거울 속으로 당신을 본다. “그날 다들 웃었지. 너도. 그런데 그 웃음소리 속에서도 나는 너만 찾고 있었어.”`,
+ robespierre:N=>`밤, 생토노레 거리. ${jo(N,'이','가')} 당신 앞에 멈춘다. 손에 뜯긴 봉투 하나가 들려 있다. 당신이 문 앞에 두고 간 그 편지다. “다 읽었소. 그래서 더 용서할 수 없소. 그리고 그래서 여기 와 있소.”`,
+ desmoulins:N=>`${jo(N,'이','가')} 인쇄소에서 교정쇄 한 장을 들고 나온다. 당신을 비꼰 그 대목이다. 여백에 빽빽하게, 지운 글씨가 있다. “풍자를 쓰다 보니 연애편지가 돼서… 다 지웠어. 그래도 안 지워져.”`};
+{const _rd24=rfDaily;rfDaily=async function(){await _rd24();if(!s||s.dead)return;try{await r24Tick()}catch(e){console.error(e);if(sheetLive)sheetClose()}}}
+async function r24Tick(){if(sheetLive||child()||s.age<16||s.cond!=='normal')return;const t=T();if(t<1789.5||t>=1800)return;s.r24=s.r24||{nx:0};if(MI()<s.r24.nx)return;
+  for(const k of BF_KEYS){if(!R24[k]||!bfMet(k)||!bfAlive(k))continue;const r=bfR(k);if(!r||r.cut||r.cond!=='normal'||r.rift24)continue;
+    if(r24Gap(r)<R24_GAP||(R24_OK[k]&&!R24_OK[k](r)))continue;s.r24.nx=MI()+6;await r24Rift(k);if(sheetLive)await done();return}}
+// 결별한 미움은 두 해 뒤부터 해마다 조금씩 가라앉는다
+{const _ny24=npcYear;npcYear=async function(){await _ny24.apply(this,arguments);try{if(!s||s.dead)return;for(const k of BF_KEYS){const r=bfR(k);if(r&&r.alive&&r.rift24&&s.year-r.rift24>=2&&(r.hate||0)>0)r24Hate(r,-4)}}catch(e){console.error(e)}}}
 </script>
 </body>
 </html>
