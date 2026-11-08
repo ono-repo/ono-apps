@@ -869,7 +869,7 @@ details.fold>.cgrid{margin-top:8px}
 .lv-card .lv-n{margin:0;font-family:'Cormorant Garamond','Noto Serif KR',serif;font-weight:600;font-size:1.3rem;color:#EFE4CB;line-height:1.15}
 .lv-card .lv-y{font-family:'Cormorant Garamond',serif;font-size:.95rem;color:#D9BC7A;letter-spacing:.04em;margin-top:2px;font-variant-numeric:lining-nums}
 .lv-card .lv-w{margin:8px 0 0;font-size:.9rem;line-height:1.55;color:#EFE4CB;font-style:italic}
-.cap-bars{display:grid;gap:3px;margin:6px 18px 0}
+.cap-bars{display:grid;gap:6px;margin:9px 18px 2px}
 .cap-row{display:grid;grid-template-columns:3.2em 1fr 2.2em;align-items:center;gap:10px;font-size:.92rem;line-height:1.25}
 .cap-row span{font-family:'Cormorant Garamond','Noto Serif KR',serif;letter-spacing:.06em}
 .cap-row s{display:block;height:4px;background:rgba(239,228,203,.16);text-decoration:none}
@@ -11373,7 +11373,7 @@ const RF11_QV={
 
 /* ---------- 8. 사건 창 사이의 쉼: 7초쯤 ---------- */
 const RF11_GAP=5000;let rf11Last=0;
-const rf11Gap=()=>(typeof window!=='undefined'&&window.__nogap)?0:(s&&T()>=1789&&T()<1795?4000:3000);
+const rf11Gap=()=>(typeof window!=='undefined'&&window.__nogap)?0:4000;
 const hasLover=()=>!!(typeof s!=='undefined'&&s&&(s.rel||[]).some(r=>r.alive&&r.role==='연인'&&!r.cut));
 {const _so=sheetOpen;sheetOpen=function(t,fr){_so(t,fr);try{const w=rf11Last+rf11Gap()-Date.now();if(w>0&&rf11Last){const sh=$('#sheet');sh.hidden=true;document.body.classList.remove('modal');
     setTimeout(()=>{if(sheetLive&&!($('#shBack')&&!$('#shBack').hidden)){if(paused){pzHold=true;return}sh.hidden=false;document.body.classList.add('modal')}},w)}}catch(e){}}}
@@ -12941,6 +12941,7 @@ function r30Pump(){clearTimeout(r30Tm);r30Tm=null;if(!r30Q.length)return;
 flushLog=function(){const box=logBox||$('#log');if(!box||!s)return;
   for(;shown<s.log.length;shown++){const e=s.log[shown];if(r30Imm)e.imm=1;
     if(r30Bulk||s.dead||(typeof window!=='undefined'&&window.__nogap)){r30Show(e);continue}
+    if(typeof r38Until!=='undefined'&&Date.now()<r38Until){while(r30Q.length)r30Show(r30Q.shift());r30Show(e);continue}
     if(r30IsImm(e)&&!r30Q.length){r30Show(e);r30Next=Math.max(r30Next,Date.now()+r30Step(e));continue}
     r30Q.push(e)}
   foldLog();if(r30Q.length&&!r30Tm)r30Pump()};
@@ -13463,6 +13464,11 @@ function r35Say(sl){const keys=['louise','etienne','jules','antoine','gabriel'];
 {const _se37=showEnd;showEnd=function(){const r=_se37.apply(this,arguments);try{if(s&&s.dead){const l=loadLives();const i=l.findIndex(x=>x.id===s.lifeId);if(i>=0){const wl=document.querySelector('#obWill .wl');const w=s.willText||(wl?wl.textContent.replace(/^[“"]|[”"]$/g,'').trim():'');l[i].will=w||null;localStorage.setItem(LKEY,JSON.stringify(l))}}}catch(e){console.error(e)}return r}}
 /* ---------- 태어날 때의 기본 정보(연도 표지·탄생·세례명·시대)는 한꺼번에 나온다 ---------- */
 {const _b37=birth;birth=function(){r30Imm=true;try{return _b37.apply(this,arguments)}finally{r30Imm=false}}}
+
+/* ---------- 사건 → 선택 → 창이 내려가면 그 사건의 결과가 바로 일상란에 쌓이고 → 4초 뒤 다음 사건.
+   (사건이 연달아 떠도 결과가 한꺼번에 몰려 나오지 않게, 사건마다 결과를 먼저 보여 준다) ---------- */
+let r38Until=0;
+{const _sc38=sheetClose;sheetClose=function(){const r=_sc38.apply(this,arguments);try{if(!(typeof window!=='undefined'&&window.__nogap)){while(r30Q.length)r30Show(r30Q.shift());clearTimeout(r30Tm);r30Tm=null;foldLog();r38Until=Date.now()+400;r30Next=Date.now()+3000}}catch(e){console.error(e)}return r}}
 </script>
 </body>
 </html>
