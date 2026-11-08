@@ -13386,10 +13386,10 @@ let r33Hold=null;
   if(s&&!s.dead&&running&&!paused&&typeof r30Q!=='undefined'&&r30Q.length){clearTimeout(timer);r33Hold=setTimeout(()=>schedule(),400);return}
   return _sch.apply(this,arguments)}}
 
-/* ---------- 같은 문장은 한 번만: 일상·반응 기록이 글자 그대로 되풀이되면 두 번째부터는 내지 않는다
+/* ---------- 같은 문장이 두 해 안에 글자 그대로 다시 나오면 내지 않는다(그보다 뒤에 되풀이되는 것은 괜찮다)
    (수치 변화가 붙은 결과 줄, 역사·새해·큰일 줄은 그대로 둔다) ---------- */
 {const _L33=L;L=function(t,k='ev',d){try{if(s&&typeof t==='string'&&['ev','story','sys','fact'].includes(k)&&!/\([^()]*[+-]\d+[^()]*\)\s*$/.test(t)&&!/^한 해 살림/.test(t)){
-    s.seen33=s.seen33||{};const key=t.replace(/\s+/g,' ').trim();if(key.length>=12){if(s.seen33[key])return;s.seen33[key]=1}}}catch(e){}return _L33.call(this,t,k,d)}}
+    s.seen33=s.seen33||{};const key=t.replace(/\s+/g,' ').trim();if(key.length>=12){const at=s.seen33[key];if(at&&MI()-at<24)return;s.seen33[key]=MI()}}}catch(e){}return _L33.call(this,t,k,d)}}
 </script>
 </body>
 </html>
