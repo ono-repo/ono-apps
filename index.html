@@ -8718,7 +8718,7 @@ beat('louise','lo_crisis',{when:()=>bfAlive('louise')&&bfHere()&&!child()&&(bfRe
 
 // 가브리엘: 허영심 많던 아이가 누구보다 용감해진다
 const bfGuest=()=>bfRev()?(bfAlive('jules')&&bfFl('jules','refr')&&['normal','hiding'].includes(bfR('jules').cond)?bN('jules'):'선서 거부 신부 한 사람'):'생메리 바리케이드에서 다친 학생 하나';
-beat('gabriel','ga_hide',{when:()=>bfAlive('gabriel')&&!bfFl('gabriel','fled')&&bfHere()&&!child()&&(bfRev()?bfW(1793.85,1794.5):bfW(1832.44,1832.8)),until:()=>bfRev()?T()>=1794.5:T()>=1832.8,run:async()=>{const Ga=bN('gabriel'),rv=bfRev(),g=bfGuest(),isJ=rv&&g===bN('jules');
+beat('gabriel','ga_hide',{when:()=>bfAlive('gabriel')&&!bfFl('gabriel','fled')&&!(bfRev()&&s.gb92br==='refuge')&&bfHere()&&!child()&&(bfRev()?bfW(1793.85,1794.5):bfW(1832.44,1832.8)),until:()=>bfRev()?T()>=1794.5:T()>=1832.8,run:async()=>{const Ga=bN('gabriel'),rv=bfRev(),g=bfGuest(),isJ=rv&&g===bN('jules');
   bfSet('gabriel','hid');bfKnow('gabriel','dog',3);bfFate('gabriel',rv?`다락방에 ${isJ?jo(bN('jules'),'을','를'):'선서 거부 신부를'} 숨겼다`:'6월 봉기의 부상자를 숨겼다');if(isJ)bfSet('jules','atGab');
   await bfScene('다락방','la mansarde',`${Ga}에게서 짧은 쪽지가 왔다. 분 바른 머리도 레이스도 없이, 낡은 옷의 ${bI('gabriel')} 다락방 문을 연다. 안에 ${jo(g,'이','가')} 있다. “어릴 때 한 번 달아났잖아. 그 뒤로 다시는 도망치지 않기로 했어.”`,[
    {l:'먹을 것과 옷을 날라 주겠다고 한다',s:rv?'혐의 +':'',a:'bold',f:()=>{bfBrave();bfSet('gabriel','helped');if(rv)s.sus=clamp((s.sus||0)+4,0,100);bfMem('m_attic',isJ?['gabriel','jules']:'gabriel',`${Ga}의 다락방에 ${jo(g,'이','가')} 숨어 있었다. 당신은 몇 달 동안 빵과 옷을 날랐다.`,{tone:'두려움',place:'다락방',their:'그 사람이 빵을 날라 왔다. 그 사람 앞에서 나는 처음으로 겁쟁이가 아니었다.'});bfRel('gabriel',{close:10,trust:12,resp:10});if(isJ)bfRel('jules',{close:8})}},
@@ -8728,7 +8728,7 @@ beat('gabriel','ga_hide',{when:()=>bfAlive('gabriel')&&!bfFl('gabriel','fled')&&
 
 // 에티엔: 같은 약속, 다른 정의 — 서로 반대편에 서는 밤
 beat('etienne','et_list',{when:()=>bfAlive('etienne')&&bfHere()&&!child()&&(bfRev()?bfW(1793.9,1794.55)&&(bfFl('gabriel','hid')||T()>=1794.15):bfW(1832.45,1832.9)&&(bfFl('gabriel','hid')||T()>=1832.6)),until:()=>bfRev()?T()>=1794.55:T()>=1832.9,run:async()=>{const E=bN('etienne'),rv=bfRev(),F=bfR('etienne').sex==='F';
-  const gab=bfAlive('gabriel')&&bfFl('gabriel','hid');const tgt=gab?bfGuest():(bfAlive('gabriel')&&!bfFl('gabriel','fled')?bN('gabriel'):'옆 골목의 늙은 신부');const isJ=gab&&rv&&tgt===bN('jules');const where=gab?`${bN('gabriel')}의 다락방`:'숨은 곳';
+  const gab=bfAlive('gabriel')&&bfFl('gabriel','hid');const tgt=gab?bfGuest():(bfAlive('gabriel')&&!bfFl('gabriel','fled')&&!bfFl('gabriel','atYou')&&bfR('gabriel').cond==='normal'?bN('gabriel'):'옆 골목의 늙은 신부');const isJ=gab&&rv&&tgt===bN('jules');const where=gab?`${bN('gabriel')}의 다락방`:'숨은 곳';
   bfJob('etienne',rv?(F?'남장을 한 구 혁명감시위원':'구 혁명감시위원회 위원'):(F?'경시청 관리의 아내':'경시청 관리'));if(!(rv&&F&&bfFl('etienne','sect')))bfFate('etienne',rv?(F?'남장을 한 채 구 혁명감시위원회 위원이 되었다. 아무도 그녀가 여자라는 것을 몰랐다':'구 혁명감시위원회 위원이 되었다'):'경시청 관리가 되었다');
   bfKnow('etienne','name',1);bfAsk('q_et_name','etienne',`그 명단에서 이름이 빠졌다면, 그것은 ${bN('etienne')} 덕이었을까?`);
   const lawTxt=bfS().law?`‘${bfLawN(bfS().law)}’`:'가장 부당한 법';
@@ -13316,6 +13316,7 @@ async function gb92Adieu(r){const Ga=bN('gabriel');let stay=false;
 async function gb92Tick(){if(!s||s.dead||!bfRev()||!bfMet('gabriel'))return;const r=bfR('gabriel'),G=s.gb92,now=MI(),t=T();
   if(!G){if(sheetLive||child()||s.cond!=='normal'||!bfHere()||t<1792.6||t>=1793.9)return;
     if(!r.alive||r.cut||(r.hate||0)>=40||r.cond!=='normal'||bfFl('gabriel','fled')||bfFl('gabriel','hid'))return;
+    if(!s.gb92br)s.gb92br=R()<.1?'emig':R()<.5?'attic':'refuge';if(s.gb92br!=='emig'){s.gb92={st:'none'};return}
     s.gb92at=s.gb92at||Math.min(now+ri(0,5),1793*12+9);if(now<s.gb92at)return;await gb92Adieu(r);return}
   if(!r.alive)return;
   if(G.st==='go'&&now>=G.at){
@@ -13350,6 +13351,34 @@ async function gb89Tick(){if(!s||s.dead||!bfRev()||sheetLive||child()||s.cond!==
   if(typeof RM12!=='undefined')for(const x of RM12)if(x.k==='gabriel'){const w=x.when;x.when=()=>gOk()&&w()}
   const cl=RV.find(x=>x.id==='cf_list');if(cl){const c0=cl.c;cl.c=()=>gOk()&&!bfFl('gabriel','emi92')&&c0()}}
 
+
+/* ================= 개편 32: 공포정치 때 가브리엘이 주인공네 집에 숨는다 =================
+   가브리엘의 길은 셋: 망명 시도(10%) · 다락방에 사람을 숨김 · 주인공 집에 숨음. */
+async function gb32Refuge(){const r=bfR('gabriel'),G=bN('gabriel'),et=bfAlive('etienne')&&bfR('etienne').cond==='normal';s.gb32={st:'asked',y:s.year};
+  await bfScene('덧문 뒤의 손님','l’hôte caché',`자정이 지나 덧문을 세 번 두드리는 소리. 외투 깃을 세운 ${bI('gabriel')} 서 있다. 구 감시위원회 명단에 이름이 올랐다고 한다. 늘 반듯하던 넥타이가 비뚤어져 있다. “하룻밤만. 아니, 모르겠어. 갈 데가 없어.”`,[
+   {l:'다락에 자리를 내어 준다',s:'혐의 +',a:'bold family',f:()=>{s.gb32.st='hid';r.cond='hiding';bfSet('gabriel','atYou');bfFate('gabriel','공포정치 동안 당신 집 다락에 숨어 지냈다');s.sus=clamp((s.sus||0)+6,0,100);
+     bfMem('m_gb32','gabriel',`공포정치 때 ${jo(G,'이','가')} 당신 집 다락에 숨어 지냈다.`,{tone:'두려움',place:'다락',their:'그 사람의 집 다락에서 몇 달을 살았다. 계단 삐걱이는 소리만 들려도 숨을 멈췄다. 그래도 그 집은 따뜻했다.'});bfRel('gabriel',{close:12,trust:15});
+     say(`${bU('gabriel')} 다락 들보 아래 웅크리고 앉아 처음으로 웃었다. “영국식으로 말하면, 신세 좀 지겠어.” 그날부터 계단 넷째 칸은 밟지 않기로 했다. 삐걱거렸으니까.`+fx({cour:2,hap:1}),'big')}},
+   {l:'지하 저장고에 숨기고 아무에게도 말하지 않는다',s:'혐의 +',a:'bold',f:()=>{s.gb32.st='hid';s.gb32.cel=1;r.cond='hiding';bfSet('gabriel','atYou');bfFate('gabriel','공포정치 동안 당신 집 지하 저장고에 숨어 지냈다');s.sus=clamp((s.sus||0)+4,0,100);
+     bfMem('m_gb32','gabriel',`공포정치 때 ${bL('gabriel')} 지하 저장고에 숨겼다. 가족에게도 말하지 않았다.`,{tone:'두려움',place:'지하 저장고'});bfRel('gabriel',{close:8,trust:12});
+     say(`포도주 통 사이에 짚을 깔았다. ${bU('gabriel')} 촛불 하나로 스케치북을 넘기며 밤을 보냈다. 아침마다 빵을 내려 보내면, 저녁엔 빈 접시와 함께 작은 그림 한 장이 올라왔다.`+fx({cour:2}))}},
+   {l:'“여긴 안 돼. 미안해.”라며 돌려보낸다',a:'safe',f:()=>{s.gb32.st='refused';bfRel('gabriel',{close:-12,trust:-15,hate:10});
+     bfMem('m_gb32','gabriel',`공포정치 때 숨겨 달라는 ${bL('gabriel')} 돌려보냈다.`,{tone:'죄책감',their:'그 사람 문 앞에서 돌아섰다. 이해한다. 다들 무서웠으니까. 그래도 그날 밤 거리는 너무 길었다.'});
+     say(`${bU('gabriel')} 고개를 끄덕이고 어둠 속으로 사라졌다. 넥타이를 고쳐 매는 것도 잊은 채였다. 그날 밤 당신은 덧문 소리가 날 때마다 잠에서 깼다.`+fx({hap:-4}),'dark')}}])}
+async function gb32Tick(){if(!s||s.dead||!bfRev()||s.gb92br!=='refuge'||!bfMet('gabriel'))return;const r=bfR('gabriel'),t=T(),now=MI();if(!r||!r.alive)return;
+  if(!s.gb32){if(sheetLive||child()||s.cond!=='normal'||!bfHere()||t<1793.7||t>=1794.45||r.cond!=='normal'||r.cut)return;s.gb32at=s.gb32at||now+ri(0,3);if(now<s.gb32at)return;await gb32Refuge();return}
+  const G=s.gb32;
+  if(G.st==='hid'&&!G.raid&&t>=1793.95&&t<1794.5&&R()<.06){G.raid=1;
+    if(await chance(.3,`가택 수색 · ${bN('gabriel')}`,'공포정치 때 구 감시위원회는 밀고가 들어오면 밤에 집을 뒤졌다')){
+      r.cond='prison';bfFate('gabriel','숨어 있던 당신 집에서 붙잡혀 감옥에 갇혔다');s.sus=clamp((s.sus||0)+12,0,100);
+      L(`새벽, 구 감시위원회 사람들이 집을 뒤졌다. ${G.cel?'저장고 포도주 통 뒤에서':'다락에서'} ${bI('gabriel')} 끌려 나갔다. 계단을 내려가며 그는 당신 쪽을 보지 않았다. 당신을 지키려는 것이었다.`+fx({hap:-8}),'dark');
+      const et=bfAlive('etienne')&&bfR('etienne').cond==='normal';
+      if(et&&await chance(.4,`에티엔의 보증 · ${bN('gabriel')}`,'구 감시위원회 위원 한 사람의 보증으로 풀려난 혐의자도 드물게 있었다')){r.cond='hiding';L(`${bU('etienne')} 위원회에 자기 이름을 걸었다. 열흘 뒤 ${bU('gabriel')} 풀려나 다시 당신 집으로 숨어들었다.`,'big')}
+      else{bfDie('gabriel','guillotine','혁명재판소에서 사형을 선고받고 단두대에 올랐다. 수레 위에서 끝내 당신 집 쪽 골목을 돌아보지 않았다고 한다.')}}
+    else L(`밤에 구 감시위원들이 집을 뒤졌다. ${G.cel?'저장고 문 앞에 쌓아 둔 장작더미를':'다락 계단 넷째 칸을'} 그들은 끝내 건드리지 않았다. ${bU('gabriel')} 그날 밤 내내 손을 떨었다.`+fx({hap:-2,sus:3}),'dark')}
+  if(G.st==='hid'&&!G.out&&t>=1794.6&&r.alive&&r.cond==='hiding'){G.out=1;r.cond='normal';bfFate('gabriel','테르미도르 뒤 당신 집에서 나왔다');
+    L(`테르미도르가 지나고 한 달 뒤, ${bU('gabriel')} ${G.cel?'저장고에서 올라왔다':'다락에서 내려왔다'}. 햇빛에 눈을 찡그리며 말했다. “빚이 생겼네. 평생 갚을게. 영국식으로, 아주 천천히.”`+fx({hap:4}),'big');bfRel('gabriel',{close:6})}}
+{const _rd32=rfDaily;rfDaily=async function(){await _rd32();if(!s||s.dead)return;try{await gb32Tick()}catch(e){console.error(e);if(sheetLive)sheetClose()}}}
 </script>
 </body>
 </html>
