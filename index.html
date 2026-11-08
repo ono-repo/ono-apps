@@ -11787,7 +11787,7 @@ Object.assign(RF_WHY,{
    3. 1789~1794년에는 연달아 뜨는 사건 창 사이가 4초. 빨리감기와 자동 선택 중에도 이 쉼을 지킨다. */
 
 /* ---------- 1·2. 한 칸의 길이 ---------- */
-msPer=function(){return (typeof rf9In==='function'&&rf9In()&&s&&s.day)?7000:5000};
+msPer=function(){return (typeof rf9In==='function'&&rf9In()&&s&&s.day)?7000:(typeof monthly==='function'&&!monthly())?15000:5000};
 
 /* ---------- 2. 사건이 있는 날로만 건너뛴다 ---------- */
 function r14Days(){const m=s.month+1,cur=s.day||1,d9=s.d9||{},o=new Set();
