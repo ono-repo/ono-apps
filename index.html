@@ -2280,7 +2280,7 @@ const EV=[
    {l:'멀리서 지켜본다',s:'',a:'safe',f:()=>say('불이 꺼지고 나서야 집에 들어갔다.'+fx({rloc:-2}))}]),
  // 이웃과의 다툼: 정의와 질서
  C('ev2_neigh',()=>free()&&s.age>=20&&(s.land>0||peas()||s.estate==='artisan'),.6,5,'경계 다툼','bornage',()=>`이웃 ${jo(person(),'이','가')} ${R()<.5?'밭 경계석을 한 자 옮겼다':'당신 집 벽에 기대어 헛간을 올렸다'}. ${T()>=1790.9?'새로 생긴 치안판사(쥐주 드 페)에게 갈 수도 있다.':T()<1789.6&&!urban()?'영주 재판소에 가면 수수료가 든다.':'재판에 가면 돈과 시간이 든다.'}`,()=>[
-   {l:'재판으로 가린다',s:'재산 -30, 글씨·평판 판정',a:'bold',f:async()=>{const {m,why}=md([[lit()&&s.sk.pen>=30,1,'문서를 갖춤'],[s.rep.rloc>=60,1,'증인이 되어 줄 이웃'],[influence().v>=25,1,'영향력'],[s.rep.rloc<=30,-1,'이웃의 미움']]);const r=await roll(m,{label:'재판',why});
+   {l:'재판으로 가린다',s:'재산 -30, 글씨·평판 판정',a:'bold',f:async()=>{const {m,why}=md([[lit()&&s.sk.pen>=30,1,'문서를 갖춤'],[s.rep.rloc>=60,1,'증인이 되어 줄 이웃'],[influence().v>=25,1,'영향력'],[s.rep.rloc<=30,-1,'이웃의 분노']]);const r=await roll(m,{label:'재판',why});
      say(r.v>=4?'판결이 당신 편이었다. 경계석이 제자리로 돌아갔다.'+fx({money:-30,vjus:2,rloc:-1}):'판결이 애매하게 났다. 비용만 들었다.'+fx({money:-30,vord:-1}))}},
    {l:'포도주 한 병을 들고 찾아가 푼다',s:'사교 판정',a:'social safe',f:async()=>{const r=await roll(md([[s.st.soc>=50,1,'사교'],[s.rep.rloc>=60,1,'이웃의 신망']]).m,{label:'화해'});say(r.v>=3?'반씩 양보하기로 했다. 그 뒤로 사이가 좋아졌다.'+fx({rloc:3,soc:1,vord:1}):'문전박대를 당했다.'+fx({rloc:-1}))}},
    {l:'참고 넘어간다',s:'',a:'safe',f:()=>say('한 자 땅으로 원수를 만들지 않기로 했다.'+fx({vord:1,vjus:-1}))}]),
@@ -2526,7 +2526,7 @@ EV.push(
      say(r.v>=4?'화공이 당신의 손을 몇 장이나 그려 갔다. 몇 해 뒤 도판 한 장에서 당신의 작업대를 알아보았다.'+fx({craft:2,edu:1,fame:1,rguild:-2,bch:1}):'손이 굳어 시원찮게 보여 주었다. 화공은 정중히 인사하고 갔다.'+fx({craft:1,rguild:-1}))}},
    {l:'비법은 조합의 것이라며 거절한다',s:'',a:'safe',f:()=>say('화공은 이웃 공방으로 갔다. 동업자들이 당신을 믿을 만한 사람이라 했다.'+fx({rguild:2,vord:1}))}]),
  once('st2_chef',()=>urban()&&s.job==='c2'&&T()<1791.2&&!(T()>=1776.1&&T()<1776.7)&&s.age>=22,2,'걸작','chef-d’œuvre',()=>`직인으로 여러 해를 일했다. 장인(메트르)이 되려면 조합 심사관들 앞에서 걸작을 만들어 보이고 가입비를 내야 한다. 장인의 아들이 아니면 가입비가 훨씬 비싸다.${meets(POST.c3)?'':' (재산·사교·기술이 모자라면 심사에 나설 수 없다)'}`,()=>[
-   {l:'걸작에 도전한다',s:'기술·평판 판정, 비용 500',a:'work bold',dis:!meets(POST.c3),f:async()=>{const {m,why}=md([[s.st.dex>=55,1,'기술'],[s.sk.craft>=45||s.sk.sew>=45,1,'숙련'],[s.rep.rguild>=60,1,'동업자들의 신망'],[s.rep.rguild<=35,-1,'심사관의 미움'],[!!patron(),1,'후원자']]);const r=await roll(m,{label:'걸작 심사',why});
+   {l:'걸작에 도전한다',s:'기술·평판 판정, 비용 500',a:'work bold',dis:!meets(POST.c3),f:async()=>{const {m,why}=md([[s.st.dex>=55,1,'기술'],[s.sk.craft>=45||s.sk.sew>=45,1,'숙련'],[s.rep.rguild>=60,1,'동업자들의 신망'],[s.rep.rguild<=35,-1,'심사관의 분노'],[!!patron(),1,'후원자']]);const r=await roll(m,{label:'걸작 심사',why});
      if(r.v>=4){takeJob('c3','걸작이 통과되어 ');say('조합 연회에서 새 장인을 위해 잔을 들었다.'+fx({rguild:5,craft:2,inf:1}))}else say('심사관들이 이음매에서 흠을 찾아냈다. 심사비만 날렸다.'+fx({money:-100,rguild:-1}))}},
    {l:'아직 이르다',s:'',a:'safe',f:()=>say('몇 해 더 남의 공방에서 일하기로 했다.'+fx({craft:1}))}]),
  once('st2_academie',()=>urban()&&yr(1750,1789)&&lit()&&s.st.edu>=55&&s.age>=20&&!child(),1.2,'아카데미 현상 논문','concours académique',()=>{const [ac,q]=yr(1753,1754)?['디종 아카데미','인간 불평등의 기원은 무엇이며 자연법이 그것을 허락하는가']:yr(1776,1777)?['샬롱쉬르마른 아카데미','구걸을 없애고 빈민을 쓸모 있게 하는 방법은 무엇인가']:yr(1785,1788)?['메스 아카데미','프랑스의 유대인을 더 행복하고 쓸모 있게 할 방법이 있는가']:['고장의 아카데미','소작인의 처지를 낫게 할 방법은 무엇인가'];return `${jo(ac,'이','가')} 현상 논문 주제를 내걸었다. 「${q}」 당선작에는 금메달과 상금을 준다.`},[
@@ -3803,7 +3803,7 @@ const npKind=(r,big)=>big?(r.close>=50||r.hate>=50||r.riv>=60?'big':'ev'):(r.clo
 function npEv(r,t,big){npFate(r,t);L(`${npWho(r)}${bat(r.n)?'은':'는'} ${t}`,npKind(r,big))}
 function npDie(r,cause,t){if(!r.alive)return;r.alive=false;r.dead=s.year;r.dc=cause;npFate(r,t);const b=relBond(r);
   let tail='';if(!child()){if(r.close>=60)tail=fx({hp:-2,vfam:1});else if(r.hate>=60)tail=fx({vjus:-1})}
-  say(`${b} ${r.n}${bat(r.n)?'은':'는'} ${t}${r.close>=70?' 당신은 오래도록 그 이름을 입에 올리지 못했다.':r.hate>=60?' 미움도 함께 땅에 묻었다.':''}`+tail,npKind(r,true))}
+  say(`${b} ${r.n}${bat(r.n)?'은':'는'} ${t}${r.close>=70?' 당신은 오래도록 그 이름을 입에 올리지 못했다.':r.hate>=60?' 분노도 함께 땅에 묻었다.':''}`+tail,npKind(r,true))}
 function npFacOk(r,f){if(['devot','philosophe','parlement'].includes(f.id))return npAge(r)>=20&&r.estate!=='artisan'&&r.estate!=='peasant';
   if(['cordelier','babeuf','jacobin','neojacobin','republican'].includes(f.id))return !npNob(r)||r.pol>=50;
   if(['royalist','ultra','legitimist','absolutist','clichy'].includes(f.id))return npNob(r)||r.tr==='경건'||r.pol<=-45;return true}
@@ -4107,7 +4107,7 @@ relRow=function(r,full){const d=npRelRow0(r,full);if(!r||r.kind!=='fic')return d
   const rh=d.querySelector('.rh');if(rh){const sp=el('span','mut small',`${npAge(r)}세 · ${npJob(r)} · ${r.home}${r.cond!=='normal'?` · ${{army:'군 복무 중',emigre:'망명 중',prison:'수감 중',hiding:'숨어 지냄',deported:'유형 중'}[r.cond]||''}`:''}`);rh.insertBefore(sp,rh.children[1]||null)}
   if(full){const p=el('p','small mut',`성격 ${r.tr}(${NP_TRD[r.tr]}). ${r.w}${r.w?'.':''}${r.grp?` ${NP_GRP[r.grp]}.`:''}${r.mar?` 배우자 ${r.mar}${r.kids?`, 자녀 ${r.kids}`:''}.`:''}`);d.insertBefore(p,d.querySelector('.rv'));
     if(r.fate&&r.fate.length){const f=el('p','small mut',r.fate.slice(-4).join(' · '));d.appendChild(f)}}
-  if((r.hate||0)>=20){const rv=d.querySelector('.rv');if(rv)rv.appendChild(el('span','warn',`미움 ${r.hate}`))}}catch(e){}return d};
+  if((r.hate||0)>=20){const rv=d.querySelector('.rv');if(rv)rv.appendChild(el('span','warn',`분노 ${r.hate}`))}}catch(e){}return d};
 
 /* ================= 행동 확장 (한 해에 한 번씩 고르는 일) =================
    defineAct({k,n,s,g,cost,c,f|inter}). g: body learn social faith money politics risk life (ACT_GROUPS).
@@ -5008,7 +5008,7 @@ EV.push(
  C('job_silver',()=>free()&&jbIs('sv1','sv2','sv2b','sv3'),.6,6,'은수저 한 벌','vol domestique',()=>`찬장에서 은수저 한 벌이 사라졌다. 주인은 하인들을 의심한다. 주인집 물건을 훔친 하인은 ${T()<1791.75?'교수형까지 받을 수 있다':'쇠사슬 징역형을 받는다'}.`,[
    {l:'동료 하인이 수상하다고 말한다',s:'',a:'safe greedy',f:()=>say('부엌데기 아이가 쫓겨났다. 하인 방에서는 당신과 말을 섞지 않았다.'+fx({rguild:-5,vjus:-2,relite:1}))},
    {l:'내 짐부터 뒤져 보라고 내민다',s:'',a:'bold',f:()=>say('보따리를 풀어 보였다. 은수저는 나중에 마님의 바느질 상자에서 나왔다.'+fx({manner:1,relite:2,rguild:1,vhon:2}))},
-   {l:'모른다고 버틴다',s:'사교 판정',a:'safe',f:async()=>{const {m,why}=md([[s.st.soc>=45,1,'사교'],[s.sk.manner>=30,1,'몸가짐'],[s.rep.rguild<=35,-1,'동료의 미움']]);const r=await roll(m,{label:'의심',why});
+   {l:'모른다고 버틴다',s:'사교 판정',a:'safe',f:async()=>{const {m,why}=md([[s.st.soc>=45,1,'사교'],[s.sk.manner>=30,1,'몸가짐'],[s.rep.rguild<=35,-1,'동료의 분노']]);const r=await roll(m,{label:'의심',why});
      if(r.v>=3)say('주인은 더 캐묻지 않았다.'+fx({cour:1}));else{say('주인이 소개장(세르티피카) 없이 내보냈다. 소개장 없는 하인은 새 자리를 얻기 어렵다.'+fx({rloc:-3,relite:-2}));loseJob('% 자리를 잃었다.')}}}]),
  // ---------- 바다·항구 ----------
  S('job_sea',()=>free()&&onTrack('sea'),1.5,0,[
@@ -5551,7 +5551,7 @@ EV.push(
      if(r.v>=4){s.cond='hiding';s.condSince=T();say('정원 담을 넘어 옛 하녀의 다락방에 숨었다.'+fx({cour:4}),'big')}else{s.cond='prison';s.prisonKind='terror';s.condSince=T();s.flags.prisonMem=true;say('골목에서 붙잡혀 감옥으로 끌려갔다. 도주 기록이 붙었다.'+fx({sus:15,hp:-3}),'big')}}}]),
  C('nob_plead',()=>nfa()&&hus()&&!s.flags.husEmi&&tt(1793.5,1794.5)&&!s.flags.pleaded,3,99,'남편의 체포','pétition au Comité',
    ()=>`${jo(hn(),'이','가')} 체포되어 ${s.region==='paris'?'뤽상부르 감옥':'읍내 감옥'}에 갇혔다. 아내들은 국민공회 보안위원회 대기실에 줄을 서서 청원서를 낸다. 소용이 없을 수도 있고, 당신마저 눈에 띌 수도 있다.`,[
-   {l:'보안위원회에 직접 탄원한다',s:'의지·사교 판정',a:'bold family',f:async()=>{s.flags.pleaded=true;const m=md([[s.st.soc>=50,1,'사교'],[s.st.cour>=50,1,'의지'],[s.pol>=0,1,'애국적 평판'],[s.sk.orat>=30||s.sk.pen>=40,1,'청원서를 다듬는 솜씨'],[s.rep.rpeople>=60,1,'구민들의 증언'],[s.rep.rpeople<35,-1,'구민들의 미움']]);const r=await roll(m.m,{label:'탄원',why:m.why});
+   {l:'보안위원회에 직접 탄원한다',s:'의지·사교 판정',a:'bold family',f:async()=>{s.flags.pleaded=true;const m=md([[s.st.soc>=50,1,'사교'],[s.st.cour>=50,1,'의지'],[s.pol>=0,1,'애국적 평판'],[s.sk.orat>=30||s.sk.pen>=40,1,'청원서를 다듬는 솜씨'],[s.rep.rpeople>=60,1,'구민들의 증언'],[s.rep.rpeople<35,-1,'구민들의 분노']]);const r=await roll(m.m,{label:'탄원',why:m.why});
      if(r.v>=5)say('위원 하나가 당신의 청원서를 끝까지 읽었다. 몇 주 뒤 남편이 석방 명령서를 받았다.'+fx({cour:3,fame:2,vfam:3,pen:1}),'big');
      else if(r.v>=3)say('청원서는 서류 더미에 묻혔다. 남편은 감옥에서 겨울을 났다.'+fx({hp:-2,sus:4,pen:1}));
      else{if(T()<1794.5&&await chance(.6,'혁명재판소','귀족 혐의자의 사형 판결률')){s.spouse.alive=false;s.spouse.dy=s.year;s.widowed++;say(`${jo(hn(),'은','는')} 혁명재판소에 회부되어 그날 오후 단두대에 올랐다.${s.region==='paris'?` 시신은 ${T()>=1794.2?'피크퓌스':'마들렌'} 묘지의 공동 구덩이에 던져졌다.`:''}`+fx({hp:-8,vord:-4}),'dark');nFac(['jacobin','cordelier'],-10)}else say('남편은 감옥에 그대로 남았다.'+fx({sus:5}))}}},
@@ -5764,7 +5764,7 @@ EV.push(
    {l:'답장만 쓰고 돈은 보내지 않는다',s:'',a:'safe',f:()=>{s.flags.nobEmiSend=1;say('아이들 이야기만 적어 보냈다. 이 땅을 지키는 것도 집안을 지키는 일이었다.'+fx({vfam:1,vord:2,pen:1}))}},
    {l:'편지를 구청에 내보인다',s:'혐의 -, 남편과는 끝',a:'radical',f:()=>{s.flags.nobEmiSend=1;say('편지를 구청에 가져가 공화국에 대한 충성을 보였다. 위원들이 당신을 다른 눈으로 보았다.'+fx({sus:-10,rpeople:4,vfam:-6,vhon:-4,pol:4}),'big');nFac(['jacobin'],6)}}]),
  C('nob2_civism',()=>(nfa()||bl())&&tt(tm(1793,9),tm(1794,8))&&!s.flags.nobCiv,3,99,'공민 증명서','certificat de civisme',()=>`혐의자법이 내렸다. 구 감시위원회에서 공민 증명서를 받지 못하면 연금도 여권도 없고, 혐의자 명단에 오른다. 위원들은 이웃의 증언을 듣는다. ${s.rep.rpeople>=60?'구민들은 당신을 ‘착한 시민 부인’이라 부른다.':s.rep.rpeople<35?'구민들은 당신을 아직도 ‘마님’이라 부르며 눈을 흘긴다.':''}`,()=>[
-   {l:'이웃 증인을 세워 신청한다',s:'민중의 평판 판정',a:'safe social',f:async()=>{s.flags.nobCiv=1;const m=md([[s.rep.rpeople>=60,1,'구민들의 증언'],[s.rep.rpeople<35,-1,'구민들의 미움'],[s.pol>=20,1,'애국 헌금 기록'],[epee(),-1,'대귀족 집안'],[s.sus>=30,-1,'혐의']]);const r=await roll(m.m,{label:'공민 증명서',why:m.why});
+   {l:'이웃 증인을 세워 신청한다',s:'민중의 평판 판정',a:'safe social',f:async()=>{s.flags.nobCiv=1;const m=md([[s.rep.rpeople>=60,1,'구민들의 증언'],[s.rep.rpeople<35,-1,'구민들의 분노'],[s.pol>=20,1,'애국 헌금 기록'],[epee(),-1,'대귀족 집안'],[s.sus>=30,-1,'혐의']]);const r=await roll(m.m,{label:'공민 증명서',why:m.why});
      if(r.v>=4){say('구두장이와 물장수가 당신을 위해 증언하였다. 증명서에 붉은 도장이 찍혔다.'+fx({sus:-10,rpeople:3}));nFac(['jacobin'],3)}
      else say(`위원 하나가 “${noble()?'옛 귀족의 아내':'부자 상인의 아내'}에게 공민 정신이 있을 리 없다”며 서류를 밀어냈다.`+fx({sus:8,vord:-2}))}},
    {l:'위원에게 선물을 보낸다',s:'재산 -400',a:'greedy',f:()=>{s.flags.nobCiv=1;s.money=Math.max(0,s.money-400);say('위원의 아내에게 옷감을 보냈다. 증명서는 나왔지만 언제든 다시 빼앗길 수 있었다.'+fx({sus:-5,vjus:-2}))}},
@@ -7987,7 +7987,7 @@ function personPage(r){const pin=openPanel('인물 기록');pin.innerHTML='';con
     const pers=[];if(r.tr)pers.push(r.tr);if(r.v)pers.push(PERS_V[r.v]||'');pin.appendChild(el('div','lab','성격'));const pc=el('div','chips');pers.filter(Boolean).forEach(x=>pc.appendChild(el('span','chip',x)));pin.appendChild(pc);
     pin.appendChild(el('div','lab','관심사'));const ic=el('div','chips');[r.fac&&FAC[r.fac]?FAC[r.fac].n:'',P&&P.ctx&&P.ctx[0]?'':'',r.kind==='fic'&&typeof npJob==='function'?(()=>{try{return npJob(r)}catch(e){return ''}})():'',VALUES.find(x=>x[0]===r.v)?.[1]||''].filter(Boolean).forEach(x=>ic.appendChild(el('span','chip',x)));pin.appendChild(ic);
     pin.appendChild(el('div','lab','최근 소식'));pin.appendChild(el('p','small',relNote(r)||'별다른 소식이 없다.'))}
-  if(ppTab==='rel'){pin.appendChild(el('div','lab','관계 상태'));const g=el('div','pf-stats');g.innerHTML=[['친밀도',r.close],['신뢰',r.trust],['존경',r.resp],['경쟁심',r.riv],['미움',r.hate||0]].map(([n,v])=>`<div class="ps"><span>${n}</span><s><u style="width:${v}%"></u></s><b>${v}</b></div>`).join('');pin.appendChild(g);
+  if(ppTab==='rel'){pin.appendChild(el('div','lab','관계 상태'));const g=el('div','pf-stats');g.innerHTML=[['친밀도',r.close],['신뢰',r.trust],['존경',r.resp],['경쟁심',r.riv],['분노',r.hate||0]].map(([n,v])=>`<div class="ps"><span>${n}</span><s><u style="width:${v}%"></u></s><b>${v}</b></div>`).join('');pin.appendChild(g);
     pin.appendChild(el('p','small mut',`관계의 성격: ${relBond(r)}. ${r.fac&&FAC[r.fac]?`${FAC[r.fac].n} 사람이다. `:''}${s.party&&r.fac?(facPair(s.party,r.fac)<=-40?'당신의 파벌과 적대 관계다.':facPair(s.party,r.fac)>=40?'당신의 파벌과 손잡은 쪽이다.':''):''}`))}
   if(ppTab==='log'){const ul=el('ul','tl');const f=(r.fate||[]).slice().reverse();if(P){ul.appendChild(el('li',null,`${P.d}년 — ${P.dc||'세상을 떠났다'}`));(P.fac||[]).slice().reverse().forEach(([a,b,id])=>FAC[id]&&ul.appendChild(el('li',null,`${Math.floor(a)}~${Math.floor(b)}년 — ${FAC[id].n}`)));ul.appendChild(el('li',null,`${P.b}년 — 태어났다`))}
     f.forEach(x=>ul.appendChild(el('li',null,String(x))));ul.appendChild(el('li',null,`${r.y}년 — 당신과 처음 만났다`));pin.appendChild(ul)}
@@ -11919,7 +11919,7 @@ const R21_SUDDEN=()=>s.age<14?['갑자기 높은 열이 오르더니 이틀 만�
    3. 오랜 벗과는 혼인하지 않는다. 로맨틱 100이면 평생의 연인이 되어 달라는 고백을 하고, 당신이 혼인한 몸이면 그 사랑은 불륜이 된다.
       무도회는 1789년 이전이면 귀족은 저택 무도회에 초대하고, 부르주아·시민은 도시 축제에서 함께 춤춘다.
    4. 혼인한 뒤에 가면무도회 같은 자리에서 만난 사람과는 사랑만 할 뿐 혼인하지 않는다.
-   5. 미움과 사랑이 함께 높은 오랜 벗에게는 따로 장면이 있다.
+   5. 분노와 사랑이 함께 높은 오랜 벗에게는 따로 장면이 있다.
    6. 배우자를 잃거나 이혼하고 한 해가 지나면 다시 혼담을 받을 수 있다. */
 const wedNow=()=>!!(s&&s.married&&s.spouse&&s.spouse.alive!==false&&!s.divorced);
 // 사별한 지 한 해가 안 되었으면 상중이다
@@ -12012,7 +12012,7 @@ async function r22Vow(k){const r=r22R(k),N=r22N(k),aff=wedNow();const why=aff?' 
      if(aff&&R()<.3)say('얼마 뒤 묘한 소문이 돌았다. 누군가 둘을 함께 보았다고 했다.'+fx({rloc:-4,rfam:-6}),'dark')}},
    {l:'“지금처럼만 있자.”라며 대답을 미룬다',a:'safe',f:()=>{r.vow22=s.year;r22Rom(k,-8);r22Rel(k,{close:-2});say(`${jo(N,'은','는')} 고개를 끄덕였다. “알았어. 기다릴게.” 그 말이 오래 마음에 걸렸다.`+fx({hap:-3}))}}])}
 
-/* ---------- 5. 미움과 사랑이 함께 높을 때 ---------- */
+/* ---------- 5. 분노와 사랑이 함께 높을 때 ---------- */
 const R22_HL={
  louise:N=>`${jo(N,'이','가')} 빵집 문을 쾅 닫고 나와 당신 앞을 막아선다. “너 같은 사람 다시는 안 보려고 했어. 그런데 아침마다 반죽 치면서 노래하다 보면 네가 좋아하던 노래가 나와. 그게 제일 화나.”`,
  etienne:N=>`${jo(N,'이','가')} 카페 탁자를 두드린다. “나는 너를 반혁명분자라고 적어야 할지, 사랑한다고 적어야 할지 모르겠어. 둘 다 진심이라서 미칠 것 같아.”`,
@@ -12022,18 +12022,18 @@ const R22_HL={
  robespierre:N=>`${jo(N,'은','는')} 창가에 서서 등을 돌린 채 말한다. “자네는 내 원칙을 배신했소. 그런데도 자네 편지만은 태우지 못하겠소. 그게 나를 가장 괴롭히오.”`,
  desmoulins:N=>`${jo(N,'이','가')} 신문을 구겨 쥐고 찾아왔다. “너에 대한 풍자문을 썼어. 그런데 다 쓰고 보니 연애편지더라. 어떻게 할까, 이거?”`};
 async function r22HateLove(k){const r=r22R(k),N=r22N(k);
-  await bfScene('미움과 사랑','je te hais, je t’aime',(r.rift24&&typeof R24_HL!=='undefined'&&R24_HL[k]?R24_HL[k]:R22_HL[k])(N),[
-   {l:'아무 말 없이 끌어안는다',a:'family bold',f:()=>{r.hate=Math.max(0,(r.hate||0)-25);r.cut=null;r22Rom(k,6);r22Rel(k,{close:10,trust:6});r22Mem('m22_hl_'+k,k,`미움과 사랑 사이에서 흔들리던 ${jo(N,'을','를')} 아무 말 없이 끌어안았다.`,'위로','그 사람이 끌어안았다. 미움은 그렇게 쉽게 녹았다. 그래서 더 억울했다.');say(`${jo(N,'은','는')} 처음엔 밀어냈다. 그러다 당신 어깨에 이마를 묻었다. 한참 뒤에 들린 말은 “바보.” 한마디였다.`+fx({hap:6}),'big')}},
-   {l:'지지 않고 맞서 다툰다',a:'bold',f:()=>{r.hate=clamp((r.hate||0)+6,0,100);r22Rom(k,4);r22Mem('m22_hl_'+k,k,`미움과 사랑 사이에서 흔들리던 ${jo(N,'과','와')} 지지 않고 맞서 다투었다.`,'씁쓸함','그 사람과 또 싸웠다. 그런데 싸우는 동안에도 눈을 떼지 못했다.');say(`목소리가 높아졌다. 그런데 이상하게도 다툼이 끝났을 때 둘은 서로에게서 한 걸음도 물러나 있지 않았다.`)}},
-   {l:'“이제 그만하자.”며 돌아선다',a:'safe',f:()=>{r22Rom(k,-15);r22Rel(k,{close:-5});r22Mem('m22_hl_'+k,k,`미움과 사랑 사이에서 흔들리던 ${N}에게 이제 그만하자고 했다.`,'후회','그 사람이 그만하자고 했다. 그 말이 맞았다. 그래서 오래 울었다.');say(`등 뒤에서 ${jo(N,'이','가')} 무언가를 말하려다 멈추는 소리가 들렸다. 당신은 돌아보지 않았다.`+fx({hap:-4}),'dark')}}])}
+  await bfScene('분노와 사랑','je te hais, je t’aime',(r.rift24&&typeof R24_HL!=='undefined'&&R24_HL[k]?R24_HL[k]:R22_HL[k])(N),[
+   {l:'아무 말 없이 끌어안는다',a:'family bold',f:()=>{r.hate=Math.max(0,(r.hate||0)-25);r.cut=null;r22Rom(k,6);r22Rel(k,{close:10,trust:6});r22Mem('m22_hl_'+k,k,`분노와 사랑 사이에서 흔들리던 ${jo(N,'을','를')} 아무 말 없이 끌어안았다.`,'위로','그 사람이 끌어안았다. 분노는 그렇게 쉽게 녹았다. 그래서 더 억울했다.');say(`${jo(N,'은','는')} 처음엔 밀어냈다. 그러다 당신 어깨에 이마를 묻었다. 한참 뒤에 들린 말은 “바보.” 한마디였다.`+fx({hap:6}),'big')}},
+   {l:'지지 않고 맞서 다툰다',a:'bold',f:()=>{r.hate=clamp((r.hate||0)+6,0,100);r22Rom(k,4);r22Mem('m22_hl_'+k,k,`분노와 사랑 사이에서 흔들리던 ${jo(N,'과','와')} 지지 않고 맞서 다투었다.`,'씁쓸함','그 사람과 또 싸웠다. 그런데 싸우는 동안에도 눈을 떼지 못했다.');say(`목소리가 높아졌다. 그런데 이상하게도 다툼이 끝났을 때 둘은 서로에게서 한 걸음도 물러나 있지 않았다.`)}},
+   {l:'“이제 그만하자.”며 돌아선다',a:'safe',f:()=>{r22Rom(k,-15);r22Rel(k,{close:-5});r22Mem('m22_hl_'+k,k,`분노와 사랑 사이에서 흔들리던 ${N}에게 이제 그만하자고 했다.`,'후회','그 사람이 그만하자고 했다. 그 말이 맞았다. 그래서 오래 울었다.');say(`등 뒤에서 ${jo(N,'이','가')} 무언가를 말하려다 멈추는 소리가 들렸다. 당신은 돌아보지 않았다.`+fx({hap:-4}),'dark')}}])}
 
-/* ---------- 차례: 무도회 → (100) 평생의 연인 고백, 그리고 미움과 사랑 ---------- */
+/* ---------- 차례: 무도회 → (100) 평생의 연인 고백, 그리고 분노와 사랑 ---------- */
 // 로맨틱 단계(30·55·80) 장면을 본 적이 있는가, 그리고 어떤 단계까지 지나갔는가
 function r22Seen(k,th){s.rm12=s.rm12||{d:{},nx:0};const L=(typeof RM12!=='undefined'?RM12:[]).filter(x=>x.k===k&&x.th===th);return !L.length||L.every(x=>s.rm12.d[x.id])}
 function r22Pass(k,th){if(typeof RM12==='undefined')return;s.rm12=s.rm12||{d:{},nx:0};for(const x of RM12)if(x.k===k&&x.th<=th&&!s.rm12.d[x.id])s.rm12.d[x.id]='miss'}
 async function r22Tick(){if(!s||s.dead||sheetLive||child()||s.age<16||s.cond!=='normal')return;s.r22=s.r22||{nx:0};if(MI()<s.r22.nx)return;
   for(const k of R22_K()){const r=r22R(k);if(!r||!r.alive||r.cond!=='normal')continue;const rom=rf7Rom(r);
-    // 미움과 사랑
+    // 분노와 사랑
     if((r.rift24?!r.hl24:!r.hl22)&&(r.hate||0)>=40&&rom>=60&&!(hasLover()&&r.role!=='연인')){if(r.rift24)r.hl24=s.year;else r.hl22=s.year;s.r22.nx=MI()+3;await r22HateLove(k);return}
     if(r.cut||(r.hate||0)>=40)continue;
     // 연인이 된 뒤의 무도회
@@ -12166,9 +12166,9 @@ async function r23Evening(){s.sp23=s.sp23||{};s.sp23.eve=s.year;const N=r23Sp(),
 
 
 /* ================= 개편 24: 정치가 갈라놓은 벗 =================
-   1. 혁명기(1789년 여름~1799년)에 주인공과 벗의 정치 성향 차이가 크게 벌어지면, 벗마다 한 번 그 사람다운 결별 장면이 온다. 미움이 오른다.
-   2. 그 결별 뒤 미움이 높은데 로맨틱도 높으면, 벗마다 한 번 그 갈등에서 이어지는 애증 장면이 온다.
-   3. 미움이 40 이상인 동안에는 그 벗의 다정한 일상·로맨스·고백·위로 장면이 나오지 않는다. 결별한 미움은 두 해가 지나면 해마다 조금씩 가라앉는다. */
+   1. 혁명기(1789년 여름~1799년)에 주인공과 벗의 정치 성향 차이가 크게 벌어지면, 벗마다 한 번 그 사람다운 결별 장면이 온다. 분노가 오른다.
+   2. 그 결별 뒤 분노가 높은데 로맨틱도 높으면, 벗마다 한 번 그 갈등에서 이어지는 애증 장면이 온다.
+   3. 분노가 40 이상인 동안에는 그 벗의 다정한 일상·로맨스·고백·위로 장면이 나오지 않는다. 결별한 분노는 두 해가 지나면 해마다 조금씩 가라앉는다. */
 const R24_GAP=55;
 const bfHot=k=>{const r=typeof r12R==='function'?r12R(k):bfR(k);return !!(r&&(r.hate||0)>=40)};
 const r24Gap=r=>Math.abs((s.pol||0)-(r.pol||0));
@@ -12233,7 +12233,7 @@ const R24_HL={
 async function r24Tick(){if(sheetLive||child()||s.age<16||s.cond!=='normal')return;const t=T();if(t<1789.5||t>=1800)return;s.r24=s.r24||{nx:0};if(MI()<s.r24.nx)return;
   for(const k of BF_KEYS){if(!R24[k]||!bfMet(k)||!bfAlive(k))continue;const r=bfR(k);if(!r||r.cut||r.cond!=='normal'||r.rift24)continue;
     if(r24Gap(r)<R24_GAP||(R24_OK[k]&&!R24_OK[k](r)))continue;s.r24.nx=MI()+6;await r24Rift(k);if(sheetLive)await done();return}}
-// 결별한 미움은 두 해 뒤부터 해마다 조금씩 가라앉는다
+// 결별한 분노는 두 해 뒤부터 해마다 조금씩 가라앉는다
 {const _ny24=npcYear;npcYear=async function(){await _ny24.apply(this,arguments);try{if(!s||s.dead)return;for(const k of BF_KEYS){const r=bfR(k);if(r&&r.alive&&r.rift24&&s.year-r.rift24>=2&&(r.hate||0)>0)r24Hate(r,-4)}}catch(e){console.error(e)}}}
 
 /* ================= 개편 25: 일시정지하면 사건도 멈춘다 =================
@@ -12873,7 +12873,7 @@ let r33Hold=null;
 {const _L33=L;L=function(t,k='ev',d){try{if(s&&typeof t==='string'&&['ev','story','sys','fact'].includes(k)&&!/\([^()]*[+-]\d+[^()]*\)\s*$/.test(t)&&!/^한 해 살림/.test(t)){
     s.seen33=s.seen33||{};const key=t.replace(/\s+/g,' ').trim();if(key.length>=12){const at=s.seen33[key];if(at&&MI()-at<24)return;s.seen33[key]=MI()}}}catch(e){}return _L33.call(this,t,k,d)}}
 
-/* ---------- 결별해 미움이 40 이상인 동안에는 그 실존 인물(오랜 벗)과의 다정한 혁명기 장면을 건너뛴다 ---------- */
+/* ---------- 결별해 분노가 40 이상인 동안에는 그 실존 인물(오랜 벗)과의 다정한 혁명기 장면을 건너뛴다 ---------- */
 const R34_RVFIG={rv_duplay:'robespierre',rv_sjletter:'robespierre',rv_wed:'desmoulins',rv_etcam:'desmoulins'};
 {const _rvt34=rvTick;rvTick=async function(){try{if(s&&typeof RV_F==='function'&&RV_F()){s.rv=s.rv||{d:{},nx:0};for(const x of RV){const k=R34_RVFIG[x.id];if(k&&!s.rv.d[x.id]&&bfHot(k)){const t=T();if(t>=x.a&&t<x.b)s.rv.d[x.id]='cold'}}}}catch(e){console.error(e)}return _rvt34.apply(this,arguments)}}
 /* ---------- 벗을 잃은 뒤 석 달은 소소한 일상 줄이 드물게 나온다 ---------- */
