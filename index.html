@@ -12936,13 +12936,14 @@ function r30Show(e){const box=logBox||$('#log');if(!box)return;box.prepend(entry
 function r30Pump(){clearTimeout(r30Tm);r30Tm=null;if(!r30Q.length)return;
   if(sheetLive&&!(s&&s.dead)){r30Tm=setTimeout(r30Pump,300);return}
   const now=Date.now();const after=(typeof rf11Last!=='undefined'&&rf11Last)?rf11Last+3000:0;const due=Math.max(r30Next,after);if(now<due){r30Tm=setTimeout(r30Pump,due-now);return}
-  const e0=r30Q.shift();r30Show(e0);let last=e0;while(r30Q.length&&r30IsImm(r30Q[0])){last=r30Q.shift();r30Show(last)}foldLog();
+  const e0=r30Q.shift();r30Show(e0);let last=e0;while(r30Q.length&&(r30IsImm(r30Q[0])||last.k==='yr')){last=r30Q.shift();r30Show(last)}foldLog();
   const st=r30Step(last);r30Next=Date.now()+st;if(r30Q.length)r30Tm=setTimeout(r30Pump,st)}
 flushLog=function(){const box=logBox||$('#log');if(!box||!s)return;
   for(;shown<s.log.length;shown++){const e=s.log[shown];if(r30Imm)e.imm=1;
     if(r30Bulk||s.dead||(typeof window!=='undefined'&&window.__nogap)){r30Show(e);continue}
-    if(typeof r38Until!=='undefined'&&Date.now()<r38Until){while(r30Q.length)r30Show(r30Q.shift());r30Show(e);continue}
-    if(r30IsImm(e)&&!r30Q.length){r30Show(e);r30Next=Math.max(r30Next,Date.now()+r30Step(e));continue}
+    if(typeof r38Until!=='undefined'&&Date.now()<r38Until){r30Show(e);continue}
+    if(!r30Q.length&&(r30IsImm(e)||window.r39Yr)){window.r39Yr=e.k==='yr';r30Show(e);r30Next=Math.max(r30Next,Date.now()+r30Step(e));continue}
+    window.r39Yr=false;
     r30Q.push(e)}
   foldLog();if(r30Q.length&&!r30Tm)r30Pump()};
 {const _rb=rebuildLog;rebuildLog=function(){r30Q=[];clearTimeout(r30Tm);r30Tm=null;r30Bulk=true;try{return _rb.apply(this,arguments)}finally{r30Bulk=false}}}
@@ -13468,7 +13469,14 @@ function r35Say(sl){const keys=['louise','etienne','jules','antoine','gabriel'];
 /* ---------- 사건 → 선택 → 창이 내려가면 그 사건의 결과가 바로 일상란에 쌓이고 → 4초 뒤 다음 사건.
    (사건이 연달아 떠도 결과가 한꺼번에 몰려 나오지 않게, 사건마다 결과를 먼저 보여 준다) ---------- */
 let r38Until=0;
-{const _sc38=sheetClose;sheetClose=function(){const r=_sc38.apply(this,arguments);try{if(!(typeof window!=='undefined'&&window.__nogap)){while(r30Q.length)r30Show(r30Q.shift());clearTimeout(r30Tm);r30Tm=null;foldLog();r38Until=Date.now()+400;r30Next=Date.now()+3000}}catch(e){console.error(e)}return r}}
+let r39Mark=-1;
+{const _so39=sheetOpen;sheetOpen=function(){r39Mark=s?s.log.length:-1;return _so39.apply(this,arguments)}}
+{const _sc38=sheetClose;sheetClose=function(){const r=_sc38.apply(this,arguments);try{if(!(typeof window!=='undefined'&&window.__nogap)&&s){const mine=r30Q.filter(e=>s.log.indexOf(e)>=r39Mark);r30Q=r30Q.filter(e=>!mine.includes(e));mine.forEach(r30Show);foldLog();clearTimeout(r30Tm);r30Tm=null;r38Until=Date.now()+400;r30Next=Date.now()+3000;if(r30Q.length)r30Tm=setTimeout(r30Pump,3000)}}catch(e){console.error(e)}r39Pp();return r}}
+
+/* ---------- 사건 창이 떠 있으면 자동으로 멈춤 상태(재생 단추도 멈춤으로 보인다). 창이 내려가면 원래대로. ---------- */
+function r39Pp(){try{const b=$('#pp');if(!b||!s)return;const on=sheetLive||paused;b.innerHTML=on?PLAY:PAUSE;b.setAttribute('aria-label',on?'재생':'일시정지');b.classList.toggle('autopz',!!(sheetLive&&!paused))}catch(e){}}
+{const _so40=sheetOpen;sheetOpen=function(){const r=_so40.apply(this,arguments);r39Pp();return r}}
+{const _sp40=setPaused;setPaused=function(){const r=_sp40.apply(this,arguments);r39Pp();return r}}
 </script>
 </body>
 </html>
