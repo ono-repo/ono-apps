@@ -13447,6 +13447,12 @@ function r35Say(sl){const keys=['louise','etienne','jules','antoine','gabriel'];
 // 새해 장면은 새해 표지 바로 뒤에 붙여서 함께 나온다
 {const _L35=L;L=function(t,k='ev',d){const r=_L35.call(this,t,k,d);try{if(k==='yr'&&s&&!s.dead&&typeof bfRev==='function'&&bfRev()&&T()<1789.5&&['louise','etienne','jules','antoine','gabriel'].every(x=>bfMet(x))){r35Year();if(s.r35.sl.includes('newyear')&&!s.r35.done.newyear){s.r35.done.newyear=1;const was=r30Imm;r30Imm=true;try{r35Say('newyear')}finally{r30Imm=was}}}}catch(e){console.error(e)}return r}}
 {const _rd35=rfDaily;rfDaily=async function(){await _rd35();if(!s||s.dead)return;await r35Tick()}}
+
+/* ---------- 죽음과 애도가 마지막: 사망 전에 밀려 있던 기록은 사망 문구 앞에 먼저 다 내보내고,
+   벗들의 애도까지 나온 뒤에는 역사·일상·반응 어떤 기록도 더 내지 않는다 ---------- */
+{const _d36=die;die=function(){try{if(s&&!s.dead&&typeof r30Q!=='undefined'){while(r30Q.length)r30Show(r30Q.shift());clearTimeout(r30Tm);r30Tm=null;foldLog()}}catch(e){}
+  const was=!!(s&&s.dead);const r=_d36.apply(this,arguments);if(!was&&s&&s.dead)s.endLog=1;return r}}
+{const _L36=L;L=function(t,k='ev',d){if(s&&s.dead&&s.endLog)return;return _L36.call(this,t,k,d)}}
 </script>
 </body>
 </html>
