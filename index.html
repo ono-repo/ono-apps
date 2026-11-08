@@ -9114,7 +9114,7 @@ const G_CORE_OBJ={louise:null,etienne:null,jules:'feather',antoine:'button',gabr
 function gNoGrave(r){return ['guillotine','massacre'].includes(r.dc)?'시신은 구덩이에 던져져 무덤조차 없다.':r.dc==='cholera'?'시신은 석회를 뿌려 서둘러 묻혔다.':r.dc==='pontons'?'시신은 로슈포르 앞 마담 섬 모래밭에 묻혔다고 한다.':r.dc==='exile'?'무덤은 바다 건너 먼 섬에 있다.':`${gGrave()}에 묻혔다.`}
 async function gCore(r){const k=r.core;if(k==='etienne'&&r.dc==='guillotine'&&bfM('m_cart'))return gLine(r,true);
   const ms=(s.bf&&s.bf.mem||[]).filter(m=>m.k.includes(k));const first=ms[0];const N=r.n.split(' ')[0];const a=(r.dead||s.year)-r.by;
-  const T0=G31_OPEN[k]?g31T0(k,N,a,r,first):`${jo(N,'이','가')} 세상을 떠났다. ${a}세였다. ${gNoGrave(r)} ${first?`당신은 ${first.y}년의 일을 떠올렸다. ${first.t}`:''}`;
+  const T0=G31_OPEN[k]?g31T0(k,N,a,r,first):`${jo(N,'이','가')} 세상을 떠났다. ${a}세였다. ${gNoGrave(r)} ${first?`당신은 ${first.y}년의 일을 떠올렸다. ${first.t} ${g43Feel(N,first)}`:''}`;
   const g=G_CORE_GIFT[k],ob=G_CORE_OBJ[k];const has=ob&&bfHas(ob);
   await bfScene(`${N}의 부고`,'l’ami perdu',T0,G31_OPT[k]?g31Opts(k,N,r,first,has,ob):[
    {l:g[0],a:'social',f:()=>{bfMem('g_core_'+k,k,`${s.year}년, ${jo(N,'이','가')} 세상을 떠났다. 당신은 ${jo(g[1],'으로')} 작별했다.`,{tone:'그리움'});if(first)bfRe(first.id,`${jo(N,'을','를')} 보내던 날, 이 기억이 가장 먼저 떠올랐다.`,'그리움');say(pick([`${N}에게 하지 못한 말이 많았다. 그 말들은 이제 어디에도 닿지 않는다.`,`${N}의 이름을 부르면 아직도 어린 날의 얼굴이 먼저 떠오른다. 그 얼굴은 이제 늙지 않는다.`,`어린 날 함께 걷던 골목을 혼자 걸었다. ${N}의 웃음소리가 들리는 것만 같았다.`,`이제 그 시절을 함께 기억해 줄 사람이 하나 줄었다. 그것이 가장 견디기 어려웠다.`])+fx({hp:-3}),'big')}},
@@ -13009,8 +13009,31 @@ const G31_OPEN={
  gabriel:(N,r)=>pick([
   `${jo(N,'이','가')} 세상을 떠났다. 잊히는 것을 그토록 두려워하던 사람이었다. 부고는 신문 귀퉁이 세 줄이었다. 당신은 그 세 줄을 오려 지갑에 넣었다.`,
   `${N}의 부고가 온 날, 서랍에서 오래된 캐리커처 한 장이 나왔다. 코를 터무니없이 크게 그린 당신 얼굴이었다. 귀퉁이에 영어로 서명이 있었다. 그 사람이 세상을 떠났다.`])};
+// 개편 43: 부고 속 회고 — 기억을 옮기는 데서 그치지 않고, 지금 그 기억이 어떻게 다르게 느껴지는지
+function g43Feel(N,m){const t=m.t||'',D=Math.max(1,s.year-m.y),Nu=jo(N,'은','는');
+  const K=[
+   [/날아갔|날려 보냈|떠나갔/,[`그날은 날아가는 뒷모습을 보며 둘이 손뼉을 쳤다. 오늘은 ${jo(N,'이','가')} 그렇게 날아가 버렸다. 이번에는 손뼉 칠 사람이 없었다.`,`그날은 떠나보내는 게 기쁜 일이었다. 떠나보내는 일이 이렇게 다를 수 있다는 걸 그때는 몰랐다.`]],
+   [/비밀/,[`둘만의 비밀이었다. 이제 그 비밀을 아는 사람은 세상에 당신 하나뿐이다. 가볍던 비밀이 갑자기 무거워졌다.`,`아무에게도 말하지 않기로 했던 일이다. 이제는 말할 사람도, 말하지 말라고 할 사람도 없다.`]],
+   [/약속|맹세/,[`그 약속을 아직 다 지키지 못했다. 지켜 줄 상대가 사라진 약속을, 당신은 혼자서라도 지키기로 했다.`,`약속은 둘이 했는데 이제 남은 건 당신 하나다. 그게 약속을 더 무겁게 만들었다.`]],
+   [/웃었|웃음|웃는/,[`그 웃음소리가 아직 귀에 선했다. 다시는 들을 수 없다는 것이 이제야 몸으로 와 닿았다.`,`그날의 웃음을 기억하는 사람이 이제 당신 하나뿐이다. 함께 웃은 일을 혼자 기억하는 게 이렇게 외로운 줄 몰랐다.`]],
+   [/울었|눈물/,[`그날은 그 사람이 울었다. 오늘은 당신 차례였다. 달래 줄 사람이 없다는 것만 달랐다.`]]];
+  for(const [re,arr] of K)if(re.test(t))return pick(arr);
+  const TN={
+   '기쁨':[`그때는 그날이 특별한 줄 몰랐다. 아무것도 아닌 하루가 이제 가장 아까운 하루가 되었다.`,`${D}년이 지났는데도 그날 햇빛의 온도까지 생생했다. 기억은 그대로인데 그 기억 속 사람만 없다.`],
+   '그리움':[`기억 속 ${Nu} 아직 그때 나이 그대로였다. 당신만 혼자 나이를 먹어 버렸다.`,`언제든 다시 만날 수 있다고 믿었기에 미뤄 둔 말이 많았다. 그 말들이 한꺼번에 목에 걸렸다.`],
+   '위로':[`그날 위로받은 건 사실 당신 쪽이었다. 고맙다는 말은 끝내 하지 못했다. 이제야 그 말이 입안에 맴돌았다.`],
+   '씁쓸함':[`그 일로 서운했던 마음이 아직 조금 남아 있었다. 이제는 풀 길이 없다. 서운함이 슬픔보다 오래 남을까 봐 두려웠다.`,`그때 조금만 덜 고집을 부렸더라면. 그 생각이 슬픔보다 먼저 찾아왔다.`],
+   '두려움':[`그날은 둘이 함께 떨었다. 마지막 순간에는 혼자였을 것이다. 그 생각이 무엇보다 견디기 어려웠다.`],
+   '희망':[`그날 둘이 믿었던 내일이 이런 모습일 줄은 몰랐다. 그래도 그 믿음까지 거짓이었다고는 생각하지 않기로 했다.`],
+   '죄책감':[`사과할 기회는 많았다. 하나도 쓰지 않았다. 이제 그 말은 갈 곳 없이 당신 안에 남았다.`],
+   '후회':[`그때 다르게 했더라면 무엇이 달라졌을까. 소용없는 줄 알면서도 그 생각을 멈출 수 없었다.`],
+   '의문':[`그날 그 사람이 정말 하고 싶던 말이 무엇이었을까. 이제는 영영 물어볼 수 없다.`],
+   '부끄러움':[`그때는 부끄러워 얼굴도 못 들었다. 지금 생각하니 그 사람은 다 알면서 웃어 주었던 것이다.`],
+   '슬픔':[`그날의 슬픔은 둘이 나눠 졌다. 오늘의 슬픔은 혼자 다 져야 했다.`],
+   '감사':[`그 은혜를 갚을 날이 언젠가 올 줄 알았다. 그날은 오지 않았다.`]};
+  return pick(TN[m.tone]||TN['그리움'])}
 function g31T0(k,N,a,r,first){const far=(r.cut||(r.hate||0)>=40)?' 마지막으로 말을 나눈 지 오래였다.':'';
-  const ft=first?` ${first.y}년의 일이 떠올랐다. ${(x=>x.length>60?x.split(/(?<=\.) /)[0]:x)(first.t||'')}`:'';
+  const sh=first?(x=>x.length>60?x.split(/(?<=\.) /)[0]:x)(first.t||''):'';const ft=first?` ${first.y}년의 일이 떠올랐다. ${sh} ${g43Feel(N,Object.assign({},first,{t:sh}))}`:'';
   return `${G31_OPEN[k](N,r)} ${a}세였다.${far} ${gNoGrave(r)}${ft}`}
 // 선택지: l 라벨, a 성향, t 결과, m 기억(“…세상을 떠났다.” 뒤에 붙는다), tone, place, br(퐁뇌프 기억에 덧붙일 말), fx
 const G31_OPT={
@@ -13521,6 +13544,134 @@ async function scOpen(){const {ov,box}=scModal();const msg=el('p','sc-msg');
   row2.appendChild(go);row2.appendChild(fb);box.appendChild(row2);box.appendChild(fi);box.appendChild(msg);
   const cl=el('button','pill','닫기');cl.type='button';cl.onclick=()=>ov.remove();box.appendChild(cl)}
 try{$('#mCode').onclick=()=>{$('#menu').hidden=true;if(s&&!s.dead)setPaused(true);scOpen()};$('#codeB').onclick=()=>scOpen()}catch(e){console.error(e)}
+
+/* ================= 개편 43: 가브리엘의 칼과 문장 =================
+   예술(스케치·옷) 말고 가브리엘의 귀족적인 얼굴과 펜싱. 벗 장면 사슬과 따로 돌며, 한 장면 뒤 반년은 쉰다. */
+const gaNob=()=>{const r=bfR('gabriel');return !!(r&&['epee','robe'].includes(r.estate))};
+const gaF=()=>{const r=bfR('gabriel');return !!(r&&r.sex==='F')};
+const gaOk=()=>bfRev()&&bfMet('gabriel')&&bfAlive('gabriel')&&bfR('gabriel').cond==='normal'&&!bfFl('gabriel','fled')&&!bfHot('gabriel')&&bfHere();
+const GAX=[
+ {id:'gx_salle',when:()=>s.age>=12&&s.age<=20&&T()<1789.4,run:async()=>{const G=bN('gabriel'),he=bHe('gabriel'),nob=gaNob();
+  const T0=nob?`${bN('gabriel')}네 저택 회랑. 바닥에 분필로 선이 그어져 있고, 펜싱 사범이 박자를 센다. “앙 가르드. 마르셰. 퐁트.” ${bU('gabriel')} 하얀 조끼에 철망 마스크를 쓰고 있다.${gaF()?' 치마 대신 남자 바지다. “데옹 기사도 칼을 들었어. 나라고 왜 못 해?”':''} 사범이 나가자 마스크를 벗고 숨을 몰아쉰다. “아버지가 그러셔. 칼을 못 쓰는 귀족은 레이스 달린 하인이래.”`
+   :`팔레루아얄 뒤편의 검술 도장. 수강료가 한 달 빵값의 열 배다. ${bU('gabriel')} 남들보다 반 박자 늦게 찌르면서도 자세 하나만은 제일 곱다.${gaF()?' 남자 바지를 입고 머리를 묶어 올렸다. 사범은 못 본 척해 준다.':''} “칼은 귀족만 차는 거래. 그래서 배우는 거야. 언젠가 차게 될 테니까.”`;
+  await bfScene('검술 도장','la salle d’armes',T0,[
+   {l:'마스크를 빌려 쓰고 한판 붙는다',a:'bold',f:()=>{const win=s.sk.arms+s.st.str/2+ri(0,30)>45;bfSet('gabriel','fenced');
+     bfMem('m_gx_salle','gabriel',win?`${G}의 검술 연습에 끼어들어 한판 붙었다. 내가 이겼다. ${he}는 분해서 그날 저녁밥을 남겼다.`:`${G}의 검술 연습에 끼어들어 한판 붙었다. 세 번 다 찔렸다. ${he}는 그날 내내 의기양양했다.`,{tone:'기쁨',their:win?'그 아이한테 졌다. 그날부터 연습을 두 배로 했다. 말은 안 했지만.':'처음으로 누군가를 이겼다. 상대가 그 아이라서 더 좋았다.'});
+     bfRel('gabriel',win?{riv:5,close:3}:{close:5});
+     say((win?`둔한 칼끝이 ${G}의 가슴에 닿았다. ${bU('gabriel')} 마스크를 벗어 던지고 “한 번 더!”를 일곱 번 외쳤다. 해가 질 때까지 한 번도 더 이기지 못했다.`:`세 번 겨뤄 세 번 찔렸다. ${bU('gabriel')} 칼끝을 바닥에 짚고 사범 흉내를 냈다. “손목이 죽었어요, 손목이.” 그 웃음이 어찌나 얄미운지 당신도 웃고 말았다.`)+fx({arms:2,str:1,hap:2}))}},
+   {l:'구석에 앉아 자세를 그려 준다',a:'study',f:()=>{bfMem('m_gx_salle','gabriel',`${G}의 검술 연습을 구경하며 찌르는 자세를 그려 주었다. ${he}는 그 그림을 사범보다 오래 들여다보았다.`,{tone:'기쁨',their:'그 아이가 그려 준 내 자세는 실제보다 훨씬 멋있었다. 그 그림처럼 되고 싶었다.'});bfRel('gabriel',{close:5,trust:2});
+     say(`목탄으로 ${G}의 찌르는 자세를 그렸다. 실제보다 다리를 조금 길게 그렸다. ${bU('gabriel')} 그림을 받아 들더니 거울 앞에서 그 자세를 따라 했다. 그림만큼 되지는 않았다.`+fx({draw:1,soc:1}))}},
+   {l:'“칼보다 펜이 빠른 세상이 올 거야.”라고 한다',a:'radical',f:()=>{bfMem('m_gx_salle','gabriel',`검술 도장에서 ${G}에게 칼보다 펜이 빠른 세상이 올 거라고 했다. ${he}는 칼끝으로 내 신발 끈을 툭 건드렸다.`,{tone:'의문',their:'그 아이 말이 맞았다. 나는 그때 이미 늦게 배우고 있었다.'});bfRel('gabriel',{riv:3});s.pol=clamp(s.pol+2,-100,100);
+     say(`${bU('gabriel')} 칼끝으로 당신 신발 끈을 툭 건드렸다. “그럼 펜으로 막아 봐.” 당신은 피하지 못했다. ${bU('gabriel')} 웃었지만 연습을 다시 시작할 때 찌르는 손이 조금 무거워 보였다.`)}}])}},
+ {id:'gx_stgeorges',when:()=>!child()&&bfW(1787.3,1789.3),run:async()=>{const G=bN('gabriel'),he=bHe('gabriel');
+  await bfScene('생조르주의 칼','le chevalier de Saint-Georges',`${bU('gabriel')} 런던 신문 한 장을 흔들며 뛰어 들어온다. “봤어? 칼턴 하우스에서 생조르주 기사가 데옹 기사와 겨뤘대. 왕세자 앞에서!” 생조르주. 과들루프에서 노예였던 어머니에게서 태어나, 유럽에서 칼을 제일 잘 쓰고 바이올린도 제일 잘 켠다는 사람. ${bU('gabriel')} 신문을 내려놓는다. “그런데 오페라 단장 자리는 못 받았지. 가수들이 ‘물라토 밑에서는 노래 못 한다’고 청원을 넣어서. 칼이고 활이고 다 소용없어. 결국 어디서 태어났느냐야.”`,[
+   {l:'“그러니까 그 사람이 더 대단한 거야.”라고 한다',a:'social',f:()=>{bfMem('m_gx_sg','gabriel',`${bI('gabriel')} 생조르주 기사 이야기를 꺼냈다. 그러니까 더 대단한 사람이라고 하자 ${he}는 한참 말이 없었다.`,{tone:'희망',their:'그 아이는 태어난 자리보다 해낸 일을 먼저 보았다. 나한테도 그렇게 해 주었다.'});bfRel('gabriel',{close:5,trust:4});
+     say(`${bU('gabriel')} 한참 신문만 내려다보았다. “…그러네. 그래서 그 사람 이름은 다들 기억하겠지.” 그날 ${he}는 처음으로 자기 옷 얘기를 하지 않았다.`+fx({hap:2}))}},
+   {l:'“너도 태어난 걸로 덕 보잖아.”라고 찌른다',a:'bold radical',f:()=>{bfMem('m_gx_sg','gabriel',`${bI('gabriel')} 생조르주 기사 이야기에 분개했다. 너도 태어난 걸로 덕 보지 않느냐고 찔렀다.`,{tone:'씁쓸함',their:'그 아이 말에 화가 났다. 맞는 말이라서였다.'});bfRel('gabriel',{riv:6,resp:3});s.pol=clamp(s.pol+3,-100,100);
+     say(gaNob()?`${G}의 얼굴이 붉어졌다. “나는… 그건 내가 고른 게 아니야.” 그러고는 입을 다물었다. 생조르주도 고른 게 아니었다는 말을 둘 다 하지 않았다.`:`${G}의 얼굴이 붉어졌다. “나는 아직 아무 덕도 못 봤어. 그러려고 애쓰는 중이지.” 웃으려 했지만 잘 되지 않았다.`)}},
+   {l:'“둘 중 누가 이겼어?”라고 묻는다',a:'safe',f:()=>{bfMem('m_gx_sg','gabriel',`${bI('gabriel')} 런던 신문을 들고 생조르주와 데옹의 시합 이야기를 했다. 누가 이겼냐고 묻자 신이 나서 동작을 하나하나 흉내 냈다.`,{tone:'기쁨',their:'그 아이 앞에서 생조르주 흉내를 냈다. 우스웠을 텐데 끝까지 보아 주었다.'});bfRel('gabriel',{close:4});
+     say(`“데옹이 이겼대. 쉰여덟 살에, 치마를 입고!” ${bU('gabriel')} 지팡이를 칼 삼아 그날의 동작을 하나하나 흉내 냈다. 꽃병이 하나 깨졌다. 둘 다 그 일은 비밀로 했다.`+fx({hap:3}))}}])}},
+ {id:'gx_blason',when:()=>!child()&&s.age>=17&&bfW(1784,1789.35),run:async()=>{const G=bN('gabriel'),he=bHe('gabriel'),nob=gaNob();
+  const T0=nob?`${bU('gabriel')} 족보 두루마리를 탁자 가득 펼쳐 놓았다. 궁정에 나가 왕께 인사를 올리려면 1400년 이전부터 귀족이었다는 증명을 왕실 족보관 셰랭에게 내야 한다. 손가락이 1523년에서 멈춘다. “할아버지의 할아버지의… 그 사람이 관직을 사서 귀족이 됐대. 백이십 년이 모자라.” 문장 속 푸른 사자가 오늘따라 우스워 보인다.`
+   :`${bN('gabriel')}의 아버지가 마침내 ‘국왕 비서’ 관직을 샀다. 이십 년 지니면 집안이 귀족이 되는 자리다. 사람들은 그걸 ‘천것 씻는 비누’라고 부른다. ${bU('gabriel')} 벌써 문장을 그려 보고 있다. 푸른 바탕에 은빛 리본. “어때? 이십 년 뒤엔 이게 마차 문에 붙어 있을 거야.”`;
+  await bfScene('문장','les armoiries',T0,[
+   {l:'함께 문장의 뜻을 지어 준다',a:'social family',f:()=>{bfMem('m_gx_blason','gabriel',nob?`${bI('gabriel')} 족보에서 백이십 년이 모자란다며 울상이었다. 문장의 푸른 사자에 새 뜻을 같이 지어 주었다.`:`${bI('gabriel')} 아직 오지도 않은 귀족 문장을 그렸다. 그 리본에 뜻을 같이 지어 주었다.`,{tone:'기쁨',their:'문장에 넣을 말을 그 아이가 지어 주었다. 족보관은 몰라도 나는 그 말이 진짜라고 생각했다.'});bfRel('gabriel',{close:6,trust:3});
+     say(`둘이서 라틴어 사전을 뒤졌다. 결국 고른 말은 “나를 잊지 마시오(Ne m’oubliez pas)”. 라틴어도 아니었다. ${bU('gabriel')} 그 말을 문장 아래 띠에 공들여 써 넣었다.`+fx({soc:1,hap:2}))}},
+   {l:nob?'“사자 그림 하나에 그렇게 목을 매?”라고 한다':'“그림 하나에 그렇게 목을 매?”라고 한다',a:'bold',f:()=>{bfMem('m_gx_blason','gabriel',`${bI('gabriel')} 문장 이야기를 하자 그림 하나에 목을 매느냐고 했다. ${he}는 ${nob?'두루마리를 천천히 말았다':'그림을 천천히 접었다'}.`,{tone:'씁쓸함',their:'그 아이에게는 그림 한 장이었다. 나에게는 사람들이 나를 기억해 줄 유일한 방법이었다.'});bfRel('gabriel',{riv:5,close:-2});
+     say(`${bU('gabriel')} 대꾸 없이 ${nob?'두루마리를 천천히 말았다':'그림을 천천히 접었다'}. “너는 몰라. 아무도 너한테 증명하라고 안 하잖아.” 그 말은 틀렸다. 하지만 그날은 반박하지 않았다.`)}},
+   {l:nob?'“궁정에 못 가도 너는 너야.”라고 한다':'“이십 년 뒤에도 너는 너야.”라고 한다',a:'family',f:()=>{bfMem('m_gx_blason','gabriel',`문장 앞에서 ${G}에게 그런 것 없어도 너는 너라고 했다. ${he}는 웃었지만 ${nob?'두루마리를':'그림을'} 끝내 치우지 않았다.`,{tone:'위로',their:'그 아이가 문장 없어도 나는 나라고 했다. 그 말을 믿을 수 있으면 좋았을 텐데.'});bfRel('gabriel',{close:4,trust:5});
+     say(`${bU('gabriel')} 웃었다. “너는 꼭 그런 말을 해서 사람을 곤란하게 해.” 그러고도 ${nob?'두루마리는':'그림은'} 끝내 치우지 않았다.`+fx({hap:1}))}}])}},
+ {id:'gx_titre',when:()=>!child()&&bfW(1790.47,1791),run:async()=>{const G=bN('gabriel'),he=bHe('gabriel'),nob=gaNob();
+  const T0=nob?`1790년 6월 19일, 의회가 세습 귀족과 작위, 문장과 하인 제복을 없앴다. 다음 날 ${bU('gabriel')} 마차 문 앞에 쪼그리고 앉아 끌로 푸른 사자를 긁어내고 있다. 칠이 생각보다 단단하다. “이름 앞의 ‘드’도 떼라더라. 그럼 나는 그냥 사브리야. 무슨 치즈 이름 같지 않아?”`
+   :`1790년 6월 19일, 의회가 세습 귀족과 작위, 문장을 없앴다. ${bN('gabriel')}네 아버지가 산 ‘국왕 비서’ 관직은 하루아침에 종잇조각이 되었다. ${bU('gabriel')} 그려 두었던 문장 그림을 접었다 폈다 한다. “이십 년을 기다리라더니, 이제 기다릴 것도 없네. 비누값이 얼마였는지 알아?”`;
+  await bfScene('작위 폐지','l’abolition de la noblesse',T0,[
+   {l:nob?'끌을 받아 들고 같이 긁어낸다':'그리다 만 문장을 같이 끝까지 그린다',a:'family',f:()=>{bfMem('m_gx_titre','gabriel',nob?`작위가 폐지된 다음 날, ${G}의 마차 문에서 같이 문장을 긁어냈다. 사자의 꼬리만 끝내 지워지지 않았다.`:`작위가 폐지된 날, ${G}와 같이 그리다 만 문장을 끝까지 그려 주었다. 이제 아무 데도 붙일 수 없는 문장이었다.`,{tone:'그리움',their:'그 아이는 아무것도 묻지 않고 같이 해 주었다. 남은 사자 꼬리를 볼 때마다 그 손을 생각한다.'});bfRel('gabriel',{close:6,trust:6});
+     say((nob?`둘이 번갈아 긁었다. 사자의 몸은 지워졌는데 꼬리 끝만 끝내 남았다. ${bU('gabriel')} 그걸 보고 한참 웃었다. “봐, 끝까지 버티는 놈이 하나는 있어.”`:`그림 속 문장을 끝까지 그려 주었다. 리본에 은빛도 칠했다. ${bU('gabriel')} 다 된 그림을 접어 품에 넣었다. “아무 데도 안 붙일 거야. 그래서 이젠 아무도 못 떼.”`)+fx({hap:2}))}},
+   {l:'“이제 우리 둘 다 시민이야.”라고 손을 내민다',a:'radical social',f:()=>{bfMem('m_gx_titre','gabriel',`작위가 폐지된 날, ${G}에게 이제 우리 둘 다 시민이라며 손을 내밀었다. ${he}는 잠깐 망설이다 그 손을 잡았다.`,{tone:'희망',their:'시민. 그 아이 입에서 나오니 그 말이 처음으로 모욕이 아니었다.'});bfRel('gabriel',{close:4,resp:3});s.pol=clamp(s.pol+3,-100,100);
+     say(`${bU('gabriel')} 내민 손을 잠깐 내려다보았다. 그러고는 일부러 과장된 궁정식 인사로 그 손을 잡았다. “반갑습니다, 시민. 앞으로 잘 부탁합니다.” 웃음이 터졌다. 반쯤은 진심이었다.`+fx({hap:2}))}},
+   {l:'아무 말 없이 옆에 앉아 있는다',a:'safe',f:()=>{bfMem('m_gx_titre','gabriel',`작위가 폐지된 날, ${G} 옆에 아무 말 없이 앉아 있었다.`,{tone:'위로',their:'그날 아무 말도 듣고 싶지 않았다. 그 아이는 그걸 알았다.'});bfRel('gabriel',{trust:5});
+     say(`해가 기울 때까지 둘 다 말이 없었다. 일어서면서 ${bU('gabriel')} 바지에 묻은 칠 가루를 털었다. “내일은 새 옷 맞추러 가자. 시민 옷으로. 시민도 멋은 낼 수 있잖아.”`)}}])}},
+ {id:'gx_duel',when:()=>!child()&&bfW(1791,1792.6),run:async()=>{const G=bN('gabriel'),he=bHe('gabriel');
+  await bfScene('결투 신청','le cartel',`밤늦게 ${bI('gabriel')} 문을 두드린다. 얼굴이 하얗다. 코르들리에 클럽의 한 사내가 카페에서 ${bN('gabriel')}의 레이스를 ‘귀족 놈의 행주’라고 했고, ${bU('gabriel')} 그 사내 얼굴에 장갑을 던졌다. 내일 새벽, 불로뉴 숲. “입회인이 필요해. 너밖에 없어.” 손이 떨린다. “나 사실 펜싱 시합에서 한 번도 끝까지 서 있어 본 적 없어.”`,[
+   {l:'입회인을 맡고, 새벽에 상대 입회인과 화해를 엮는다',a:'social',f:()=>{const ok=s.st.soc+ri(0,40)>45;bfMem('m_gx_duel','gabriel',ok?`${G}의 결투 입회인이 되었다. 새벽 불로뉴 숲에서 상대 입회인과 말을 맞춰 칼을 뽑기 전에 화해시켰다.`:`${G}의 결투 입회인이 되었다. 화해는 성사되지 않았다. 칼이 한 번 부딪쳤고, ${he}의 팔에 얕은 상처가 남았다.`,{tone:ok?'위로':'두려움',their:ok?'그 아이가 아니었으면 나는 그날 죽었거나 달아났을 것이다.':'팔의 흉터를 볼 때마다 그 새벽 그 아이가 내 옆에 서 있던 게 먼저 생각난다.'});bfRel('gabriel',{close:6,trust:8});
+     say((ok?`새벽 안개 속에서 두 입회인이 한참 속삭였다. 결국 상대가 “행주는 말이 지나쳤다”고 했고, ${bU('gabriel')} “장갑은 새것이었다”고 했다. 그걸로 끝났다. 돌아오는 길에 ${bU('gabriel')} 다리가 풀려 길가에 주저앉았다.`:`말은 통하지 않았다. 칼이 딱 한 번 부딪쳤고, ${G}의 왼팔에서 피가 흘렀다. 첫 피로 끝났다. 붕대를 감아 주는 동안 ${bU('gabriel')} 내내 울었다. 아파서인지 무서워서인지는 묻지 않았다.`)+fx({soc:1,cour:1}))}},
+   {l:'“사과하고 끝내. 레이스 때문에 죽을 순 없어.”',a:'safe',f:()=>{bfMem('m_gx_duel','gabriel',`${bI('gabriel')} 결투를 앞두고 찾아왔다. 사과하고 끝내라고 했다. ${he}는 다음 날 사과 편지를 보냈다.`,{tone:'부끄러움',their:'사과 편지를 쓰는 동안 그 아이가 옆에서 철자를 고쳐 주었다. 나는 또 달아났다. 그래도 살았다.'});bfRel('gabriel',{trust:4});
+     say(`${bU('gabriel')} 한참 버티다 펜을 들었다. 당신이 철자를 고쳐 주었다. 다음 날 거리에서 ${bHe('gabriel')}를 ‘겁쟁이 귀족’이라고 부르는 소리가 들렸다. ${bU('gabriel')} 못 들은 척 걸었다. 살아서 걸었다.`)}},
+   {l:'“내가 대신 칼을 잡을게.”라고 한다',a:'bold',f:()=>{const win=s.sk.arms+s.st.cour/2+ri(0,30)>55;bfMem('m_gx_duel','gabriel',win?`${G} 대신 결투에 나갔다. 상대의 손목을 스쳐 첫 피로 끝냈다.`:`${G} 대신 결투에 나갔다. 어깨를 찔렸다. ${he}는 의사를 부르러 숲길을 맨발로 달렸다.`,{tone:win?'희망':'두려움',their:'그 아이가 내 칼을 대신 잡았다. 평생 갚지 못할 빚이다.'});bfRel('gabriel',{close:8,trust:10});
+     say((win?`안개 속에서 칼끝이 상대의 손목을 스쳤다. 첫 피. 상대는 투덜대며 물러났다. ${bU('gabriel')} 달려와 당신을 끌어안았다. 향수 냄새가 너무 진했다.`:`칼이 어깨를 파고들었다. 땅이 기울었다. 정신을 차렸을 때 ${bU('gabriel')} 구두를 벗어 든 채 의사를 끌고 숲길을 달려오고 있었다.`)+fx(win?{cour:3,arms:2}:{cour:2,hp:-8}))}}])}}];
+async function gaxTick(){if(!s||s.dead||sheetLive||!gaOk())return;s.gax=s.gax||{d:{},nx:0};if(MI()<s.gax.nx)return;
+  for(const x of GAX){if(s.gax.d[x.id])continue;let ok=false;try{ok=x.when()}catch(e){}if(!ok)continue;
+    s.gax.d[x.id]=s.year;s.gax.nx=MI()+6;try{await x.run()}catch(e){console.error('gax',x.id,e);sheetClose()}return}}
+{const _rdg=rfDaily;rfDaily=async function(){await _rdg();if(!s||s.dead)return;try{if(R()<.35)await gaxTick()}catch(e){console.error(e)}}}
+try{RF2_VISIT.gabriel.push(()=>`${bW('gabriel')} 검술 도장에 갔다. ${bU('gabriel')} 찌르기는 여전히 반 박자 늦었지만, 인사만큼은 사범보다 우아했다.`,()=>`${bU('gabriel')} 하인도 없이 혼자 머리를 분칠하고 있었다. “남이 해 주면 꼭 한쪽이 높아.” 다 끝내고 보니 한쪽이 높았다.`)}catch(e){}
+
+/* ================= 개편 43: 데스크톱 넓은 화면 — 일상 탭 3단 =================
+   창이 충분히 넓을 때(약 1320px 이상)만. 왼쪽 능력·정치 성향, 가운데 일상 기록, 오른쪽 생활. 폰과 좁은 창은 그대로. */
+{const st=document.createElement('style');st.textContent=`
+body.dk{overflow:hidden}
+body.dk .dk-band{display:block}
+.dk-band{display:none;position:fixed;left:0;right:0;top:0;height:var(--dk-hh,160px);background:var(--bg);border-bottom:1px solid var(--line);z-index:9;pointer-events:none}
+.dk-band .tri{position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,#2E4A7A 0 33.34%,#F7F3EA 33.34% 66.67%,#8E1F24 66.67%)}
+body.dk #top{background:transparent!important;box-shadow:none!important;border-bottom:0!important}
+body.dk #top::before,body.dk #top::after{display:none!important}
+body.dk #app .ribbon{display:none!important}
+body.dk #decree{margin-left:calc(-1 * var(--dk-ext,0px));margin-right:calc(-1 * var(--dk-ext,0px));padding:0 16px}
+.dk-side{display:none;position:fixed;top:var(--dk-top);height:var(--dk-h);width:var(--dk-w);z-index:5;gap:14px;overflow:hidden}
+body.dk .dk-side{display:grid}
+.dk-side.left{left:var(--dk-l);grid-template-rows:1fr auto}
+.dk-side.right{left:var(--dk-r);grid-template-rows:1fr}
+.dk-side .card{margin:0;display:flex;flex-direction:column;min-height:0;overflow:hidden}
+.dk-cap{display:grid;gap:7px;margin:4px 2px 2px;flex:1 1 auto;align-content:space-evenly}
+.dk-cap .r{display:grid;grid-template-columns:3.2em 1fr 2.2em;align-items:center;gap:10px;font-size:.92rem}
+.dk-cap .r s{display:block;height:5px;background:color-mix(in srgb,var(--gold) 18%,transparent);text-decoration:none}
+.dk-cap .r u{display:block;height:100%;background:var(--gold);text-decoration:none}
+.dk-cap .r b{text-align:right;font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:500;color:var(--gold)}
+.dk-cap .r.low b{color:var(--red)}
+.dk-pol .lbl{text-align:center;font-weight:600;margin:2px 0 10px}
+.dk-pol .bar{position:relative;height:8px;background:linear-gradient(90deg,#2E4A7A,#C9BFAE 50%,#8E1F24);margin:0 6px}
+.dk-pol .bar i{position:absolute;top:-5px;width:3px;height:18px;background:var(--ink);transform:translateX(-50%)}
+.dk-pol .ends{display:flex;justify-content:space-between;font-size:.82rem;color:var(--mut);margin:6px 2px 0}
+.dk-pol .meta{font-size:.85rem;margin-top:6px;line-height:1.6}
+.dk-side.right .card{padding-bottom:14px}
+.dk-side.right .fac-grid{grid-template-columns:repeat(3,1fr)!important;gap:6px!important;margin:4px 0 8px!important}
+.dk-side.right .fac{padding:6px 4px!important;min-height:0!important;justify-content:center;align-items:center;text-align:center}
+.dk-side.right .fac small,.dk-side.right .lab{display:none!important}
+.dk-side.right .fac b{font-size:.88rem;width:100%;text-align:center}
+.dk-side.right .facw{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;overflow:hidden}
+.dk-side.right .acts{overflow:auto;min-height:0;flex:1 1 auto;display:grid;gap:6px;align-content:start}
+.dk-side.right .acts .opt{padding:8px 10px}
+body.dk #logCard{position:fixed;top:var(--dk-top);left:var(--dk-c);width:var(--dk-cw);height:var(--dk-h);box-sizing:border-box;overflow:hidden;display:flex;flex-direction:column;margin:0}
+body.dk #logLess{display:none!important}
+body.dk #logCard #log{flex:1 1 auto;overflow:auto;min-height:0;align-content:start;justify-content:flex-start}`;document.head.appendChild(st)}
+const DK={on:false,sl:'',sr:'',L:null,R:null,band:null};
+const DK_DEC='La Nation, la Loi, le Roi';
+function dkWant(){return !!(s&&!s.dead&&curTab==='daily'&&!document.body.classList.contains('covered')&&window.innerWidth>=1320&&window.innerHeight>=620)}
+function dkEls(){if(DK.band)return;DK.band=el('div','dk-band');DK.band.appendChild(el('div','tri'));document.body.prepend(DK.band);
+  DK.L=el('aside','dk-side left');DK.R=el('aside','dk-side right');document.body.appendChild(DK.L);document.body.appendChild(DK.R)}
+function dkLayout(){const top=$('#top'),app=$('#app'),nav=$('#nav');if(!top||!app)return;const R=document.documentElement.style;
+  const a=app.getBoundingClientRect(),hb=top.getBoundingClientRect().bottom,nt=nav&&!nav.hidden?nav.getBoundingClientRect().top:window.innerHeight;
+  const g=14,w=Math.min(300,Math.floor(a.left-32)),t=hb+g;
+  R.setProperty('--dk-hh',hb+'px');R.setProperty('--dk-ext',a.left+'px');R.setProperty('--dk-top',t+'px');R.setProperty('--dk-h',Math.max(200,nt-g-t)+'px');
+  R.setProperty('--dk-w',w+'px');R.setProperty('--dk-l',(a.left-w-16)+'px');R.setProperty('--dk-r',(a.right+16)+'px');R.setProperty('--dk-c',a.left+'px');R.setProperty('--dk-cw',a.width+'px')}
+function dkLeft(){const H=DK.L;H.innerHTML='';const c1=cardIn(H,'능력','Capacités');const g=el('div','dk-cap');
+  const rows=FN_STATS.some(x=>x[0]==='hap')?FN_STATS:FN_STATS.concat([['hap','행복']]);
+  rows.forEach(([k,n])=>{const v=Math.round(s.st[k]||0);const d=el('div','r'+(v<=25?' low':''));d.innerHTML=`<span>${n}</span><s><u style="width:${clamp(v,0,100)}%"></u></s><b>${v}</b>`;g.appendChild(d)});c1.appendChild(g);
+  const c2=cardIn(H,'정치 성향','Opinion');const pw=el('div','dk-pol');const pv=clamp(s.pol||0,-100,100);
+  pw.innerHTML=`<div class="lbl">${polLabel(pv)}</div><div class="bar"><i style="left:${(pv+100)/2}%"></i></div><div class="ends"><span>왕당</span><span>중도</span><span>급진</span></div><div class="meta">${child()?'아직 어려 정치에 나설 수 없다.':'성향 수치 '+Math.round(pv)}</div>`;c2.appendChild(pw)}
+function dkRight(){const H=DK.R;const y=(H.querySelector('.acts')||{}).scrollTop||0;H.innerHTML='';const c=cardIn(H,'생활','Les occupations');
+  try{buildActs(c)}catch(e){console.error(e)}if(c.querySelector('button'))c.querySelectorAll('p.mut').forEach(p=>{if(!p.closest('.acts'))p.remove()});else if(!c.querySelector('p'))c.appendChild(el('p','mut',child()?'아직 어려서 스스로 고를 수 있는 일이 없다.':'지금은 할 수 있는 일이 없다.'));
+  const ac=H.querySelector('.acts');if(ac)ac.scrollTop=y}
+function dkSync(){let want=false;try{want=dkWant()}catch(e){}
+  if(!want){if(DK.on){DK.on=false;document.body.classList.remove('dk');DK.sl=DK.sr='';if(logLimit>LOG_STEP){logLimit=LOG_STEP;try{foldLog()}catch(e){}}try{$('#decree').textContent=era().h||''}catch(e){}}return}
+  dkEls();if(!DK.on){DK.on=true;document.body.classList.add('dk')}
+  const d=$('#decree');if(d&&d.textContent!==DK_DEC)d.textContent=DK_DEC;dkLayout();
+  if(logLimit<15){logLimit=15;try{foldLog()}catch(e){}}
+  const sl=JSON.stringify([s.st,s.pol,child()]);if(sl!==DK.sl){DK.sl=sl;dkLeft()}
+  const sr=JSON.stringify([s.year,s.month,s.age,s.cond,s.money,rf2Fac,typeof paused!=='undefined'?paused:0,sheetLive,typeof busy!=='undefined'?busy:0,s.acts,s.own||0]);
+  if(sr!==DK.sr){DK.sr=sr;dkRight()}}
+{const _rd=render;render=function(){const r=_rd.apply(this,arguments);try{dkSync()}catch(e){}return r}}
+{const _st=setTab;setTab=function(t){const r=_st.apply(this,arguments);try{dkSync()}catch(e){}return r}}
+window.addEventListener('resize',()=>{try{dkSync()}catch(e){}});setInterval(()=>{try{dkSync()}catch(e){}},400);
 </script>
 </body>
 </html>
