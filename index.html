@@ -8558,7 +8558,7 @@ beat('antoine','an_meet',{when:()=>s.age>=9&&bfHere(),run:async()=>{bfMake('anto
    {l:'내기를 하고, 딴 단추를 돌려준다',a:'social',f:()=>{bfSet('antoine','gave');bfMem('m_button','antoine',`구슬 내기에서 ${A}의 은단추를 땄다가 돌려주었다. ${bU('antoine')} 한참 단추를 만지작거리다 “빚진 거야.”라고 했다.`,{obj:'은단추',place:'생드니 거리',their:'그 아이는 단추를 돌려주었다. 나는 그 빚을 평생 기억했다. 빚은 갚아야 하는 거니까.'});bfRel('antoine',{close:8,resp:10});say(`${bU('antoine')} 단추를 주머니 깊숙이 넣었다.`)}},
    {l:'내기를 하지 않는다',a:'safe',f:()=>{bfMem('m_button','antoine',`${bI('antoine')} 은단추를 걸고 구슬 내기를 하자고 했지만 하지 않았다.`,{tone:'그리움',place:'생드니 거리',their:'그 아이는 내기를 하지 않았다. 조심성 많은 아이였다. 나는 그런 사람이 부러웠다.'});bfRel('antoine',{close:3});say(`${bU('antoine')} 어깨를 으쓱하더니 다른 아이와 내기를 했다. 그리고 졌다.`)}}])}});
 
-beat('gabriel','ga_meet',{gap:0,when:()=>s.age>=9&&bfHere()&&[11,0,1].includes(s.month),run:async()=>{bfMake('gabriel');const Ga=bN('gabriel');bfJob('gabriel',noble()?'이웃 저택의 아이':'도매상의 아이');
+beat('gabriel','ga_meet',{gap:0,when:()=>s.age>=8&&bfHere()&&[11,0,1].includes(s.month),run:async()=>{bfMake('gabriel');const Ga=bN('gabriel');bfJob('gabriel',noble()?'이웃 저택의 아이':'도매상의 아이');
   fx({hp:-3});
   await bfScene('얼어붙은 연못','la glace',`겨울, 튈르리 정원의 연못이 얼었다. 이웃 ${noble()?'저택':'도매상'}의 아이, ${jo(Ga,'이다','다')}. 얼음이 쩍 갈라졌다. ${bU('gabriel')} 달아났고, 당신은 물에 빠졌다. 이튿날 아이들이 묻는다. “누가 먼저 도망쳤어?” 저만치 ${bI('gabriel')} 굳은 얼굴로 서 있다.`,[
    {l:'“둘 다 도망쳤어.”라고 말한다',a:'social',f:()=>{bfSet('gabriel','kept');bfKnow('gabriel','dog',1);bfMem('m_dog','gabriel',`튈르리 정원의 얼음이 깨지던 날 ${bU('gabriel')} 달아났고, 당신은 물에 빠졌다. 아이들에게는 둘 다 도망쳤다고 말했다.`,{tone:'그리움',place:'튈르리 정원 연못',their:'그 아이는 내가 먼저 도망쳤다고 말하지 않았다. 나는 평생 그 거짓말에 빚졌다.'});bfObj('ribbon',`${bI('gabriel')} 말없이 쥐여 준 푸른 리본`,{from:'gabriel'});bfRel('gabriel',{close:10,trust:12,riv:-10});say(`며칠 뒤 ${bI('gabriel')} 말없이 푸른 리본 하나를 당신 손에 쥐여 주었다.`)}},
@@ -8580,7 +8580,7 @@ beat('etienne','et_promise',{when:()=>s.age>=10&&s.year>=bfR('etienne').y+1&&bfH
     {tone:'희망',place:'퐁뇌프',their:law==='seize'?'그 아이가 나더러 고르라고 했다. 그래서 그 법을 말해 버렸다. 왜 그 법이었는지는 묻지 않았다. 고마웠다.':'그날 그 아이가 고른 법보다, 내가 차마 말하지 못한 법이 더 오래 생각났다.'});
   bfRel('etienne',{close:8,trust:8});say(law==='seize'?`${bI('etienne')} 고른 법을 듣고, 당신은 왜 하필 그 법이냐고 묻지 않았다.`:`${bU('etienne')} 진지하게 고개를 끄덕였다. “좋아. 약속이야.”`)}});
 
-beat('group','g_scold',{when:()=>s.age>=11&&bfMetN()>=3&&(bfMet('gabriel')||s.age>=13)&&bfHere(),until:()=>s.age>=14,run:async()=>{const ks=BF5.filter(k=>bfMet(k)&&bfAlive(k));const who=bfList(ks);const tch=noble()?'가정교사':'본당 신부';
+beat('group','g_scold',{when:()=>s.age>=11&&bfMetN()>=3&&bfHere(),until:()=>s.age>=14,run:async()=>{const ks=BF5.filter(k=>bfMet(k)&&bfAlive(k));const who=bfList(ks);const tch=noble()?'가정교사':'본당 신부';
   const TH={louise:'사과 맛밖에 기억나지 않는다. 그렇게 단 사과는 그 뒤로 없었다.',etienne:'그 아이가 나섰을 때 나는 나서지 못했다. 그게 오래 부끄러웠다.',jules:'신부님이 “용기는 매를 맞는 쪽에 있다”고 하셨다. 그 말을 평생 외웠다.',antoine:'사실 담을 넘자고 한 건 나였다. 다들 그걸 알면서 아무도 말하지 않았다.',gabriel:'아버지가 돈을 보내 나만 빠졌다. 그날 다른 아이들의 손바닥이 부어 있었다.'};
   const mk=(t,ov={})=>{const m=bfMem('m_apple',ks,t,{place:'카르투지오 수도원 과수원',tone:'기쁨'});if(m){m.their=Object.assign({},TH,ov);Object.keys(m.their).forEach(k=>{if(!ks.includes(k))delete m.their[k]})}ks.forEach(k=>bfRel(k,{close:4}))};
   await bfScene('수도원 과수원','les pommes des Chartreux',`${who}, 그리고 당신. 카르투지오 수도원 담을 넘어 사과를 따다 붙잡혔다. ${tch} 앞에 줄지어 선다. “누가 먼저 넘자고 했느냐?”`,[
