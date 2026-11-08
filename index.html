@@ -13440,10 +13440,12 @@ const R35={
   winter:[N=>`겨울, ${jo(N,'은','는')} 튈르리 연못 근처에는 가지 않으려 했다. 대신 당신을 데리고 따뜻한 카페로 갔다.`,N=>`눈 오는 밤, ${jo(N,'은','는')} 털 토시를 새로 샀다며 당신 손에 끼워 보았다. “너한테 더 어울려. 그래도 안 줘.”`]}};
 async function r35Tick(){if(!s||s.dead)return;try{
   if(typeof bfRev!=='function'||!bfRev())return;if(T()>=1789.5)return;const keys=['louise','etienne','jules','antoine','gabriel'];if(!keys.every(k=>bfMet(k)))return;
-  s.r35=s.r35||{};if(s.r35.y!==s.year){let sl;do{sl=Object.keys(R35_SLOT).sort(()=>R()-.5).slice(0,2)}while(sl.includes('newyear')&&sl.includes('spring'));s.r35={y:s.year,sl,done:{}}}
-  for(const sl of s.r35.sl){const m0=R35_SLOT[sl];if(s.r35.done[sl]||s.month<m0||s.month>m0+2)continue;s.r35.done[sl]=1;
-    const ok=keys.filter(k=>{const r=bfR(k);return r&&r.alive&&r.cond==='normal'&&!r.cut&&(r.hate||0)<40});if(!ok.length)continue;
-    const k=ok[Math.floor(R()*ok.length)];const L0=R35[k][sl];const f=L0[s.age<15?0:1];L(f(bN(k)),'story')}}catch(e){console.error(e)}}
+  r35Year();for(const sl of s.r35.sl){if(sl==='newyear')continue;const m0=R35_SLOT[sl];if(s.r35.done[sl]||s.month<m0||s.month>m0+2)continue;s.r35.done[sl]=1;r35Say(sl)}}catch(e){console.error(e)}}
+function r35Year(){s.r35=s.r35||{};if(s.r35.y!==s.year){let sl;do{sl=Object.keys(R35_SLOT).sort(()=>R()-.5).slice(0,2)}while(sl.includes('newyear')&&sl.includes('spring'));s.r35={y:s.year,sl,done:{}}}}
+function r35Say(sl){const keys=['louise','etienne','jules','antoine','gabriel'];const ok=keys.filter(k=>{const r=bfR(k);return r&&r.alive&&r.cond==='normal'&&!r.cut&&(r.hate||0)<40});if(!ok.length)return;
+  const k=ok[Math.floor(R()*ok.length)];const f=R35[k][sl][s.age<15?0:1];L(f(bN(k)),'story')}
+// 새해 장면은 새해 표지 바로 뒤에 붙여서 함께 나온다
+{const _L35=L;L=function(t,k='ev',d){const r=_L35.call(this,t,k,d);try{if(k==='yr'&&s&&!s.dead&&typeof bfRev==='function'&&bfRev()&&T()<1789.5&&['louise','etienne','jules','antoine','gabriel'].every(x=>bfMet(x))){r35Year();if(s.r35.sl.includes('newyear')&&!s.r35.done.newyear){s.r35.done.newyear=1;const was=r30Imm;r30Imm=true;try{r35Say('newyear')}finally{r30Imm=was}}}}catch(e){console.error(e)}return r}}
 {const _rd35=rfDaily;rfDaily=async function(){await _rd35();if(!s||s.dead)return;await r35Tick()}}
 </script>
 </body>
