@@ -864,8 +864,13 @@ details.fold>.cgrid{margin-top:8px}
 #obWill .wl{display:block;margin:2px 0}
 #obWill{font-style:italic;line-height:1.85;text-wrap:balance}
 #obWill{max-width:30em;margin-inline:auto}
-.cap-bars{display:grid;gap:9px;margin:12px 18px 4px}
-.cap-row{display:grid;grid-template-columns:3.2em 1fr 2.2em;align-items:center;gap:10px;font-size:.92rem}
+.lv-list{display:grid;gap:12px}
+.lv-card{padding:14px 18px 14px}
+.lv-card .lv-n{margin:0;font-family:'Cormorant Garamond','Noto Serif KR',serif;font-weight:600;font-size:1.3rem;color:#EFE4CB;line-height:1.15}
+.lv-card .lv-y{font-family:'Cormorant Garamond',serif;font-size:.95rem;color:#D9BC7A;letter-spacing:.04em;margin-top:2px;font-variant-numeric:lining-nums}
+.lv-card .lv-w{margin:8px 0 0;font-size:.9rem;line-height:1.55;color:#EFE4CB;font-style:italic}
+.cap-bars{display:grid;gap:3px;margin:6px 18px 0}
+.cap-row{display:grid;grid-template-columns:3.2em 1fr 2.2em;align-items:center;gap:10px;font-size:.92rem;line-height:1.25}
 .cap-row span{font-family:'Cormorant Garamond','Noto Serif KR',serif;letter-spacing:.06em}
 .cap-row s{display:block;height:4px;background:rgba(239,228,203,.16);text-decoration:none}
 .cap-row u{display:block;height:100%;background:#D9BC7A;text-decoration:none}
@@ -964,13 +969,13 @@ details.fold>.cgrid{margin-top:8px}
           <button type="button" id="mPol" hidden>mPol</button>
           <button type="button" id="mHist" hidden>mHist</button>
           <button type="button" id="mHelp" hidden>mHelp</button>
-          <button type="button" id="mLives">지난 인생</button>
+          <button type="button" id="mLives">전생</button>
+          <button type="button" id="mNew">재시작</button>
+          <button type="button" id="mActs">생활 활동</button>
+          <button type="button" id="mSchool">학교 생활</button>
           <button type="button" id="mSrc">참고 문헌</button>
           <button type="button" id="mImg">그림 출처</button>
           <button type="button" id="autoT" aria-pressed="false" hidden>자동 선택 꺼짐</button>
-          <button type="button" id="mActs">생활 활동</button>
-          <button type="button" id="mSchool">학교 생활</button>
-          <button type="button" id="mNew">처음 화면</button>
         </div>
       </div>
     </div>
@@ -7964,8 +7969,8 @@ function showHelp(){const pin=openPanel('설명');const g=el('div','gloss');
 function showSources(){const pin=openPanel('참고 문헌');if(typeof LIFE_SRC==='undefined'||!LIFE_SRC.length){pin.appendChild(el('p','mut','아직 자료가 없습니다.'));return}
   pin.appendChild(el('p','mut',`게임 속 생활사 장면 ${LIFE_DATA.length}건의 근거가 된 학술 자료 ${LIFE_SRC.length}개입니다. 기록의 ‘자료’ 줄에서도 바로 열 수 있습니다.`));
   const ul=el('ol','srcs');LIFE_SRC.map((x,i)=>[x,i]).sort((a,b)=>a[0].c.localeCompare(b[0].c)).forEach(([x])=>{const li=el('li');const a=el('a',null,x.c);a.href=x.u;a.target='_blank';a.rel='noopener';li.appendChild(a);li.appendChild(el('small',null,` · 장면 ${x.n}건`));ul.appendChild(li)});pin.appendChild(ul)}
-function showLives(){const pin=openPanel('지난 인생');const l=loadLives();if(!l.length)pin.appendChild(el('p','mut','아직 기록이 없습니다.'));const ul=el('ul','lives');
-  l.forEach(x=>{const li=el('li');li.appendChild(el('b',null,x.ep));li.appendChild(document.createTextNode(` — ${x.n}, ${x.y}, ${x.age}세`));li.appendChild(el('p',null,x.txt));ul.appendChild(li)});pin.appendChild(ul)}
+function showLives(){const pin=openPanel('전생');const l=loadLives();if(!l.length){pin.appendChild(el('p','mut','이 기기에서 살았던 생이 아직 없습니다.'));return}const wrap=el('div','lv-list');
+  l.forEach(x=>{const c=el('section','pf2-panel lv-card');c.appendChild(el('h3','lv-n',x.n));c.appendChild(el('div','lv-y',`${x.y} · ${x.age}세`));c.appendChild(el('p','lv-w',x.will?`“${x.will}”`:'남긴 말이 없다.'));wrap.appendChild(c)});pin.appendChild(wrap)}
 
 /* ================= 진행 제어 ================= */
 let running=false,paused=false,busy=false,speed=1,timer=null;
@@ -7987,7 +7992,7 @@ function setSpeed(v){speed=v;document.querySelectorAll('#spd button').forEach(b=
 function save(){try{if(s&&!s.dead)localStorage.setItem(KEY,JSON.stringify(s));else localStorage.removeItem(KEY)}catch(e){}}
 function load(){try{const x=JSON.parse(localStorage.getItem(KEY)||'null');return x&&x.v===2?attrsMigrate(x):null}catch(e){return null}}
 function loadLives(){try{return JSON.parse(localStorage.getItem(LKEY)||'[]')}catch(e){return []}}
-function recordLife(out,ep){try{const l=loadLives();l.unshift({n:`${s.given[0]} ${s.sur[0]}`,ep,y:`${s.by}–${s.year}`,age:s.age,txt:out.slice(0,2).join(' ')});localStorage.setItem(LKEY,JSON.stringify(l.slice(0,30)))}catch(e){}}
+function recordLife(out,ep){try{const l=loadLives();const n=`${s.given[0]} ${s.sur[0]}`,y=`${s.by}–${s.year}`,id=s.lifeId||(s.lifeId=Date.now()+'');const i=l.findIndex(x=>x.id===id||(x.n===n&&x.y===y));const rec={id,n,ep,y,age:s.age,txt:out.slice(0,2).join(' '),will:(i>=0&&l[i].will)||null};if(i>=0)l.splice(i,1);l.unshift(rec);localStorage.setItem(LKEY,JSON.stringify(l.slice(0,30)))}catch(e){}}
 
 /* ================= 시작 ================= */
 function start(fresh,o){$('#title').hidden=true;$('#end').hidden=true;document.body.classList.remove('covered');sheetClose();curTab='daily';setTab('daily');
@@ -13453,6 +13458,11 @@ function r35Say(sl){const keys=['louise','etienne','jules','antoine','gabriel'];
 {const _d36=die;die=function(){try{if(s&&!s.dead&&typeof r30Q!=='undefined'){while(r30Q.length)r30Show(r30Q.shift());clearTimeout(r30Tm);r30Tm=null;foldLog()}}catch(e){}
   const was=!!(s&&s.dead);const r=_d36.apply(this,arguments);if(!was&&s&&s.dead)s.endLog=1;return r}}
 {const _L36=L;L=function(t,k='ev',d){if(s&&s.dead&&s.endLog)return;return _L36.call(this,t,k,d)}}
+
+/* ---------- 전생 기록에 유언(손수 쓴 마지막 말, 없으면 남긴 마지막 말)을 함께 남긴다 ---------- */
+{const _se37=showEnd;showEnd=function(){const r=_se37.apply(this,arguments);try{if(s&&s.dead){const l=loadLives();const i=l.findIndex(x=>x.id===s.lifeId);if(i>=0){const wl=document.querySelector('#obWill .wl');const w=s.willText||(wl?wl.textContent.replace(/^[“"]|[”"]$/g,'').trim():'');l[i].will=w||null;localStorage.setItem(LKEY,JSON.stringify(l))}}}catch(e){console.error(e)}return r}}
+/* ---------- 태어날 때의 기본 정보(연도 표지·탄생·세례명·시대)는 한꺼번에 나온다 ---------- */
+{const _b37=birth;birth=function(){r30Imm=true;try{return _b37.apply(this,arguments)}finally{r30Imm=false}}}
 </script>
 </body>
 </html>
