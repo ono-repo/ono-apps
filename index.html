@@ -12925,7 +12925,7 @@ const R30_POL={etienne:70,louise:25,gabriel:-12,jules:-45};
 /* ---------- 일상 기록의 속도: 새해·살림·그달의 역사·그에 대한 벗들의 반응은 한꺼번에, 나머지는 같은 간격으로 한 줄씩.
    사건 창이 떠 있는 동안에는 멈추고, 창이 닫히면 결과부터 한 줄씩 보여 준 뒤 다음 사건 창이 뜬다. ---------- */
 let r30Q=[],r30Next=0,r30Tm=null,r30Imm=false,r30Bulk=false;
-const r30Step=()=>{const sp=(typeof speed!=='undefined'&&speed)||1;return r30Q.length>8?150:Math.round(900/Math.max(1,sp/2))};
+const r30Step=()=>{const sp=(typeof speed!=='undefined'&&speed)||1;return Math.max(300,Math.round(5000/sp))};
 const r30IsImm=e=>e.k==='yr'||e.k==='hist'||e.imm||(e.k==='sys'&&/^한 해 살림/.test(e.t||''));
 function r30Show(e){const box=logBox||$('#log');if(!box)return;box.prepend(entryNode(e));while(box.childElementCount>360)box.lastElementChild.remove()}
 function r30Pump(){clearTimeout(r30Tm);r30Tm=null;if(!r30Q.length)return;
@@ -12967,8 +12967,8 @@ const r30Mourn=()=>!!(s&&s.mourn30&&MI()<s.mourn30);
 
 // 죽음은 하나만: 부고·장례·마지막 수레 장면이 뜨면, 같은 달에 먼저 나간 같은 사람의 사망 줄은 거둔다
 {const _bs30=bfScene;bfScene=async function(title,fr,text,opts){try{if(s&&/(부고|장례|마지막 수레)$/.test(title||'')){const who=String(title).replace(/의 (부고|장례|마지막 수레)$/,'').trim();const tx=typeof text==='function'?'':String(text||'');const s1=tx.split(/(?<=\.) /)[0];
-    const recent=s.log.slice(-12).filter(e=>e.a===s.age&&e.m===s.month&&e.k!=='hist'&&e.k!=='yr'&&((s1&&e.t.startsWith(s1))||(who&&e.t.includes(who)&&/세상을 떠|숨을 거|단두대에 올랐|처형되었/.test(e.t))));
-    for(const e of recent){e.dup=1;const i=r30Q.indexOf(e);if(i>=0)r30Q.splice(i,1);else{const box=logBox||$('#log');if(box)[...box.children].slice(0,12).forEach(n=>{if(n.textContent&&n.textContent.includes(e.t.slice(0,24)))n.remove()})}}}}catch(e){console.error(e)}return _bs30.apply(this,arguments)}}
+    const recent=s.log.slice(-25).filter(e=>Math.abs(((e.a||0)*12+(e.m||0))-((s.age||0)*12+(s.month||0)))<=4&&e.k!=='hist'&&e.k!=='yr'&&((s1&&e.t.startsWith(s1))||(who&&e.t.includes(who)&&/세상을 떠|숨을 거|단두대에 올랐|처형되었/.test(e.t))));
+    for(const e of recent){e.dup=1;const li=s.log.lastIndexOf(e);if(li>=0){s.log.splice(li,1);if(li<shown)shown--}const i=r30Q.indexOf(e);if(i>=0)r30Q.splice(i,1);else{const box=logBox||$('#log');if(box)[...box.children].slice(0,12).forEach(n=>{if(n.textContent&&n.textContent.includes(e.t.slice(0,24)))n.remove()})}}}}catch(e){console.error(e)}return _bs30.apply(this,arguments)}}
 {const _en=entryNode;entryNode=function(e){const n=_en(e);if(e&&e.dup&&n)n.hidden=true;return n}}
 
 /* ---- 개편 31 out_A.json ---- */
@@ -13379,6 +13379,17 @@ async function gb32Tick(){if(!s||s.dead||!bfRev()||s.gb92br!=='refuge'||!bfMet('
   if(G.st==='hid'&&!G.out&&t>=1794.6&&r.alive&&r.cond==='hiding'){G.out=1;r.cond='normal';bfFate('gabriel','테르미도르 뒤 당신 집에서 나왔다');
     L(`테르미도르가 지나고 한 달 뒤, ${bU('gabriel')} ${G.cel?'저장고에서 올라왔다':'다락에서 내려왔다'}. 햇빛에 눈을 찡그리며 말했다. “빚이 생겼네. 평생 갚을게. 영국식으로, 아주 천천히.”`+fx({hap:4}),'big');bfRel('gabriel',{close:6})}}
 {const _rd32=rfDaily;rfDaily=async function(){await _rd32();if(!s||s.dead)return;try{await gb32Tick()}catch(e){console.error(e);if(sheetLive)sheetClose()}}}
+
+/* ---------- 기록이 아직 한 줄씩 나오는 중이면 시간을 멈춰 둔다(한 줄 → 5초 → 다음 줄). 배속을 올리면 간격도 그만큼 줄어든다. ---------- */
+let r33Hold=null;
+{const _sch=schedule;schedule=function(){clearTimeout(r33Hold);r33Hold=null;
+  if(s&&!s.dead&&running&&!paused&&typeof r30Q!=='undefined'&&r30Q.length){clearTimeout(timer);r33Hold=setTimeout(()=>schedule(),400);return}
+  return _sch.apply(this,arguments)}}
+
+/* ---------- 같은 문장은 한 번만: 일상·반응 기록이 글자 그대로 되풀이되면 두 번째부터는 내지 않는다
+   (수치 변화가 붙은 결과 줄, 역사·새해·큰일 줄은 그대로 둔다) ---------- */
+{const _L33=L;L=function(t,k='ev',d){try{if(s&&typeof t==='string'&&['ev','story','sys','fact'].includes(k)&&!/\([^()]*[+-]\d+[^()]*\)\s*$/.test(t)&&!/^한 해 살림/.test(t)){
+    s.seen33=s.seen33||{};const key=t.replace(/\s+/g,' ').trim();if(key.length>=12){if(s.seen33[key])return;s.seen33[key]=1}}}catch(e){}return _L33.call(this,t,k,d)}}
 </script>
 </body>
 </html>
