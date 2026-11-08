@@ -13672,6 +13672,72 @@ function dkSync(){let want=false;try{want=dkWant()}catch(e){}
 {const _rd=render;render=function(){const r=_rd.apply(this,arguments);try{dkSync()}catch(e){}return r}}
 {const _st=setTab;setTab=function(t){const r=_st.apply(this,arguments);try{dkSync()}catch(e){}return r}}
 window.addEventListener('resize',()=>{try{dkSync()}catch(e){}});setInterval(()=>{try{dkSync()}catch(e){}},400);
+
+/* ================= 개편 44: 앙투안의 장부 =================
+   흉내 잘 내고 무엇이든 세는 잡화상 아이. 빚에 갇힌 아버지, 가난에 대한 두려움, 가족. 벗 장면 사슬과 따로 돌며 한 장면 뒤 반년은 쉰다. */
+const anOk=()=>bfRev()&&bfMet('antoine')&&bfAlive('antoine')&&bfR('antoine').cond==='normal'&&!bfHot('antoine')&&bfHere();
+const ANX=[
+ {id:'ax_mimic',when:()=>s.age>=10&&s.age<=14&&T()<1789,run:async()=>{const A=bN('antoine'),he=bHe('antoine');
+  await bfScene('생드니 거리의 흉내쟁이','le singe de la rue Saint-Denis',`생드니 거리 우물가. ${bI('antoine')} 아이들을 모아 놓고 흉내를 낸다. 코맹맹이 본당 신부, 저울 눈금을 속이는 기름 장수, 배를 내밀고 걷는 순찰대장. 아이들이 배를 잡고 구른다. 그런데 바로 뒤에 기름 장수가 서 있다.`,[
+   {l:'“도망쳐!” 하고 ${A}의 손을 잡아끈다'.replace('${A}',A),a:'bold',f:()=>{bfMem('m_ax_mimic','antoine',`생드니 거리에서 ${bI('antoine')} 기름 장수 흉내를 내다 들켰다. 손을 잡고 골목 셋을 내리 달렸다.`,{tone:'기쁨',place:'생드니 거리',their:'그 아이 손을 잡고 달렸다. 숨이 차서 웃음이 안 멈췄다. 그때가 제일 가벼웠다.'});bfRel('antoine',{close:6});
+     say(`골목 셋을 내리 달렸다. 숨이 턱에 닿아 멈추자 ${bU('antoine')} 헐떡이면서도 이번엔 당신이 뛰는 모양을 흉내 냈다. 팔을 휘젓는 꼴이 기가 막히게 똑같았다.`+fx({str:1,hap:3}))}},
+   {l:'기름 장수에게 대신 사과한다',a:'social',f:()=>{bfMem('m_ax_mimic','antoine',`${bI('antoine')} 기름 장수 흉내를 내다 들켰을 때 대신 사과했다. ${he}는 그 뒤로 내 흉내만은 내지 않았다.`,{tone:'위로',place:'생드니 거리',their:'그 아이가 대신 고개를 숙였다. 그 아이 흉내만은 낼 수가 없었다. 우스운 데가 하나도 없어서.'});bfRel('antoine',{trust:6,resp:4});
+     say(`기름 장수는 씩씩대다가 당신 얼굴을 보고 혀를 찼다. “네 친구 입버릇 좀 고쳐라.” 돌아서자 ${bU('antoine')} 기름 장수가 혀 차는 소리까지 똑같이 냈다. 이번엔 당신도 웃음을 참지 못했다.`+fx({soc:1}))}},
+   {l:'“나도 해 볼래.”라며 신부 흉내를 낸다',a:'social',f:()=>{bfMem('m_ax_mimic','antoine',`생드니 거리에서 ${bW('antoine')} 본당 신부 흉내를 냈다. 내 흉내는 하나도 안 닮았다.`,{tone:'기쁨',place:'생드니 거리',their:'그 아이 흉내는 하나도 안 닮아서 더 웃겼다. 닮게 하려고 애쓰는 얼굴이 좋았다.'});bfRel('antoine',{close:5});
+     say(`코맹맹이 소리를 내 보았지만 아무도 웃지 않았다. ${bU('antoine')} 진지한 얼굴로 다가와 당신 콧등을 손가락으로 눌렀다. “여기를 막아야지.” 그제야 다들 뒤로 넘어갔다. 기름 장수까지.`+fx({hap:3}))}}])}},
+ {id:'ax_count',when:()=>s.age>=13&&s.age<=17&&T()<1789.3,run:async()=>{const A=bN('antoine'),he=bHe('antoine');
+  await bfScene('삼백팔십칠 계단','les marches de Notre-Dame',`노트르담 북쪽 탑. ${bU('antoine')} 계단을 오르며 소리 내어 센다. “…삼백팔십오, 삼백팔십육, 삼백팔십칠.” 꼭대기에서 파리가 한눈에 내려다보인다. ${bU('antoine')} 주머니에서 꼬깃꼬깃한 종이를 꺼낸다. 맨 위에 ‘앞으로 가질 것’이라고 적혀 있다. 가게 하나. 어머니 겨울 외투. 동생들 신발 네 켤레. 아버지 빚 이천 리브르. 맨 아래에 줄이 하나 비어 있다.`,[
+   {l:'“그 빈 줄엔 뭘 쓸 거야?”라고 묻는다',a:'social',f:()=>{bfSet('antoine','list');bfMem('m_ax_count','antoine',`노트르담 탑 꼭대기에서 ${bI('antoine')} ‘앞으로 가질 것’ 목록을 보여 주었다. 빈 줄엔 뭘 쓸 거냐고 묻자, ${he}는 “아직 몰라.” 하고 종이를 접었다.`,{tone:'의문',place:'노트르담 탑',their:'빈 줄은 나를 위한 것이었다. 그런데 나를 위해 갖고 싶은 게 떠오르지 않았다. 그게 무서웠다.'});bfAsk('q_ax_line','antoine',`${A}의 목록 맨 아래 빈 줄에는 무엇이 들어갔을까?`);bfRel('antoine',{close:5,trust:4});
+     say(`${bU('antoine')} 한참 종이를 내려다보았다. “아직 몰라. 다 사고 나면 생각나겠지.” 종이를 접어 넣고 다시 계단을 셌다. 내려가는 길에도 삼백팔십칠이었다.`+fx({hap:1}))}},
+   {l:'그 종이에 “친구 하나”라고 적어 준다',a:'family',f:()=>{bfSet('antoine','list');bfSet('antoine','listMe');bfMem('m_ax_count','antoine',`노트르담 탑 꼭대기에서 ${A}의 ‘앞으로 가질 것’ 목록 빈 줄에 “친구 하나”라고 적어 주었다. ${he}는 “그건 이미 있잖아.” 하고 줄을 그었다. 지우지는 않았다.`,{tone:'기쁨',place:'노트르담 탑',their:'그 아이가 빈 줄에 자기를 적었다. 이미 가진 걸 적으면 안 된다고 줄을 그었지만, 그 종이는 버리지 못했다.'});bfRel('antoine',{close:8});
+     say(`${bU('antoine')} 종이를 낚아채 읽더니 콧방귀를 뀌었다. “이건 이미 있잖아. 목록엔 없는 걸 쓰는 거야.” 그러고는 그 줄 위에 가로줄을 하나 그었다. 글씨가 다 보이게, 아주 얇게.`+fx({hap:3}))}},
+   {l:'“너무 많이 세면 재미없잖아.”라고 놀린다',a:'safe',f:()=>{bfMem('m_ax_count','antoine',`노트르담 탑 꼭대기에서 ${bI('antoine')} 계단을 세었다. 너무 많이 세면 재미없다고 놀렸다.`,{tone:'그리움',place:'노트르담 탑',their:'세지 않으면 불안했다. 숫자는 거짓말을 안 하니까. 그 아이는 그걸 몰라도 됐다. 그게 좋았다.'});bfRel('antoine',{riv:3,close:2});
+     say(`“세지 않으면 잃어버려.” ${bU('antoine')} 진지하게 말했다. 그러고는 당신 몫까지 세 주겠다며 내려가는 계단을 큰 소리로 셌다. 삼백팔십육에서 일부러 틀렸다. 당신이 웃기를 기다리면서.`)}}])}},
+ {id:'ax_cocarde',when:()=>!child()&&bfW(1789.5,1789.75),run:async()=>{const A=bN('antoine'),he=bHe('antoine');
+  await bfScene('모표 장수','les cocardes',`7월, 팔레루아얄. 바스티유가 무너지고 사흘째, 모두가 모자에 모표를 단다. ${bU('antoine')} 리본 가게에서 떼 온 천으로 삼색 모표를 접어 판다. 하나에 두 수. 손가락이 리본 물에 파랗고 빨갛다. “어제 삼백 개, 오늘 사백 개.” 그런데 저녁이 되자 ${bU('antoine')} 남은 모표 한 줌을 쥐고 라포르스 감옥 쪽으로 걸음을 옮긴다.`,[
+   {l:'말없이 따라간다',a:'family',f:()=>{bfKnow('antoine','silence',2);bfSet('antoine','jailWalk');bfMem('m_ax_cocarde','antoine',`바스티유가 무너진 여름, ${bI('antoine')} 모표를 팔고 남은 한 줌을 쥐고 라포르스 감옥 앞에 섰다. 창살 너머 아버지에게 하나를 던져 넣었다. 나는 뒤에 서 있었다.`,{tone:'그리움',place:'라포르스 감옥 앞',their:'바스티유는 무너졌는데 아버지는 그대로였다. 그 아이가 뒤에 서 있어서, 그날은 돌아서서 울지 않아도 됐다.'});bfRel('antoine',{close:8,trust:8});
+     say(`감옥 담장 아래, 높은 창에 손 하나가 보였다. ${bU('antoine')} 모표 하나를 돌멩이에 감아 힘껏 던졌다. 창 안으로 들어갔다. 한참 뒤 손이 한 번 흔들렸다. “바스티유는 국왕 감옥이고, 여긴 빚쟁이 감옥이래. 혁명은 빚은 안 깎아 주나 봐.” 돌아오는 길에 ${he}는 한 번도 숫자를 세지 않았다.`+fx({hap:-1}),'big')}},
+   {l:'“다 팔면 한잔하자.”라고 부른다',a:'social',f:()=>{bfMem('m_ax_cocarde','antoine',`바스티유가 무너진 여름, ${bW('antoine')} 팔레루아얄에서 모표를 팔았다. 저녁에 한잔하자고 했더니 ${he}는 다음에 하자며 어디론가 갔다.`,{tone:'의문',their:'그날 그 아이가 불렀다. 감옥에 간다고 말할 수 없었다. 모표가 너무 잘 팔리는 날이었으니까.'});bfAsk('q_ax_coc','antoine',`그 저녁 ${bU('antoine')} 어디로 갔을까?`);
+     say(`${bU('antoine')} 웃으며 손을 저었다. “다음에. 오늘은 갈 데가 있어.” 리본 물든 손을 바지에 닦으며 사람들 사이로 사라졌다. 당신 모자에는 ${he}가 공짜로 꽂아 준 모표 하나가 남았다.`+fx({hap:1}))}},
+   {l:'남은 모표를 다 사 준다',a:'social greedy',dis:s.money<10,f:()=>{bfMem('m_ax_cocarde','antoine',`바스티유가 무너진 여름, ${A}의 남은 모표를 다 사 주었다.`,{tone:'기쁨',their:'그 아이가 남은 걸 다 샀다. 그 돈으로 감옥에 담요를 넣었다. 그 아이는 지금도 모른다.'});bfRel('antoine',{close:4,resp:4});
+     say(`${bU('antoine')} 동전을 세더니 한 개를 돌려주었다. “하나 덜 받아. 우정 값.” 그러고는 빈 바구니를 들고 뛰어갔다. 당신은 모표 마흔 개를 안고 집에 갔다. 골목 아이들 모자마다 하나씩 꽂아 주었다.`+fx({money:-5,rloc:1}))}}])}},
+ {id:'ax_father',when:()=>!child()&&bfW(1793.18,1793.7),run:async()=>{const A=bN('antoine'),he=bHe('antoine'),kn=bfKn('antoine','silence')>=2;bfKnow('antoine','silence',2);
+  await bfScene('빚쟁이 감옥의 문','la contrainte par corps',`1793년 3월 9일, 국민공회가 빚 때문에 사람을 가두는 법을 없앴다. ${kn?'':`그제야 ${bI('antoine')} 털어놓는다. 아버지가 십 년 넘게 빚 때문에 갇혀 있었다고. `}라포르스 감옥 문 앞. ${bU('antoine')} 새로 맞춘 외투를 입고 서 있다. 세 번 갈아입고 나온 옷이다. “아버지가 나를 알아볼까? 들어갈 땐 내가 이만했는데.” 손이 허리춤 높이에서 멈춘다.`,[
+   {l:'곁에 서서 함께 기다린다',a:'family',f:()=>{bfSet('antoine','fatherFree');bfMem('m_ax_father','antoine',`빚 때문에 갇히는 법이 사라진 봄, ${bW('antoine')} 라포르스 감옥 문 앞에서 아버지를 기다렸다. 아버지는 아들을 못 알아보고 지나쳤다. ${bI('antoine')} 뒤에서 아버지를 불렀다.`,{tone:'위로',place:'라포르스 감옥 앞',their:'아버지는 나를 못 알아봤다. 그 아이가 옆에 있어서 다행이었다. 혼자였으면 부르지 못했을 것이다.'});bfRel('antoine',{close:10,trust:10});bfFate('antoine','빚 감옥이 폐지되어 아버지가 풀려났다');
+     say(`문이 열리고 늙은 남자 하나가 나왔다. 허리가 굽고 수염이 하얬다. 그 남자는 두 사람을 지나쳐 몇 걸음 걸어갔다. ${bU('antoine')} 입을 몇 번 열었다 닫았다. 그러다 아주 작게 불렀다. “아버지.” 남자가 돌아섰다. 당신은 처음으로 ${bI('antoine')} 우는 것을 보았다. 아무것도 세지 않고, 그냥 울었다.`+fx({hap:2}),'big')}},
+   {l:'멀찍이 떨어져 둘만의 자리를 비켜 준다',a:'safe',f:()=>{bfSet('antoine','fatherFree');bfMem('m_ax_father','antoine',`빚 감옥이 폐지된 봄, ${A}의 아버지가 풀려나는 날 멀찍이 떨어져 지켜보았다.`,{tone:'그리움',their:'그 아이는 멀리 서 있었다. 내가 우는 걸 보이고 싶지 않다는 걸 알았던 거다.'});bfRel('antoine',{trust:8,close:5});bfFate('antoine','빚 감옥이 폐지되어 아버지가 풀려났다');
+     say(`길 건너 모퉁이에서 보았다. 굽은 남자가 나왔고, 새 외투가 그 남자를 끌어안았다. 한참 뒤 두 사람이 나란히 걸어갔다. 지나가며 ${bU('antoine')} 당신 쪽으로 손을 한 번 들었다. 눈이 붉었다.`+fx({hap:1}))}},
+   {l:'“빚은 내가 반 갚을게.”라고 한다',a:'family greedy',dis:s.money<60,f:()=>{const m=Math.min(300,Math.round(s.money*.15));s.money-=m;bfSet('antoine','fatherFree');bfSet('antoine','paidHalf');bfMem('m_ax_father','antoine',`${A}의 아버지가 풀려나던 날, 남은 빚을 반 갚겠다고 했다. ${bU('antoine')} 처음으로 그 돈을 돌려보내지 않았다.`,{tone:'감사',their:'처음으로 그 아이 돈을 받았다. 받는 법을 그날 배웠다. 빚은 갚는 것만 있는 줄 알았는데.'});bfRel('antoine',{close:8,trust:10,resp:6});bfFate('antoine','빚 감옥이 폐지되어 아버지가 풀려났다');
+     say(`법이 감옥 문은 열었어도 빚은 남았다. 당신이 돈주머니를 내밀자 ${bU('antoine')} 오래 그것을 보았다. 이번엔 돌려보내지 않았다. “장부에 적어 둘게. 이자는 평생 쳐서.”`+` (재산 -${fmt(m)})`,'big')}}])}},
+ {id:'ax_maximum',when:()=>!child()&&bfW(1793.75,1794.4),run:async()=>{const A=bN('antoine'),he=bHe('antoine');
+  await bfScene('매점매석','l’accapareur',`가격 최고법이 시행된 가을. 비누와 설탕에 최고 가격이 붙었고, 물건을 쌓아 두는 상인은 ‘매점자’로 몰려 사형까지 받는다. 밤늦게 ${bI('antoine')} 창백한 얼굴로 찾아온다. 가게 지하에 설탕 열 포대가 있다. 내일 구역 위원회가 창고를 뒤진다. “쌓아 둔 게 아니야. 다음 달 팔려고 했던 거야. 하지만 그 사람들이 그 차이를 셀까?”`,[
+   {l:'밤새 설탕을 최고 가격으로 이웃에게 판다',a:'social radical',f:()=>{bfMem('m_ax_max','antoine',`가격 최고법이 시행된 가을, ${bW('antoine')} 밤새 설탕 열 포대를 최고 가격으로 이웃에게 팔았다. 손해였다. ${he}는 그 손해를 끝까지 세지 않았다.`,{tone:'희망',their:'그 밤 처음으로 손해를 보면서 웃었다. 그 아이가 옆에서 저울을 들어서.'});bfRel('antoine',{close:6,trust:8});
+     say(`등불을 내걸고 문을 열었다. 소문이 골목을 돌자 한밤중에 사람들이 줄을 섰다. 아이를 안은 세탁부, 늙은 물장수. ${bU('antoine')} 손해 보는 값에 설탕을 달아 주었다. 새벽에 위원회가 왔을 때 지하실에는 빈 포대만 남아 있었다. 위원 하나가 혀를 찼다. “이 집 설탕 우리 어머니도 샀소.”`+fx({rloc:2,hap:2,sus:-1}),'big')}},
+   {l:'설탕을 우리 집 다락으로 옮겨 숨긴다',a:'bold',f:()=>{const caught=R()<.25;bfMem('m_ax_max','antoine',caught?`가격 최고법이 시행된 가을, ${A}의 설탕을 우리 집 다락에 숨겼다. 들켰다. 둘 다 위원회에 불려 갔다.`:`가격 최고법이 시행된 가을, ${A}의 설탕을 우리 집 다락에 숨겼다. 위원회는 다락까지 올라오지 않았다.`,{tone:'두려움',their:'그 아이가 내 죄를 자기 다락에 숨겼다. 그 밤 이후 나는 그 아이에게 무엇을 숨겨 본 적이 없다.'});bfRel('antoine',{close:8,trust:12});
+     say((caught?`이웃 누군가가 고발했다. 위원회가 다락에서 포대를 끌어냈다. 다행히 설탕은 몰수로 끝났지만, 당신 이름이 구역 명부에 올랐다. ${bU('antoine')} 위원회 앞에서 끝까지 “제가 시켰습니다.”라고 했다.`:`포대를 지고 골목 세 개를 오갔다. ${bU('antoine')} 걸음 수를 세며 숨을 골랐다. 새벽, 위원회는 ${A}의 지하실만 뒤지고 돌아갔다.`)+fx(caught?{sus:8,cour:2}:{sus:3,cour:2}),caught?'dark':'ev')}},
+   {l:'“최고법은 지켜야 해.”라고 단호히 말한다',a:'radical safe',f:()=>{bfMem('m_ax_max','antoine',`가격 최고법이 시행된 가을, ${bI('antoine')} 설탕을 숨겨 달라고 했다. 법은 지켜야 한다고 했다.`,{tone:'씁쓸함',their:'그 아이 말이 옳았다. 옳은 말은 늘 차가웠다.'});bfRel('antoine',{riv:6,close:-3});s.pol=clamp(s.pol+3,-100,100);
+     say(`${bU('antoine')} 한참 당신을 보다 고개를 끄덕였다. “맞아. 네 말이 맞아.” 다음 날 ${he}는 설탕을 위원회에 스스로 신고하고 반을 몰수당했다. 그 뒤로 한동안 당신 앞에서 숫자 이야기를 하지 않았다.`)}}])}},
+ {id:'ax_parrain',when:()=>!child()&&s.age>=24&&bfW(1795.3,1805),run:async()=>{const A=bN('antoine'),he=bHe('antoine'),god=s.sex==='F'?'대모':'대부',mine=s.given||'';
+  await bfScene(`${god}가 되어 줘`,'le baptême',`${bI('antoine')} 아이를 얻었다. 갓난아이를 안은 손이 서툴다. 평생 무엇이든 세던 사람이 손가락 발가락을 세다 말고 웃는다. “열 개, 열 개. 다 있어.” 그리고 당신을 본다. “${god}가 되어 줘. 이 애한테 빚진 사람이 하나쯤은 있어야지. 아니, 이 애가 빚질 사람.”`,[
+   {l:'기꺼이 아이를 안아 든다',a:'family',f:()=>{bfSet('antoine','godchild');bfMem('m_ax_god','antoine',`${bI('antoine')} 아이를 얻었다. 내가 ${god}가 되었다. ${bU('antoine')} 아이 이름 가운데에 내 이름을 넣었다.`,{tone:'기쁨',their:'아이 이름 가운데에 그 아이 이름을 넣었다. 목록의 빈 줄이 그제야 채워졌다.'});bfRel('antoine',{close:10,trust:6});
+     if(bfFl('antoine','list'))bfAns('q_ax_line',`${A}의 아이 세례 날, 그 빈 줄의 답을 들었다. 아이 이름 가운데에 내 이름이 들어 있었다.`);
+     say(`아이는 생각보다 무거웠다. 세례반 앞에서 신부가 이름을 불렀을 때, 가운데 이름이 낯익었다. 당신 이름이었다. ${bU('antoine')} 뒤에서 모른 척 천장만 보고 있었다.`+fx({hap:5,rfam:1}),'big')}},
+   {l:'“나 같은 사람이 무슨 ${god}야.”라며 망설인다'.replace('${god}',god),a:'safe',f:()=>{bfMem('m_ax_god','antoine',`${bI('antoine')} 아이의 ${god}가 되어 달라고 했다. 망설이자 ${he}가 웃으며 아이를 내 품에 밀어 넣었다.`,{tone:'기쁨',their:'그 아이는 늘 자기가 모자라다고 생각했다. 그래서 그 아이여야 했다.'});bfRel('antoine',{close:6});
+     say(`“너 같은 사람이니까 부탁하는 거야.” ${bU('antoine')} 아이를 당신 품에 밀어 넣었다. 아이가 당신 손가락을 꽉 쥐었다. 그걸로 대답은 끝났다.`+fx({hap:4}))}}])}},
+ {id:'ax_sign',when:()=>!child()&&s.age>=32&&bfW(1800,1820)&&bfR('antoine').job!=='몰락한 상인',run:async()=>{const A=bN('antoine'),he=bHe('antoine'),btn=bfHas('button'),gave=bfFl('antoine','gave');
+  await bfScene('은단추 가게','Au Bouton d’Argent',`생드니 거리. ${bU('antoine')} 아버지가 빚으로 잃었던 옛 가게 자리를 다시 샀다. 새 간판에는 금박으로 ‘은단추’라고 쓰여 있다. ${btn?`“간판 이름은 정했는데, 진짜 단추가 없어. 마지막 하나는… 네가 따 갔잖아.” 반쯤 농담이고 반쯤은 아니다.`:gave?`${bU('antoine')} 주머니에서 낡은 은단추를 꺼내 계산대 위 작은 유리 상자에 넣는다. “네가 돌려준 거. 이게 내 첫 밑천이야.”`:`“아버지 외투 마지막 단추를 구슬 내기에 걸었던 거 기억나? 결국 그 단추 값을 다 갚는 데 서른 해가 걸렸어.”`}`,[
+   btn?{l:'평생 간직한 은단추를 돌려준다',a:'family',f:()=>{const o=bfS().obj.find(x=>x.id==='button');if(o)o.lost=s.year;bfMem('m_ax_sign','antoine',`${A}의 새 가게 ‘은단추’ 개업 날, 어릴 적 구슬 내기에서 딴 은단추를 돌려주었다. 계산대 위 유리 상자에 들어갔다.`,{tone:'기쁨',their:'서른 해 만에 단추가 돌아왔다. 아버지 외투에서 뜯은 그날보다 반짝였다. 그 아이가 닦아 둔 거였다.'});bfRel('antoine',{close:10,trust:8});
+     say(`단추를 내밀자 ${bU('antoine')} 받지 않고 한참 들여다보기만 했다. 반짝였다. 서른 해 동안 닦아 온 단추였다. ${bU('antoine')} 그걸 알아본 얼굴이었다. 단추는 계산대 위 유리 상자에 들어갔다. 그 아래 작은 쪽지. ‘빚 없음.’`+fx({hap:5}),'big')}}:null,
+   {l:'첫 손님이 되어 물건을 산다',a:'social',f:()=>{bfMem('m_ax_sign','antoine',`${A}의 새 가게 ‘은단추’의 첫 손님이 되었다. ${bU('antoine')} 첫 동전을 액자에 넣었다.`,{tone:'기쁨',place:'생드니 거리',their:'첫 손님은 그 아이여야 했다. 그 동전은 지금도 벽에 걸려 있다.'});bfRel('antoine',{close:6});
+     say(`리본 한 타래를 샀다. ${bU('antoine')} 거스름돈을 세다 말고 당신이 낸 동전을 따로 집어 들었다. 그 동전은 그날 저녁 액자에 들어가 계산대 뒤에 걸렸다.`+fx({money:-2,hap:3}))}},
+   {l:'간판 아래서 둘이 옛 흉내를 낸다',a:'social',f:()=>{bfMem('m_ax_sign','antoine',`${A}의 새 가게 ‘은단추’ 앞에서 둘이 옛날 기름 장수 흉내를 냈다. 지나가던 사람들이 웃었다.`,{tone:'그리움',place:'생드니 거리',their:'흉내는 그 아이가 더 못했다. 여전히. 그래서 좋았다.'});bfRel('antoine',{close:6});
+     say(`${bU('antoine')} 배를 내밀고 저울 눈금 속이는 기름 장수 흉내를 냈다. 당신도 따라 했다. 여전히 하나도 안 닮았다. 지나가던 아이들이 멈춰 섰다. 그 아이들 중 하나가 금세 둘 다를 흉내 냈다. 아주 똑같이.`+fx({hap:4}))}}])}}];
+async function anxTick(){if(!s||s.dead||sheetLive||!anOk())return;s.anx=s.anx||{d:{},nx:0};if(MI()<s.anx.nx)return;if(s.gax&&MI()<(s.gax.nx||0)-3)return;
+  for(const x of ANX){if(s.anx.d[x.id])continue;let ok=false;try{ok=x.when()}catch(e){}if(!ok)continue;
+    s.anx.d[x.id]=s.year;s.anx.nx=MI()+5;try{await x.run()}catch(e){console.error('anx',x.id,e);sheetClose()}return}}
+{const _rda=rfDaily;rfDaily=async function(){await _rda();if(!s||s.dead)return;try{if(R()<.35)await anxTick()}catch(e){console.error(e)}}}
+try{RF2_VISIT.antoine.push(()=>`${bU('antoine')} 손님이 나가자마자 그 손님 흉내를 냈다. 말끝을 올리는 버릇까지 똑같아서 당신은 계산대 밑으로 숨어 웃었다.`,()=>`${bW('antoine')} 가게 문을 닫고 장부를 맞췄다. ${bU('antoine')} 숫자가 맞아떨어질 때마다 펜 끝으로 탁자를 톡 쳤다. 그 소리가 듣기 좋았다.`,()=>`${bN('antoine')}의 집에서 저녁을 먹었다. ${bU('antoine')} 동생들 접시에 고기를 한 점씩 더 얹고, 자기 접시는 끝까지 비어 있었다.`)}catch(e){}
+{const b=BFB.find(x=>x.id==='an_letter');if(b){const w=b.when,u=b.until;b.when=()=>!bfFl('antoine','fatherFree')&&w();b.until=()=>bfFl('antoine','fatherFree')||(u?u():false)}}
 </script>
 </body>
 </html>
