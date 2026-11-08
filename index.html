@@ -12926,7 +12926,7 @@ const R30_POL={etienne:70,louise:25,gabriel:-12,jules:-45};
    사건 창이 떠 있는 동안에는 멈추고, 창이 닫히면 결과부터 한 줄씩 보여 준 뒤 다음 사건 창이 뜬다. ---------- */
 let r30Q=[],r30Next=0,r30Tm=null,r30Imm=false,r30Bulk=false;
 const r30Step=(e0)=>{const sp=(typeof speed!=='undefined'&&speed)||1,e=e0||r30Q[0],n=e?String(e.t||'').length:0;let ms=n<60?3000:n<120?4000:5000;if(r30Q.length>12)ms=600;else if(r30Q.length>6)ms=1500;return Math.max(250,Math.round(ms/sp))};
-const r30IsImm=e=>e.k==='yr'||e.k==='hist'||e.imm||(e.k==='sys'&&/^한 해 살림/.test(e.t||''));
+const r30IsImm=e=>e.k==='yr'||e.imm||(e.k==='sys'&&/^한 해 살림/.test(e.t||''));
 function r30Show(e){const box=logBox||$('#log');if(!box)return;box.prepend(entryNode(e));while(box.childElementCount>360)box.lastElementChild.remove()}
 function r30Pump(){clearTimeout(r30Tm);r30Tm=null;if(!r30Q.length)return;
   if(sheetLive&&!(s&&s.dead)){r30Tm=setTimeout(r30Pump,300);return}
@@ -12936,7 +12936,7 @@ function r30Pump(){clearTimeout(r30Tm);r30Tm=null;if(!r30Q.length)return;
 flushLog=function(){const box=logBox||$('#log');if(!box||!s)return;
   for(;shown<s.log.length;shown++){const e=s.log[shown];if(r30Imm)e.imm=1;
     if(r30Bulk||s.dead||(typeof window!=='undefined'&&window.__nogap)){r30Show(e);continue}
-    if(r30IsImm(e)&&!r30Q.length){r30Show(e);continue}
+    if(r30IsImm(e)&&!r30Q.length){r30Show(e);r30Next=Math.max(r30Next,Date.now()+r30Step(e));continue}
     r30Q.push(e)}
   foldLog();if(r30Q.length&&!r30Tm)r30Pump()};
 {const _rb=rebuildLog;rebuildLog=function(){r30Q=[];clearTimeout(r30Tm);r30Tm=null;r30Bulk=true;try{return _rb.apply(this,arguments)}finally{r30Bulk=false}}}
