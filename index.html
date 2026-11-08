@@ -1461,7 +1461,7 @@ function economy(pl,ptxt){const j=job();const away=s.cond!=='normal';
   if(pay&&wageEarner()){pay*=E.wage;if(E.jobs<45){pay*=.5+E.jobs/90;slack=' 일감이 줄어 벌이가 깎였다.'}}
   if(pay&&j.tr==='craft'&&j.t>=3)pay*=1+(s.sk.trade+s.sk.craft-60)/400;if(j&&j.tr==='farm'&&s.year>=1790)pay*=1.12;
   const sp=s.spouse&&s.spouse.alive?s.spouse.pay:0;
-  const land=s.cond==='emigre'?0:s.land, dues=s.cond==='emigre'?0:s.dues;
+  r40Seig();const land=s.cond==='emigre'?0:s.land, dues=s.cond==='emigre'?0:s.dues;
   const inc=pay+land+dues+sp;
   const kids=kidsAlive().filter(k=>s.year-k.y<15).length;
   const need=110*E.price*(1+(s.spouse&&s.spouse.alive?.35:0)+.2*kids)*(s.cond==='emigre'?1.6:1);
@@ -1492,7 +1492,7 @@ async function childhood(){
 async function comingOfAge(){s.flags.adult=true;
   const E=s.estate;s.money={peasant:15,artisan:30,bourgeois:1200,hobereau:2500,robe:9000,epee:25000}[E];
   s.land={peasant:0,artisan:0,bourgeois:0,hobereau:300,robe:1200,epee:5000}[E];
-  s.dues={hobereau:300,robe:600,epee:3000}[E]||0;
+  s.dues={hobereau:300,robe:600,epee:3000}[E]||0;s.duesSeig=s.dues;
   if(s.inherit){s.money+=s.inherit;s.inherit=0}
   if(s.estate==='peasant'&&R()<.25){s.land+=40}
   // 성품은 조용히 정해진다(첫 영성체 사건은 없앴다)
@@ -1542,7 +1542,7 @@ function parentDies(k,txt){const P=s[k];if(!P||!P.alive)return false;P.alive=fal
         const eldestNoble=noble()&&isM()&&s.eldest&&s.year<1791;let share=eldestNoble?.7:1/(1+s.sibs*.8);if(s.flags.disowned)share=0;
         const amt=Math.round(base*share),landAdd=noble()?Math.round({hobereau:500,robe:2000,epee:7000}[s.estate]*share):0;
         if(child()){s.inherit+=amt;say(`${jo(who,'이','가')} ${P.age}세로 세상을 떠났다.`,'big')}
-        else{s.money+=amt;s.land+=landAdd;if(eldestNoble)s.dues+=Math.round(s.dues*.5);
+        else{s.money+=amt;s.land+=landAdd;if(eldestNoble&&T()<tm(1793,7)){r40Seig();const d=Math.round((s.duesSeig||0)*.5);s.dues+=d;s.duesSeig=(s.duesSeig||0)+d}
           say(`${jo(who,'이','가')} ${P.age}세로 세상을 떠났다. 유산 ${fmt(amt)} ${money()}${landAdd?`과 땅(지대 +${fmt(landAdd)})`:''}을 물려받았다.`+(eldestNoble?' 장자 상속의 관습에 따라 몫이 컸다.':'')+fx({hp:-2}),'big')}}
       else say(`${jo(who,'이','가')} ${P.age}세로 세상을 떠났다.`+(child()?'':fx({hp:-2})),'big')
   if(txt)L(txt,'sys');return true}
@@ -1847,7 +1847,7 @@ H(1789,8,'7월 말부터 8월 초까지 대공포. 귀족들이 도적을 풀어
     if(i===0){if(await chance(.03,'기마경찰대의 진압','습격 가담자가 처벌된 비율')){say('기마경찰대에 붙잡혀 감옥에 갇혔다.','big');s.cond='prison';s.prisonKind='plain';s.condSince=T()}else say('공납 장부가 불길 속에서 타올랐다.'+fx({pol:8,cour:3,rloc:3,relite:-3,bor:4,vjus:2}))}
     else say('밤새 마을 어귀를 지켰다.'+fx({soc:2,rloc:4,arms:1,vord:3}));await done()}});
 H(1789,8,'8월 4일 밤, 국민의회가 봉건적 특권 폐지를 결의하였다. 8월 26일 「인간과 시민의 권리 선언」이 채택되었다. “인간은 자유롭고 권리에서 평등하게 태어나 존재한다.”',async()=>{
-  if(adult()&&noble()&&s.dues){const d=Math.round(s.dues*.5);s.dues-=d;say(`영주 공납의 상당 부분이 사라졌다. (공납 수입 -${fmt(d)})`+fx({inf:-4}))}
+  {const d=r40Seig();if(adult()&&noble()&&d)say(`영주 공납의 상당 부분이 사라졌다. (공납 수입 -${fmt(d)})`+fx({inf:-4}))}
   if(adult()&&noble())regimeNote('영주재판권과 관직 매매가 폐지되었다. 고을을 다스리던 영주의 위세가 꺾였다.');
   if(adult()&&s.estate==='peasant')say('부역과 영주재판권이 사라졌다. 남은 공납은 돈을 내고 사들여야 한다고 한다.'+fx({pol:4,veq:2,bor:3}));
   if(s.flags.constituent&&deputy()){const i=await Q('8월 4일 밤','nuit du 4 août','노아유 자작이 귀족의 특권을 포기하자고 외치자, 대표들이 앞다투어 일어나 자기 신분과 도시의 특권을 내놓는다.',[{l:'일어나 특권 포기를 외친다',s:'',a:'radical'},{l:'자리를 지키며 신중론을 편다',s:'',a:'safe royal'}]);
@@ -1992,7 +1992,7 @@ H(1793,6,'5월 31일~6월 2일, 대포를 앞세운 파리 구민들이 국민�
   await purge('girondin');if(s.dead)return;
   if(adult()&&['lyon','marseille','bordeaux'].includes(loc())&&s.pol<40&&(rich()||s.estate==='bourgeois')){const i=await Q('연방주의 반란','insurrection fédéraliste',`${REGIONS[loc()].n}의 구민회가 파리의 자코뱅에 맞서 일어섰다.`,[{l:'반란 시 정부에 가담한다',s:'',a:'bold'},{l:'관망한다',s:'',a:'safe'}]);
     if(i===0){s.flags.federalist=true;say('구민회의 위원이 되었다. “파리의 독재에 맞서 도(道)의 자유를!”'+fx({sus:30,fame:4,inf:3,bpw:6,relite:3}),'big');facRel('girondin',8);facRel('jacobin',-15)}else bnote({sus:5,vord:2},'관망하였다.');await done()}});
-H(1793,7,'7월 13일, 캉에서 온 샤를로트 코르데가 욕조의 마라를 찔렀다. 7월 17일, 남은 영주 공납이 보상 없이 폐지되었다. 7월 27일, 로베스피에르가 공안위원회에 들어갔다.',async()=>{if(adult()&&noble()&&s.dues){say('남은 영주 공납이 보상 없이 사라졌다.'+` (공납 수입 -${fmt(s.dues)})`);s.dues=0}});
+H(1793,7,'7월 13일, 캉에서 온 샤를로트 코르데가 욕조의 마라를 찔렀다. 7월 17일, 남은 영주 공납이 보상 없이 폐지되었다. 7월 27일, 로베스피에르가 공안위원회에 들어갔다.',async()=>{const d=r40Seig();if(adult()&&noble()&&d)say('남은 영주 공납이 보상 없이 사라졌다.'+` (공납 수입 -${fmt(d)})`)});
 H(1793,8,'8월 23일, 국민총동원령. “젊은이는 싸우러 나가고, 기혼자는 무기를 만들고, 여자는 천막과 옷을 짓는다.” 8월 27일, 툴롱이 영국 함대에 항구를 열었다.',async()=>{
   if(maleAdult(18,25))await conscript(.75,'국민총동원',{single:true,why:'18~25세 미혼 남성 가운데 실제로 입대한 비율',text:'국민총동원령. 18세에서 25세까지의 미혼 남자는 모두 징발 대상이다. 대리인은 허락되지 않는다.'})});
 H(1793,9,'9월 5일, 국민공회가 “공포를 의사일정에” 올렸다. 9월 17일 혐의자법, 9월 29일 전면 최고가격제.',async()=>{
@@ -5935,7 +5935,7 @@ EV.push(
      else say('사정이 다 딱해 보여 결국 모두 미뤄 주었다.'+fx({money:-Math.round(100+s.land*.1),rloc:5}))}}]),
  C('nob2_lady',()=>nfa()&&epee()&&s.flags.presented&&T()<1789.5&&s.age>=20&&s.age<=50&&!s.flags.nobLady,.8,99,'왕녀의 수행 귀부인','dame pour accompagner',()=>`${s.year<1774?'왕의 딸들(메담)':s.year>=1779?'왕의 누이 엘리자베트 공주':'왕의 고모들(메담)'}의 수행 귀부인(dame pour accompagner) 자리 하나가 비었다. 한 주씩 돌아가며 시중들고 연금이 나온다. 무엇보다 왕족의 귀에 말 한마디 넣을 수 있는 자리다. 노리는 부인이 여럿이다.`,()=>[
    {l:'자리를 청한다',s:'사교·평판 판정',a:'social royal',f:async()=>{s.flags.nobLady=1;const p=patron();const m=md([[s.rep.relite>=60,1,'궁정의 평판'],[s.st.soc>=55,1,'사교'],[!!p,1,'후원자'],[s.sk.music>=40,1,'저녁 연주 솜씨'],[s.rep.relite<40,-1,'평판이 모자람']]);const r=await roll(m.m,{label:'수행 귀부인',why:m.why});
-     if(r.v>=4){s.dues=(s.dues||0)+2000;say('자리를 얻었다. 왕족의 산책과 미사와 카드놀이를 한 주씩 따라다녔다. 당신 집 응접실에 청탁하는 이들이 줄을 섰다. (연금 +2,000)'+fx({inf:10,relite:5,fame:3})+nRF(p,{close:5}),'big')}
+     if(r.v>=4){s.dues=(s.dues||0)+2000;s.duesCourt=(s.duesCourt||0)+2000;say('자리를 얻었다. 왕족의 산책과 미사와 카드놀이를 한 주씩 따라다녔다. 당신 집 응접실에 청탁하는 이들이 줄을 섰다. (연금 +2,000)'+fx({inf:10,relite:5,fame:3})+nRF(p,{close:5}),'big')}
      else{const rv=nRel('경쟁자',{n:nLady(),sex:'F',v:'vhon',inf:45,riv:65,w:'궁정 자리의 맞수'});say('자리는 다른 부인에게 돌아갔다. 그 부인은 당신을 보며 부채 뒤로 웃었다.'+fx({relite:-2})+nRF(rv,{riv:6}))}}},
    {l:'궁정살이는 사양한다',s:'',a:'safe family',f:()=>{s.flags.nobLady=1;say('아이들 곁에 머물기로 하였다.'+fx({vfam:3}))}}]),
  C('nob2_feder',()=>(nfa()||bl())&&loc()==='paris'&&tt(tm(1790,6),tm(1790,8))&&!s.flags.nobFeder,5,99,'샹드마르스의 손수레','la Fête de la Fédération','7월 14일 연맹제를 앞두고 샹드마르스에 관중석 둑을 쌓을 일손이 모자란다. 파리 사람들이 신분을 가리지 않고 삽을 든다. 비단옷 차림의 귀부인들이 손수레를 미는 모습이 판화로 팔린다.',[
@@ -13477,6 +13477,15 @@ let r39Mark=-1;
 function r39Pp(){try{const b=$('#pp');if(!b||!s)return;const on=sheetLive||paused;b.innerHTML=on?PLAY:PAUSE;b.setAttribute('aria-label',on?'재생':'일시정지');b.classList.toggle('autopz',!!(sheetLive&&!paused))}catch(e){}}
 {const _so40=sheetOpen;sheetOpen=function(){const r=_so40.apply(this,arguments);r39Pp();return r}}
 {const _sp40=setPaused;setPaused=function(){const r=_sp40.apply(this,arguments);r39Pp();return r}}
+
+/* ---------- 영주 공납: 1789년 8월 4일 밤 결의로 절반이 사라지고, 1793년 7월 17일 남은 것도 보상 없이 폐지된다.
+   (아이였거나 감옥·망명 중이었어도 똑같이 적용. 궁정·제국의 자리에서 받는 수당은 영주 공납이 아니므로 그대로) ---------- */
+function r40Seig(){try{if(!s)return 0;const base={hobereau:300,robe:600,epee:3000}[s.estate]||0;
+  if(s.duesSeig==null)s.duesSeig=Math.min(s.dues||0,base);let cut=0;const t=T();
+  if(t>=tm(1792,8)&&s.duesCourt){s.dues=Math.max(0,(s.dues||0)-s.duesCourt);cut+=s.duesCourt;s.duesCourt=0}
+  if(t>=tm(1789,8)&&s.duesSeig>0){if(s.seigFull==null)s.seigFull=s.duesSeig;else if(s.duesSeig>(s.seigCap||0))s.seigFull+=s.duesSeig-(s.seigCap||0);
+    const cap=t>=tm(1793,7)?0:Math.round((s.seigFull||0)*.5);if(s.duesSeig>cap){const d=s.duesSeig-cap;s.duesSeig=cap;s.seigCap=cap;s.dues=Math.max(0,(s.dues||0)-d);cut+=d}}
+  return cut}catch(e){console.error(e);return 0}}
 </script>
 </body>
 </html>
