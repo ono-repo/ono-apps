@@ -828,6 +828,18 @@ details.fold>.cgrid{margin-top:8px}
 #end .will-row{display:flex;justify-content:flex-end;gap:8px}
 .menu button[hidden]{display:none!important}
 
+
+.sc-box{width:min(440px,calc(100vw - 32px));max-height:calc(100dvh - 40px);padding:22px 20px 18px;gap:8px}
+.sc-box .pf2-ph{font-size:1.35rem;padding:0;border:0}.sc-box .pf2-bloom{margin:2px 0 4px}
+.sc-box h3.sc-sub{margin:8px 0 0;text-align:center;font-family:'Cormorant Garamond','Noto Serif KR',serif;font-weight:500;font-size:1.1rem;letter-spacing:.06em;color:#EFE4CB;border-top:1px solid rgba(217,188,122,.4);border-bottom:0;padding:10px 0 0}
+.sc-box h3.sc-sub small{display:block;font-family:'Pinyon Script',cursive;font-size:.95rem;color:#D9BC7A;font-weight:400;letter-spacing:0}
+.sc-box p.mut{font-size:.8rem;line-height:1.5;margin:0;text-align:center}
+.sc-box textarea{min-height:0;height:calc(3 * 1.4em + 14px);resize:none;padding:6px 8px;font-size:11px;line-height:1.4;position:relative;z-index:1}
+.sc-box .sc-row{gap:6px;position:relative;z-index:1}.sc-box .sc-row .pill{min-height:36px}
+.sc-box .pill,.sc-box .pill.pri{background:#EFE4CB;color:#1E2F27;border:1px solid #D9BC7A;box-shadow:none;font-weight:600}
+.sc-box .pill.pri{background:#E3D2AA}
+.sc-box .pill:hover{background:#F6EEDB}
+.sc-box>.pill{position:relative;z-index:1}
 </style>
 </head>
 <body>
@@ -12971,15 +12983,15 @@ async function scUnpack(code){code=String(code||'').replace(/\s+/g,'');const m=c
   return new TextDecoder().decode(u)}
 function scModal(){const ov=el('div','sc-ov');const box=el('div','sc-box');ov.appendChild(box);ov.onclick=e=>{if(e.target===ov)ov.remove()};document.body.appendChild(ov);return {ov,box}}
 async function scOpen(){const {ov,box}=scModal();const msg=el('p','sc-msg');
-  box.appendChild(el('h3',null,'저장 코드'));
+  {const hd=el('div','sc-hd');hd.innerHTML=(typeof pfFlora==='function'?pfFlora():'')+`<h2 class="pf2-ph">저장 코드<small>Le code de sauvegarde</small></h2>${typeof PF_BLOOM!=='undefined'?`<div class="pf2-bloom" aria-hidden="true">${PF_BLOOM}</div>`:''}`;while(hd.firstChild)box.appendChild(hd.firstChild)}
   if(s&&!s.dead){
     box.appendChild(el('p','mut small','지금 진행 상황을 코드로 내보냅니다. 다른 기기에서 ‘저장 코드로 불러오기’에 붙여 넣으면 이어 할 수 있습니다.'));
-    try{save()}catch(e){}const code=await scPack(JSON.stringify(s));const ta=el('textarea');ta.readOnly=true;ta.value=code;box.appendChild(ta);
+    try{save()}catch(e){}const code=await scPack(JSON.stringify(s));const ta=el('textarea');ta.readOnly=true;ta.rows=3;ta.value=code;box.appendChild(ta);
     const row=el('div','sc-row');const cp=el('button','pill pri','코드 복사');cp.type='button';cp.onclick=async()=>{try{await navigator.clipboard.writeText(code);msg.textContent='복사했습니다.'}catch(e){ta.select();try{document.execCommand('copy');msg.textContent='복사했습니다.'}catch(x){msg.textContent='길게 눌러 직접 복사하세요.'}}};
     const dl=el('button','pill','파일로 저장');dl.type='button';dl.onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([code],{type:'text/plain'}));a.download=`1789-${s.given[0]}-${s.year}.txt`;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500)};
     row.appendChild(cp);row.appendChild(dl);box.appendChild(row)}
-  box.appendChild(el('h3',null,'불러오기'));box.appendChild(el('p','mut small','받은 코드를 붙여 넣거나 저장 파일을 고르세요. 지금 하던 게임은 불러온 게임으로 바뀝니다.'));
-  const tin=el('textarea');tin.placeholder='BST1:… 로 시작하는 코드';box.appendChild(tin);
+  {const h3=el('h3','sc-sub');h3.innerHTML='불러오기<small>Reprendre</small>';box.appendChild(h3)}box.appendChild(el('p','mut small','받은 코드를 붙여 넣거나 저장 파일을 고르세요. 지금 하던 게임은 불러온 게임으로 바뀝니다.'));
+  const tin=el('textarea');tin.rows=3;tin.placeholder='BST1:… 로 시작하는 코드';box.appendChild(tin);
   const row2=el('div','sc-row');const go=el('button','pill pri','코드로 불러오기');go.type='button';const fb=el('button','pill','파일 불러오기');fb.type='button';const fi=document.createElement('input');fi.type='file';fi.accept='.txt,text/plain';fi.hidden=true;
   const doLoad=async code=>{try{const json=await scUnpack(code);const x=JSON.parse(json);if(!x||x.v!==2||!x.given)throw new Error('이 게임의 저장 코드가 아닙니다.');if(x.dead)throw new Error('이미 끝난 생의 코드입니다.');
       localStorage.setItem(KEY,json);const ld=load();if(!ld)throw new Error('불러오지 못했습니다.');ov.remove();$('#menu').hidden=true;$('#title').hidden=true;$('#end')&&($('#end').hidden=true);document.body.classList.remove('covered');s=ld;start(false)}catch(e){msg.textContent=e.message||'불러오지 못했습니다.'}};
@@ -13314,11 +13326,11 @@ const IMP46={
 
 /* ================= 개편 49: 오랜 벗의 외모 ================= */
 const BF_LOOK={
- louise:'코이프 모자 사이로 천진난만하게 땋아 올린 밝은 빵 색 머리카락이 비죽 튀어나와 있다. 가까이 가면 머리카락에서 갓 구운 빵 같은 고소한 냄새가 난다.',
- etienne:'고대 로마인을 따라 하겠다며 무턱대고 가위를 들었다가 망쳐 버린 짧은 앞머리, 들쭉날쭉한 머리끝. 원래도 살짝 곱슬인데 일부러 더 곱슬곱슬하게 말고 다닌다.',
- antoine:'집에서 밀가루를 훔쳐다 귀족 흉내를 낸다며 머리에 뿌리고 다니다 어머니에게 꼬집혀, 볼에 꼬집힌 자국이 남아 있다. 어설프게 뿌린 밀가루 탓에 밝은 갈색 머리가 밤 크림 색처럼 보인다. 눈동자는 갈색이 섞인 초록색이지만 본인은 늘 초록색이라고 우긴다.',
- gabriel:'짙은 파란 눈. 치장을 돕는 하인들이 귀족답게 눈마저 라피스라줄리 빛이라고 추어올리면, 그날은 하루 종일 묘하게 들떠 있다.',
- jules:'약한 곱슬의 엄청난 더벅머리. 고동색 머리카락과 처진 눈을 보고 있으면 강아지가 떠오른다.'};
+ louise:'코이프 아래로 밝은 빵 빛깔 머리카락이 비죽비죽 삐져나와 있다. 아무렇게나 땋아 올린 머리가 천진하다. 곁에 서면 갓 구운 빵 냄새가 고소하게 난다.',
+ etienne:'앞머리가 짧고 삐뚤다. 고대 로마인처럼 하겠다며 혼자 가위를 들었다가 망친 자국이다. 머리끝도 들쭉날쭉하다. 타고난 곱슬을 일부러 더 말아 올리고 다닌다.',
+ antoine:'밝은 갈색 머리에 밀가루를 어설프게 뿌려 밤 크림 빛이 돈다. 귀족 흉내를 낸다며 집에서 밀가루를 훔쳐 쓰다 어머니에게 꼬집힌 자국이 아직 볼에 남아 있다. 눈동자는 갈색이 섞인 초록인데, 본인은 기어이 초록이라고 우긴다.',
+ gabriel:'눈동자가 짙은 파란색이다. 머리를 매만져 주던 하인이 “역시 귀하신 분이라 눈도 라피스라줄리 빛”이라고 추어올린 날이면, 하루 종일 괜히 들떠 있다.',
+ jules:'고동색 더벅머리가 살짝 곱슬거린다. 눈꼬리가 아래로 처져서, 마주 보고 있으면 어쩐지 강아지가 떠오른다.'};
 
 /* ================= 개편 50: 벗들을 만나기 전의 유아기 일상 =================
    한두 살부터 여섯 살까지, 오랜 벗을 둘 이상 만나기 전에는 다달이 조금씩 아기·어린아이의 일상이 쌓인다. 같은 줄은 한 번만. */
@@ -13383,6 +13395,10 @@ async function loxTick(){if(!s||s.dead||sheetLive||!bfRev()||!bfMet('louise')||!
    사건이 생기면 그 전에 기록된 줄이 평소 속도로 모두 일상란에 나온 다음 창을 띄운다. 창이 떠 있는 동안 앞선 줄이 결과 뒤로 밀리지 않게. */
 async function r51Drain(){const t0=Date.now();while(s&&!s.dead&&!(typeof window!=='undefined'&&window.__nogap)&&r30Q.length&&Date.now()-t0<30000){if(!r30Tm)r30Pump();await new Promise(r=>setTimeout(r,150))}}
 {const _Q51=Q;Q=async function(){try{await r51Drain()}catch(e){}return _Q51.apply(this,arguments)}}
+
+/* 시작 화면으로 돌아오면(뒤로 가기·탭 복귀 포함) 이어가기 단추를 저장 상태에 맞춘다 */
+{const fixCont=()=>{try{if(!$('#title').hidden&&(!s||s.dead)){const ok=!!load();$('#contB').hidden=!ok;if(ok&&!$('#contB').onclick)$('#contB').onclick=()=>{s=load();if(s)start(false)}}}catch(e){}};
+ window.addEventListener('pageshow',fixCont);document.addEventListener('visibilitychange',()=>{if(!document.hidden)fixCont()});setTimeout(fixCont,300)}
 </script>
 </body>
 </html>
