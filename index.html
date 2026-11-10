@@ -840,6 +840,7 @@ details.fold>.cgrid{margin-top:8px}
 .sc-box .sc-row .pill.pri{background:rgba(217,188,122,.3);border-color:#D9BC7A}
 .sc-box .sc-row .pill:hover{background:rgba(239,228,203,.22)}.sc-box .sc-row .pill.pri:hover{background:rgba(217,188,122,.42)}
 .sc-box>.pill{position:relative;z-index:1;background:transparent;color:#EFE4CB;border:1px solid rgba(217,188,122,.7);box-shadow:none}
+.ach-l{list-style:none;margin:6px 0 0;padding:0;display:grid;gap:4px}.ach-l li{padding:4px 0;border-bottom:1px solid var(--line)}
 </style>
 </head>
 <body>
@@ -13407,6 +13408,186 @@ async function r51Drain(){const t0=Date.now();while(s&&!s.dead&&!(typeof window!
 /* 시작 화면으로 돌아오면(뒤로 가기·탭 복귀 포함) 이어가기 단추를 저장 상태에 맞춘다 */
 {const fixCont=()=>{try{if(!$('#title').hidden&&(!s||s.dead)){const ok=!!load();$('#contB').hidden=!ok;if(ok&&!$('#contB').onclick)$('#contB').onclick=()=>{s=load();if(s)start(false)}}}catch(e){}};
  window.addEventListener('pageshow',fixCont);document.addEventListener('visibilitychange',()=>{if(!document.hidden)fixCont()});setTimeout(fixCont,300)}
+
+/* ================= 개편 52: 벗의 고발 · 고발한 벗의 뒤따름 · 연인인 벗의 애도 ================= */
+const DNC52={
+ etienne:{t:'명단의 필체',x:N=>`구 감시위원회 앞에 새 혐의자 명단이 붙었다. 당신 이름이 있다. 필체를 알아본다. 잉크 얼룩진 손이 꾹꾹 눌러 쓴 글씨. ${jo(N,'이다','다')}. 그 아래 작은 글씨로 사유가 적혀 있다. ‘공화국의 적과 어울림.’`,
+  fol:N=>`당신이 처형되고 사흘 뒤, ${jo(N,'은','는')} 하숙방에서 숨진 채 발견되었다. 책상 위에는 그 명단의 사본이 있었다. 당신 이름 위에만 몇 번이고 줄이 그어져 있었다.`},
+ louise:{t:'빵집 줄의 수군거림',x:N=>`빵 배급 줄에서 사람들이 당신을 보고 입을 다문다. 누군가 귀띔한다. ${jo(N,'이','가')} 위원회에 가서 당신이 밀가루를 사재기한다고 말했다고. 빵집 창 너머로 ${jo(N,'이','가')} 보인다. 당신과 눈이 마주치자 반죽 통으로 고개를 숙인다.`,
+  fol:N=>`나흘 뒤 ${N}의 빵집은 열리지 않았다. 이웃들이 문을 열었을 때 화덕의 불은 꺼져 있었다. 반죽 통 밑에서 석판 하나가 나왔다. 당신 이름이 적혀 있었다.`},
+ antoine:{t:'흉내 내던 입',x:N=>`매점매석 혐의로 불려 갔던 ${jo(N,'이','가')} 풀려났다고 한다. 대신 위원회 장부에 새 이름 하나가 올랐다. 당신이다. 위원회 사람들 말투를 기막히게 흉내 내던 그 입으로, 당신 이름을 댔다.`,
+  fol:N=>`닷새 뒤 ${N}의 장부 마지막 장에 한 줄이 적혔다. ‘갚을 수 없는 빚.’ 그날 밤 ${jo(N,'은','는')} 세상을 떠났다.`},
+ gabriel:{t:'살려고 댄 이름',x:N=>`귀족이라는 이유로 끌려갔던 ${jo(N,'이','가')} 하룻밤 만에 풀려났다. 위원회 문을 나서며 ${jo(N,'은','는')} 당신 쪽을 보지 못했다. 그날 오후, 당신 이름이 혐의자 명단에 올랐다. 살려고 댄 이름이었다. 얼음이 깨지던 그날처럼, 이번에도 ${jo(N,'은','는')} 달아났다.`,
+  fol:N=>`사흘 뒤 ${jo(N,'은','는')} 혁명 광장으로 걸어가 단두대 앞에서 귀족이라고 외쳤다. 이번에는 달아나지 않았다.`}};
+async function dnc52Tick(){if(!s||s.dead||sheetLive||child()||s.cond!=='normal'||!bfRev()||!inTerror()||s.dncBy)return;
+  for(const k of ['etienne','louise','antoine','gabriel']){const r=bfR(k);if(!r||!r.alive||r.cond!=='normal'||(r.hate||0)<60||r.dnc52)continue;if(R()>.25)continue;
+    r.dnc52=s.year;s.dncBy=k;const N=bN(k),D=DNC52[k];
+    const i=await bfScene(D.t,'la dénonciation',D.x(N),[
+     {l:`${jo(N,'을','를')} 찾아가 따진다`,a:'bold',f:()=>{bfMem('m52_dnc_'+k,k,`공포정치 때 ${jo(N,'이','가')} 나를 고발했다. 찾아가 따졌다. 대답은 듣지 못했다.`,{tone:'씁쓸함',their:'그 사람이 찾아왔다. 문을 열지 못했다. 열면 무릎을 꿇을 것 같아서.'});say(`문은 끝내 열리지 않았다. 문 너머에서 숨죽인 숨소리만 들렸다.`+fx({sus:15}),'dark')}},
+     {l:'다락방으로 숨는다',a:'safe',f:()=>{bfMem('m52_dnc_'+k,k,`공포정치 때 ${jo(N,'이','가')} 나를 고발했다. 다락방으로 숨었다.`,{tone:'두려움',their:'그 사람이 숨었다는 말을 들었다. 처음으로 숨이 쉬어졌다.'});fx({sus:15})}},
+     {l:'체념하고 기다린다',a:'pious safe',f:()=>{bfMem('m52_dnc_'+k,k,`공포정치 때 ${jo(N,'이','가')} 나를 고발했다. 아무 데도 가지 않고 기다렸다.`,{tone:'그리움',their:'그 사람은 달아나지 않았다. 나는 그게 제일 무서웠다.'});say(`당신은 창가에 앉아 기다렸다. ${N}와 함께 걷던 골목이 내려다보였다.`.replace(`${N}와`,jo(N,'과','와'))+fx({sus:15}))}}]);
+    if(s.dead)return;if(i===1){if(R()<.6){s.cond='hiding';s.condSince=T();say('지붕을 타고 친지의 다락방으로 숨어들었다.','big');return}say('숨을 곳을 찾기 전에 문 두드리는 소리가 났다.','dark')}
+    await arrest(`${N}의 고발`);return}}
+{const _rd52=rfDaily;rfDaily=async function(){await _rd52();if(!s||s.dead)return;try{await dnc52Tick()}catch(e){console.error(e);if(sheetLive)sheetClose()}}}
+// 고발로 단두대에 오르면, 고발한 벗이 친밀도 100이거나 연인이었다면 며칠 뒤 따라 세상을 떠난다
+{const _d52=die;die=function(c){const r0=_d52.apply(this,arguments);try{if(s&&s.dead&&['guillotine','drowned'].includes(c)&&s.dncBy){const r=bfR(s.dncBy);if(r&&r.alive&&((r.close||0)>=100||r.role==='연인')){r.alive=false;r.dead=s.year;r.dc='follow';bfFate(s.dncBy,'당신이 처형되고 며칠 뒤 세상을 떠났다');s.dncFollow=s.dncBy}}}catch(e){console.error(e)}return r0}}
+// 연인인 벗이 당신을 애도한다
+const LOVE52_MOURN={
+ louise:N=>`${jo(N,'은','는')} 그 뒤로도 새벽마다 빵을 구웠다. 첫 덩이의 꽁다리는 늘 떼어 창턱에 두었다. 아무도 가져가지 않았다.`,
+ etienne:N=>`${jo(N,'은','는')} 장례식에서 연설하지 않았다. 그날 밤 쓴 글은 단 한 줄이었다. ‘제1조는 지켜지지 못했다.’`,
+ jules:N=>`${jo(N,'은','는')} 장례 미사에서 노래했다. 한 음도 막히지 않았다. 그 뒤로 다시는 그 노래를 부르지 않았다.`,
+ antoine:N=>`${jo(N,'은','는')} 그날 가게 문을 닫았다. 장부 마지막 장에 ‘셈하지 않음’ 한 줄을 다시 적고, 그 아래를 끝까지 비워 두었다.`,
+ gabriel:N=>`${jo(N,'은','는')} 그 뒤로 거울을 보지 않았다. 사람들이 몰려들던 살롱의 촛불도 다시는 켜지 않았다.`};
+{const _se52=showEnd;showEnd=function(){const r0=_se52.apply(this,arguments);try{if(!s||!s.dead)return r0;const host=$('#obLife');const sec=$('#obLifeSec');if(!host)return r0;
+  const add=(h,t)=>{host.appendChild(el('h4','ob-lh',h));host.appendChild(el('p','ob-lp',t))};
+  if(s.dncFollow&&DNC52[s.dncFollow]){if(sec)sec.hidden=false;add('당신을 고발한 벗',DNC52[s.dncFollow].fol(bN(s.dncFollow)))}
+  for(const k of BF_KEYS){const r=bfR(k);if(r&&r.alive&&r.role==='연인'&&LOVE52_MOURN[k]){if(sec)sec.hidden=false;add('남겨진 연인',LOVE52_MOURN[k](bN(k)))}}}catch(e){console.error(e)}return r0}}
+// 당신이 연인인 벗을 애도한다
+const LOVE52_FUN={
+ louise:{t:'빵 냄새가 남은 방',x:N=>`${jo(N,'이','가')} 세상을 떠났다. 연인이었다. 빵집 이층 방, 베개에서 아직 빵 냄새가 난다. 반죽 통 밑에서 석판이 나왔다. 처음 배운 두 이름이 나란히 적혀 있다.`,
+  o:[['새벽에 그녀 대신 화덕에 불을 지핀다','family',N=>`서툰 손으로 반죽을 쳤다. 빵은 반쯤 탔다. 골목 사람들이 줄을 섰다. 아무도 탄 빵이라고 말하지 않았다. 다들 ${N} 몫이라며 사 갔다.`],
+     ['석판을 품에 안고 그 방에서 밤을 새운다','safe',N=>`석판의 글씨를 손가락으로 몇 번이고 따라 그렸다. 새벽이 오자 창밖에서 누군가 음 틀린 노래를 흥얼거렸다. 그 사람이 아닌 줄 알면서도 끝까지 들었다.`]]},
+ etienne:{t:'쓰다 만 원고',x:N=>`${jo(N,'이','가')} 세상을 떠났다. 연인이었다. 하숙방 책상 위에 쓰다 만 원고가 있다. 첫 줄은 이렇다. ‘제1조, 이 사람은 내 옆에 있는다.’ 그다음은 비어 있다.`,
+  o:[['원고의 다음 줄을 대신 써 넣는다','study',N=>`펜을 들었다가 한참 만에 썼다. ‘제2조, 이 사람이 없어도 제1조는 고치지 않는다.’ 잉크가 마를 때까지 그 줄을 보았다.`],
+     ['원고를 『텔레마코스의 모험』 사이에 끼워 간직한다','family',N=>`책장 사이에 원고를 끼웠다. 여백마다 ${N}의 로마 숫자 암호가 남아 있었다. 이제 그 암호를 읽을 수 있는 사람은 당신 하나다.`]]},
+ jules:{t:'짝이 맞는 껍데기',x:N=>`${jo(N,'이','가')} 세상을 떠났다. 연인이었다. 종탑 서쪽 창턱에 굴 껍데기 반쪽이 놓여 있다. 약속의 표시로 받았던 것과 짝이 맞는다.`,
+  o:[['두 쪽을 맞춰 들고 서쪽 창을 연다','pious family',N=>`두 쪽이 딱 맞았다. 서쪽에서 바람이 들어왔다. 끝내 둘 다 바다를 보지 못했다. 그래도 그 창은 그날부터 닫지 않았다.`],
+     ['떠돌이 개 아멘을 데려와 함께 산다','family',N=>`늙은 개는 처음 며칠 문 앞에서 종탑 쪽만 보았다. 일주일째 되던 날 당신 발치에 와서 엎드렸다. 둘은 그렇게 남은 날을 함께 기다렸다.`]]},
+ antoine:{t:'장부의 마지막 줄',x:N=>`${jo(N,'이','가')} 세상을 떠났다. 연인이었다. 장부 맨 뒷장 ‘셈하지 않음’ 칸, 당신 이름 아래에 마지막 줄이 있다. ‘여기까지. 남는 장사였다.’`,
+  o:[['그 칸 아래에 그의 이름을 적는다','family',N=>`당신 이름 아래에 ${N}의 이름을 적었다. 셈하지 않는 칸에 이름이 둘이 되었다. 장부를 덮자 비로소 울음이 났다.`],
+     ['장부를 덮고 탕플 대로 맨 꼭대기 자리에 앉는다','social',N=>`그날 밤 연극은 『셀리나』였다. 막간에 옆자리가 비어 있었다. 당신은 손수건을 두 장 가져왔다는 걸 그제야 깨달았다.`]]},
+ gabriel:{t:'회중시계 뚜껑',x:N=>`${jo(N,'이','가')} 세상을 떠났다. 연인이었다. 회중시계 뚜껑을 열자 상아에 그린 당신의 작은 웃는 얼굴이 있다. 그 옆에 푸른 리본 한 가닥.`,
+  o:[['푸른 리본을 손목에 감는다','family',N=>`리본을 손목에 감았다. 매듭이 서툴렀다. ${N}이었다면 세 번은 다시 묶으라고 했을 것이다. 그 잔소리가 듣고 싶어서 한참 울었다.`.replace(`${N}이었다면`,jo(N,'이었다면','였다면'))],
+     ['저택 회랑의 빈 벽에 둘의 초상화를 건다','family bold',N=>`조상들의 초상화 끝, 오래 비어 있던 벽에 둘이 함께 그려진 그림을 걸었다. 옆에 누가 같이 그려져 있으면 덜 무서울 것 같다던 말이 생각났다.`]]}};
+{const _gc52=gCore;gCore=async function(r){try{if(r&&r.core&&r.role==='연인'&&LOVE52_FUN[r.core]&&r.dc!=='follow'){const k=r.core,D=LOVE52_FUN[k],N=r.n.split(' ')[0];try{r30DieDone(k)}catch(e){}
+   await bfScene(D.t,'l’amour perdu',D.x(N),D.o.map(([l,a,t],j)=>({l,a,f:()=>{bfMem('g_core_'+k,k,`${s.year}년, 연인이던 ${jo(N,'을','를')} 떠나보냈다.`,{tone:'그리움'});say(t(N),'big')}})));return}}catch(e){console.error(e)}return _gc52.apply(this,arguments)}}
+
+/* ================= 개편 53: 업적 — 이루기 어려운 목표 =================
+   해마다 확인해, 처음 이룬 해에 짧은 장면이 뜬다. 프로필 탭과 부고에 남는다. */
+const ACH53=[
+ ['llg','명문 콜레주','루이르그랑 콜레주에 들어갔다. 왕국에서 가장 이름난 학교다.',()=>SCH().school==='llg'],
+ ['stcyr','생시르의 학생','생시르 왕립학교에 들어갔다. 가난한 귀족 집안 딸들의 학교다.',()=>SCH().school==='stcyr'],
+ ['univ','대학의 문','대학 학부에 들어갔다. 집안에서 아무도 들어 보지 못한 문이었다.',()=>SCH().st==='univ'],
+ ['prize','상을 받은 학생','학교에서 상을 받았다. 상장에 이름이 금박으로 찍혔다.',()=>(SCH().prizes||0)>0],
+ ['poly','이공과 학교','이공과 학교 입학시험에 붙었다. 전국에서 수백 명만 뽑힌다.',()=>!!job()&&job().id==='st2x'],
+ ['master','장인의 자리','동업조합의 심사를 통과해 자기 공방을 연 장인이 되었다.',()=>!!job()&&job().tr==='craft'&&job().t>=3],
+ ['bigmerch','큰 상인','도매상이 되었다. 장부에 적히는 숫자의 자릿수가 달라졌다.',()=>!!job()&&['c5','c6','fn5','fn6','ml5','ml6','se5','pe3i'].includes(job().id)],
+ ['judge','법복','판사의 법복을 입었다.',()=>!!job()&&job().tr==='law'&&job().t>=3],
+ ['doctor','의사','의사가 되었다. 이제 사람들이 이름 앞에 ‘선생’을 붙인다.',()=>!!job()&&job().tr==='med'&&job().t>=3],
+ ['bishop','주교관','주교가 되었다.',()=>!!job()&&job().id==='r5'],
+ ['general','장군','장군이 되었다. 견장에 별이 달렸다.',()=>!!job()&&job().tr==='army'&&job().t>=6],
+ ['marshal','제국 원수','제국 원수가 되었다. 지휘봉에 독수리가 새겨져 있다.',()=>!!job()&&job().id==='a7'],
+ ['captain','선장','배 한 척을 맡은 선장이 되었다.',()=>!!job()&&(job().id==='se4'||(job().tr==='navy'&&job().t>=4))],
+ ['deputy','의원','의원이 되었다. 연단에 오를 수 있는 사람이 되었다.',()=>!!job()&&job().tr==='pol'&&job().t>=3],
+ ['academy','아카데미','아카데미 회원이 되었다. 마흔 개뿐인 의자 가운데 하나다.',()=>!!job()&&['w4','ar4','ar3k','ar3a','ar3p','sc3'].includes(job().id)],
+ ['court','궁정의 사람','궁정의 높은 자리에 올랐다.',()=>!!job()&&job().tr==='court'&&job().t>=4],
+ ['envoy','대사','외국 궁정에 프랑스를 대표하는 대사가 되었다.',()=>!!job()&&job().tr==='dipl'&&job().t>=5],
+ ['hand','장인의 손','한 가지 기술을 아무도 따라올 수 없을 만큼 익혔다.',()=>Object.values(s.sk||{}).some(v=>v>=80)],
+ ['versatile','다재다능','세 가지 기술을 능숙하게 다룬다.',()=>Object.values(s.sk||{}).filter(v=>v>=60).length>=3],
+ ['scholar','박식가','학식으로는 어디 가서 뒤지지 않는다.',()=>(s.st.edu||0)>=90],
+ ['wealth','큰 재산','재산이 십만 리브르를 넘었다.',()=>s.money>=100000],
+ ['famous','이름난 사람','파리 사람이면 다 아는 이름이 되었다.',()=>(s.fame||0)>=60],
+ ['family','대가족','살아 있는 자녀가 여섯이 넘는다.',()=>kidsAlive().length>=6],
+ ['eighty','팔순','여든 살을 넘겼다.',()=>s.age>=80],
+ ['survivor','살아남은 사람','왕정과 혁명과 제국을 모두 살아 냈다.',()=>T()>=1815.5&&s.by<=1772]];
+function ach53Check(){if(!s||s.dead||!bfRev())return;s.ach=s.ach||{};s.achQ=s.achQ||[];for(const [id,n,t,c] of ACH53){if(s.ach[id])continue;let ok=false;try{ok=!!c()}catch(e){}if(ok){s.ach[id]=s.year;s.achQ.push(id)}}}
+async function ach53Show(){if(!s||s.dead||sheetLive||!s.achQ||!s.achQ.length)return;const id=s.achQ.shift();const a=ACH53.find(x=>x[0]===id);if(!a)return;
+  const i=await Q(`업적 · ${a[1]}`,'un accomplissement',`${a[2]} 오랫동안 바라던 일이었다.`,[{l:'가족과 조촐하게 축하한다',a:'family'},{l:'혼자 조용히 그 의미를 되새긴다',a:'safe'}]);
+  say(i===0?`그날 저녁 식탁에 포도주 한 병이 더 올라왔다. 다들 잔을 들었다.`+fx({hap:4,rfam:2}):`밤늦게 혼자 창가에 앉아 지나온 길을 헤아려 보았다. 생각보다 멀리 왔다.`+fx({hap:3,cour:1}));await done()}
+{const _ny53=npcYear;npcYear=async function(){await _ny53.apply(this,arguments);try{ach53Check()}catch(e){console.error(e)}}}
+{const _rd53=rfDaily;rfDaily=async function(){await _rd53();if(!s||s.dead)return;try{await ach53Show()}catch(e){console.error(e);if(sheetLive)sheetClose()}}}
+{const _rt53=renderTab;renderTab=function(t){const r=_rt53.apply(this,arguments);try{if(t==='profile'&&s){const H=$('#profMore');if(H){const got=ACH53.filter(a=>s.ach&&s.ach[a[0]]);const c=cardIn(H,'업적',`${got.length} / ${ACH53.length}`);
+  if(!got.length)c.appendChild(el('p','mut small','아직 이룬 업적이 없다. 명문 학교, 장인의 자리, 높은 관직, 뛰어난 기술, 큰 재산… 이루기 어려운 일일수록 오래 남는다.'));
+  else{const ul=el('ul','ach-l');got.forEach(a=>{const li=el('li');li.appendChild(el('b',null,a[1]));li.appendChild(el('span','mut small',` · ${s.ach[a[0]]}년`));ul.appendChild(li)});c.appendChild(ul)}H.insertBefore(c,H.firstChild)}}}catch(e){console.error(e)}return r}}
+{const _se53=showEnd;showEnd=function(){const r0=_se53.apply(this,arguments);try{const host=$('#obLife'),sec=$('#obLifeSec');const got=ACH53.filter(a=>s&&s.ach&&s.ach[a[0]]);if(host&&got.length){if(sec)sec.hidden=false;host.appendChild(el('h4','ob-lh','이룬 것'));const ul=el('ul','ob-ll');got.forEach(a=>ul.appendChild(el('li',null,`${s.ach[a[0]]}년 — ${a[1]}`)));host.appendChild(ul)}}catch(e){console.error(e)}return r0}}
+
+/* ================= 개편 54: 신분마다 다른 삶 =================
+   대귀족은 혁명 전 베르사유의 궁정 생활, 서민은 신분 차별과 소소한 행복. 열네 살부터 다달이 조금씩. */
+const L54={
+ grand:[[0,1789.8,'베르사유 거울의 방에서 왕의 미사 행렬을 기다렸다. 촛불 수천 개가 거울마다 한 번씩 더 타올랐다.'],
+  [0,1789.8,'왕비의 노름판에서 파라옹 패를 잡았다. 하룻밤에 시골 영지 한 해 소출을 잃은 사람이 웃으며 일어섰다.'],
+  [0,1789.8,'궁정 예법 선생에게 절하는 법을 다시 배웠다. 왕족, 공작, 백작 앞에서 숙이는 깊이가 다 달랐다.'],
+  [0,1789.8,'베르사유 계단참 구석에서 누군가 볼일을 보고 있었다. 화려한 궁전의 냄새는 향수만이 아니었다.'],
+  [0,1789.8,'왕의 사냥에 따라나섰다. 사슴 한 마리를 쫓느라 말 사십 필이 숲을 내달렸다.'],
+  [0,1789.8,'오페라 극장 가면무도회에서, 가면 쓴 사람이 왕의 동생이라는 소문이 돌았다.'],
+  [0,1789.8,'새 옷 한 벌 값이 파리 장인의 한 해 벌이와 같았다. 재단사는 다음 철에 또 오겠다고 했다.'],
+  [1774,1789.6,'트리아농 정원에서 왕비가 시골 아낙 차림으로 양에게 리본을 매 주는 것을 멀리서 보았다.'],
+  [0,1789.8,'거울의 방의 소문 하나가 반나절 만에 궁 전체를 돌았다. 누가 누구의 총애를 잃었다는 이야기였다.'],
+  [1774,1789.8,'궁정 식사를 구경하러 모인 사람들 틈에서, 왕이 삶은 달걀 윗부분을 칼로 단번에 쳐내는 것을 보았다. 구경꾼들이 박수를 쳤다.']],
+ low_hard:[[0,1789.5,'귀족의 마차가 골목을 지나가며 비키라고 소리쳤다. 마부의 채찍이 어깨를 스쳤다.'],
+  [0,1790,'성당 맨 앞 좌석은 영주 집안 몫이었다. 우리 식구는 늘 기둥 뒤에 섰다.'],
+  [0,1790,'세금 걷는 사람이 왔다. 귀족과 성직자는 내지 않는 타유세였다.'],
+  [0,1790,'저택 문지기가 하인 출입구로 돌아가라며 턱짓을 했다.'],
+  [0,1789.5,'길에서 귀족 집 아이와 부딪혔다. 사과는 내가 했다.'],
+  [0,1790,'같은 죄라도 평민은 교수형, 귀족은 참수형이라고 했다. 죽는 방법까지 신분이 갈랐다.'],
+  [1796,1830,'새 부자들의 마차가 옛 귀족 마차보다 더 빨리 달렸다. 비키라고 외치는 소리는 그대로였다.'],
+  [1800,1850,'공장 감독관은 이름 대신 번호로 사람을 불렀다. 대답이 늦으면 품삯이 깎였다.']],
+ low_joy:[[0,9999,'일요일 오후, 성문 밖 갱게트 술집에서 싸구려 포도주를 마시며 춤을 추었다.'],
+  [0,9999,'센 강변에 낚싯대를 드리웠다. 아무것도 낚이지 않았지만 해가 따뜻했다.'],
+  [0,9999,'옆집에서 갓 구운 사과 파이를 한 조각 나눠 주었다.'],
+  [0,9999,'창가에 제라늄 화분을 놓았다. 붉은 꽃이 골목에서 제일 먼저 피었다.'],
+  [0,9999,'퐁뇌프의 거리 가수가 새 노래를 불렀다. 저녁 내내 그 곡조를 흥얼거렸다.'],
+  [0,9999,'장날, 동전 몇 닢으로 설탕 입힌 아몬드를 샀다. 하루가 달았다.'],
+  [0,9999,'성 요한 축일 밤, 그레브 광장 모닥불을 보러 온 동네 사람들이 나섰다.'],
+  [0,9999,'오랜만에 고기가 든 수프를 끓였다. 식구들이 접시를 깨끗이 비웠다.'],
+  [0,9999,'골목 아이들이 내 흉내를 내며 웃었다. 같이 웃어 주었다.'],
+  [0,9999,'비 그친 저녁, 공동 우물가에서 이웃들과 해가 질 때까지 수다를 떨었다.']]};
+const grand54=()=>s.estate==='epee'&&(rich()||(s.money||0)>=5000);
+const low54=()=>['artisan','peasant'].includes(s.estate);
+function l54Tick(){if(!s||s.dead||s.age<14||s.cond!=='normal'||R()>.22)return;const t=T();s.l54=s.l54||{};
+  let pool=null;if(grand54()&&t<1789.8)pool='grand';else if(low54())pool=R()<.45?'low_hard':'low_joy';if(!pool)return;
+  const LL=L54[pool].map((x,i)=>[x,pool+i]).filter(([x,id])=>t>=x[0]&&t<x[1]&&!s.l54[id]);if(!LL.length){Object.keys(s.l54).filter(k=>k.startsWith(pool)).forEach(k=>delete s.l54[k]);return}
+  const [x,id]=LL[Math.floor(R()*LL.length)];s.l54[id]=s.year;L(x[2],'ev')}
+{const _nm54=npcMonth;npcMonth=async function(a,b){await _nm54(a,b);try{l54Tick()}catch(e){console.error(e)}}}
+const LS54=[
+ {id:'ls_lever',when:()=>grand54()&&!child()&&s.age>=16&&T()<1789.4,run:async()=>{
+  const i=await Q('왕의 기상 의례','le lever du roi',`아침 여덟 시 반, 베르사유 왕의 침실. 마침내 기상 의례에 들어갈 자격을 얻었다. 왕이 침대에서 일어나면 신분 순서대로 셔츠를 건넬 사람이 정해진다. 공작 하나가 늦게 들어오자 셔츠가 다시 그 사람 손으로 넘어간다. 왕은 그동안 맨 어깨로 하품을 한다. 당신 차례는 오지 않을 것 같다.`,[{l:'한 걸음 앞으로 나가 왕의 눈에 띄려 한다',a:'bold social'},{l:'예법대로 맨 끝에 서서 지켜본다',a:'safe'},{l:'이 모든 게 우스워 웃음을 참는다',a:'radical'}]);
+  say(i===0?'왕이 당신 쪽을 한 번 보았다. 그것으로 충분했다. 그날 저녁 세 집에서 초대장이 왔다.'+fx({relite:4,soc:2,fame:1}):i===1?'셔츠가 다섯 번 손을 바꾼 뒤에야 왕은 옷을 입었다. 당신은 끝까지 맨 뒤에 서 있었다. 그것도 영광이라고들 했다.'+fx({relite:2,manner:2}):'입술을 깨물며 웃음을 참았다. 옆에 선 늙은 후작이 당신을 흘겨보았다. 그 눈길이 왠지 통쾌했다.'+fx({pol:3,relite:-2}));await done()}},
+ {id:'ls_whip',when:()=>low54()&&!child()&&T()<1789.5,run:async()=>{
+  const i=await Q('마부의 채찍','le fouet',`좁은 골목에 귀족의 마차가 들어선다. 마부가 “비켜라!” 외치며 채찍을 휘두른다. 물동이를 이고 가던 옆집 아이가 넘어진다. 마차 안의 사람은 커튼조차 걷지 않는다.`,[{l:'아이를 일으켜 세우고 고개를 숙인다',a:'safe family'},{l:'마차 앞을 막아서서 사과를 요구한다',a:'bold radical'},{l:'마차가 지나간 뒤 진흙을 한 줌 던진다',a:'bold'}]);
+  say(i===0?'아이의 무릎에서 피가 났다. 마차는 이미 골목 끝을 돌았다. 아무도 사과하지 않았다.'+fx({rloc:2,hap:-2}):i===1?(R()<.5?'마부가 채찍을 들었다 내렸다. 커튼이 걷히고 누군가 동전 한 닢을 던졌다. 사과 대신이었다. 골목 사람들이 당신 이름을 기억했다.'+fx({rloc:4,cour:2,pol:3}):'채찍이 당신 뺨을 그었다. 흉터는 오래 남았다. 골목 사람들은 그 흉터를 볼 때마다 그날 이야기를 했다.'+fx({hp:-4,rloc:4,cour:3,pol:4})):'진흙이 마차 뒤판에 철퍽 붙었다. 골목 아이들이 환호했다. 그날 밤 당신은 조금 자랑스러웠고 조금 무서웠다.'+fx({hap:2,pol:2}));await done()}},
+ {id:'ls_guinguette',when:()=>low54()&&!child()&&s.age>=16&&s.age<=45,run:async()=>{
+  const i=await Q('성문 밖 갱게트','la guinguette',`일요일. 세관 울타리 밖으로 나가면 포도주에 세금이 붙지 않는다. 성문 밖 갱게트 술집은 사람들로 넘친다. 바이올린 하나, 손풍금 하나, 흙바닥 무도장. 한 주 내내 고개를 숙이던 사람들이 여기서는 고개를 젖히고 웃는다.`,[{l:'처음 보는 사람 손을 잡고 춤을 춘다',a:'social bold'},{l:'싼 포도주 한 병을 시켜 이웃들과 나눠 마신다',a:'social family'},{l:'구석에서 사람들이 웃는 소리를 듣는다',a:'safe'}]);
+  say(i===0?'흙먼지가 일었다. 신발 밑창이 해질 때까지 돌았다. 이름도 모르는 상대가 마지막에 웃으며 손을 흔들었다.'+fx({hap:6,soc:1,hp:1}):i===1?'잔이 한 바퀴 돌 때마다 이야기가 하나씩 늘었다. 해가 지자 다들 노래를 불렀다. 가사는 다 틀렸다.'+fx({hap:5,rloc:2}):'귀족들은 이런 웃음을 모를 것이다. 그 생각을 하니 조금 부자가 된 기분이었다.'+fx({hap:4}));await done()}}];
+async function ls54Tick(){if(!s||s.dead||sheetLive||s.cond!=='normal')return;s.ls54=s.ls54||{};for(const x of LS54){if(s.ls54[x.id])continue;let ok=false;try{ok=x.when()}catch(e){}if(!ok||R()>.08)continue;s.ls54[x.id]=s.year;try{await x.run()}catch(e){console.error(e);if(sheetLive)sheetClose()}return}}
+{const _rd54=rfDaily;rfDaily=async function(){await _rd54();if(!s||s.dead)return;try{await ls54Tick()}catch(e){console.error(e)}}}
+
+/* ================= 개편 55: 신분마다 그 시절 흔했던 직업 =================
+   귀족: 명목 수도원장 · 왕실 사냥 관리관 / 부르주아: 소송 대리인 · 서적상 / 도시 서민: 가발 장인 · 구두 장인 / 농민: 양치기 · 포도 재배인 */
+J('ab3','church',3,'명목 수도원장','명목 수녀원장','abbé commendataire',4000,{soc:35},()=>noble()&&T()<1790);
+J('ct2h','court',2,'왕실 사냥 관리관',null,'lieutenant des chasses',800,{str:30,sk:{ride:20}},()=>noble()&&(T()<1792.6||T()>=1804.4));
+J('l2p','law',2,'소송 대리인',null,'procureur',900,{edu:40,kn:{klaw:20}},()=>T()<1791||T()>=1800);
+J('c4l','craft',4,'서적상','서적상','libraire',2500,{edu:35,kn:{kread:30}});
+J('c2w','craft',2,'가발 직인','미용 직공','garçon perruquier',300,{dex:30});
+J('c3w','craft',3,'가발 장인','미용사','maître perruquier',1400,{dex:40,sk:{craft:20}});
+J('c2o','craft',2,'구두 직인',null,'compagnon cordonnier',280,{dex:28});
+J('c3o','craft',3,'구두 장인',null,'maître cordonnier',1100,{dex:38,sk:{craft:20}});
+J('f1b','farm',1,'양치기','양치기 소녀','berger',60,{str:20},()=>!urban());
+J('f3v','farm',3,'포도 재배인','포도 재배인','vigneron',700,{str:35},()=>!urban());
+try{POST_GRP.unshift([/^(c2t|c3p|c4l)$/,'인쇄'],[/^(c2w|c3w)$/,'가발'],[/^(c2o|c3o)$/,'구두'])}catch(e){}
+const JX55=[
+ ['c3w',()=>`분칠 가루가 눈처럼 날리는 가발 가게. ${T()>=1790?'그런데 요즘은 손님이 없다. 혁명 뒤로 분 바른 가발은 귀족 티라며 아무도 쓰지 않는다. 젊은 손님 하나가 들어와 로마 황제 티투스처럼 짧게 잘라 달라고 한다.':'후작 부인이 내일 무도회에 쓸 가발을 주문했다. 높이가 석 자, 꼭대기에 범선 모형을 얹어 달라고 한다.'}`,
+   T=>T>=1790?[['가위를 들고 ‘티투스 머리’를 배운다','bold',`가발 대신 머리를 잘랐다. 손님이 거울을 보며 만족했다. 다음 날 그 친구들이 줄을 섰다.`,{money:80,craft:2}],['가발을 고집한다','safe',`가게 진열장의 가발들이 먼지를 뒤집어썼다. 한 해 벌이가 반으로 줄었다.`,{money:-60}]]:[['밤새 범선 가발을 만든다','study',`새벽녘 가발 꼭대기에 돛 세 개짜리 배가 올라앉았다. 무도회에서 그 가발이 화제가 되었다. 값은 석 달째 외상이다.`,{craft:2,fame:1}],['“목이 부러지십니다.”라며 낮게 만들자고 한다','social',`후작 부인이 코웃음을 쳤다. 그래도 가발은 두 자로 줄었다. 무도회에서 문틀에 걸리지 않은 몇 안 되는 가발이었다.`,{soc:1,relite:1}]]],
+ ['c2w',null,null],
+ ['c3o',()=>`${T()>=1792.3&&T()<1795?'구 위원회에서 의용병 군화 이백 켤레를 주문했다. 값은 아시냐 지폐로 준다고 한다. 가죽은 모자라고 마감은 열흘 뒤다.':'귀족 손님이 새 구두 다섯 켤레를 맞춰 가고 석 달째 값을 치르지 않는다. 오늘 하인을 보내 한 켤레를 더 주문했다.'}`,
+   T=>T>=1792.3&&T<1795?[['밤낮없이 군화를 짓는다','bold',`손가락마다 실 자국이 났다. 열흘 뒤 이백 켤레가 수레에 실려 나갔다. 국경으로 가는 발들이었다.`,{money:120,craft:2,pol:2,hp:-2}],['밑창에 판지를 섞는다','greedy',`장사는 남았다. 석 달 뒤 군화 밑창이 빗물에 녹았다는 소문이 돌았다. 다행히 이름은 나오지 않았다.`,{money:200,sus:6}]]:[['밀린 값을 받기 전엔 못 짓는다고 한다','bold',`하인이 투덜대며 돌아갔다. 이튿날 주인 대신 집사가 와서 밀린 값의 절반을 냈다.`,{money:60,cour:1}],['말없이 한 켤레를 더 짓는다','safe',`외상 장부에 한 줄이 늘었다. 그 집은 끝내 값을 다 치르지 않았다.`,{money:-30,hap:-1}]]],
+ ['c2o',null,null],
+ ['f1b',()=>`겨울 들판. 해가 지자 숲 쪽에서 늑대 우는 소리가 들린다. 양 떼가 한쪽으로 몰린다. 개는 한 마리뿐이다.`,
+   T=>[['불을 피우고 밤새 지킨다','bold',`새벽까지 장작을 넣었다. 늑대 눈 두 개가 어둠 속에서 몇 번 빛났다가 사라졌다. 양은 한 마리도 잃지 않았다.`,{cour:2,str:1}],['양 떼를 몰고 마을로 내려간다','safe',`마을 어귀에 닿자 개가 짖기를 멈췄다. 이튿날 늑대 사냥꾼들이 숲으로 올라갔다.`,{rloc:1}]]],
+ ['f3v',()=>`9월, 포도 수확철. 온 마을이 바구니를 지고 포도밭에 나왔다. 그런데 서쪽 하늘이 검다. 우박이 오면 한 해 농사가 끝난다.`,
+   T=>[['다 익지 않았어도 지금 딴다','bold',`해 지기 전에 반을 땄다. 그날 밤 우박이 남은 포도를 다 때렸다. 덜 익은 포도로 담근 술은 시었지만, 굶지는 않았다.`,{money:60,str:1}],['하루만 더 익기를 기다린다','safe',(R()<.5?`우박은 옆 골짜기로 비켜 갔다. 하루 더 익은 포도로 그해 가장 단 술을 담갔다.`:`밤새 우박이 쏟아졌다. 아침 포도밭은 잎만 남아 있었다.`),{}]]],
+ ['ab3',()=>`당신이 이름만 올려 둔 노르망디의 수도원에서 편지가 왔다. 지붕이 새고 수사 열한 명이 겨울을 날 장작이 없다고 한다. 수도원 수입의 삼분의 일은 해마다 당신에게 온다. 한 번도 가 본 적은 없다.`,
+   T=>[['올해 몫을 수도원에 돌려보낸다','pious family',`수사들에게서 답장이 왔다. 지붕을 고쳤다고, 당신을 위해 미사를 올리겠다고 했다. 처음으로 그 수도원 이름을 소리 내어 읽어 보았다.`,{money:-300,faith:4}],['관리인에게 알아서 하라고 한다','greedy',`장작 대신 편지가 한 통 더 왔다. 읽지 않고 벽난로에 넣었다. 따뜻했다.`,{money:100,faith:-3}]]],
+ ['ct2h',()=>`왕의 사슴 사냥이 내일이다. 몰이꾼들이 농부들의 보리밭을 가로질러야 한다. 마을 촌장이 모자를 쥐고 찾아왔다. 보리가 다 밟히면 겨울을 날 수 없다고.`,
+   T=>[['사냥 길을 숲 쪽으로 돌린다','social',`사냥은 반 시간 늦어졌다. 늙은 백작이 투덜댔다. 보리밭은 무사했다. 그해 겨울 그 마을에서 꿀 한 단지가 왔다.`,{rpeople:3,relite:-1}],['왕의 사냥이 먼저라고 돌려보낸다','safe',`말발굽이 보리밭을 지나갔다. 사냥은 성공적이었다. 촌장은 그 뒤로 길에서 당신을 보면 모자를 벗지 않았다.`,{relite:2,rpeople:-3}]]],
+ ['l2p',()=>`과부 하나가 찾아왔다. 영주가 마을 공동 방목지에 울타리를 쳐서 소 한 마리 먹일 풀밭을 잃었다고 한다. 소송비는 낼 수 없다. 영주는 당신의 단골 의뢰인이다.`,
+   T=>[['무료로 과부의 소송을 맡는다','bold',`석 달 걸린 소송 끝에 울타리 한쪽이 걷혔다. 영주는 다른 대리인을 찾았다. 과부는 치즈 한 덩이를 들고 왔다.`,{rpeople:4,money:-80,vjus:3}],['다른 대리인을 소개해 준다','safe',`과부는 고개를 숙이고 돌아갔다. 영주는 그해 새 소송 두 건을 맡겼다.`,{money:150}]]],
+ ['c4l',()=>`가게 뒷방, 장부에는 없는 책 상자가 있다. 볼테르, 루소, 그리고 왕비를 비꼬는 음란한 소책자. ‘철학 책’이라는 암호로 팔린다. 오늘 오후 서적 검열관이 가게를 둘러보러 온다고 한다.`,
+   T=>[['상자를 이웃 다락으로 옮긴다','bold',(R()<.75?`검열관은 진열대의 기도서만 넘겨 보고 돌아갔다. 그날 밤 ‘철학 책’은 평소보다 비싸게 팔렸다.`:`이웃이 겁을 먹고 상자를 고발했다. 벌금을 물고 석 달 영업을 못 했다.`),{money:60,sus:2}],['상자를 불태운다','safe',`난로 속에서 볼테르가 탔다. 검열관은 칭찬을 남기고 갔다. 단골 몇이 발길을 끊었다.`,{money:-100,faith:1}]]]];
+async function jx55Tick(){if(!s||s.dead||sheetLive||s.cond!=='normal'||!s.job)return;s.jx55=s.jx55||{};let id=s.job;let row=JX55.find(x=>x[0]===id);if(row&&!row[1]){id=id.replace(/^c2/,'c3');row=JX55.find(x=>x[0]===id)}
+  if(!row||!row[1]||s.jx55[id]||R()>.12)return;s.jx55[id]=s.year;const P=POST[row[0]];const opts=row[2](T());
+  const i=await Q(pname(P),P.fr,row[1](),opts.map(o=>({l:o[0],a:o[1]})));const o=opts[i];say(o[2]+fx(o[3]||{}));await done()}
+{const _rd55=rfDaily;rfDaily=async function(){await _rd55();if(!s||s.dead)return;try{await jx55Tick()}catch(e){console.error(e);if(sheetLive)sheetClose()}}}
 </script>
 </body>
 </html>
