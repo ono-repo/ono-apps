@@ -1383,7 +1383,7 @@ async function comingOfAge(){s.flags.adult=true;
   if(inSchool(['college','convent','univ','seminary'])){say(SCH().st==='convent'?'기숙학교에서 몇 해를 더 보내게 되었다.':'학업을 계속하였다.','sys');return}
   await careerChoice(true);
 }
-async function careerChoice(first){const opts=entryOptions(first);
+async function careerChoice(first){let opts=entryOptions(first);if(opts.length>2){const rest=opts.slice(1);opts=[opts[0],rest[Math.floor(R()*rest.length)]]}
   sheetOpen(first?'앞날을 정한다':'진로를 바꾼다','état');
   shText(first?`${s.age}세. 이제 먹고살 길을 정해야 한다. ${ESTATES[s.estate].n} 집안의 ${isM()?'아들':'딸'}에게 열린 길은 많지 않다.`:'지금 일을 그만두고 다른 길을 찾는다. 조건을 갖춘 자리만 보인다.','q');
   const list=opts.map(o=>({l:pname(POST[o.id])+(o.why?` — ${o.why}`:''),s:[`연 ${fmt(POST[o.id].pay)} ${money()}`,needText(POST[o.id])].filter(Boolean).join(' · '),a:POST[o.id].tr+' work'}));
@@ -2689,7 +2689,9 @@ const PURGE={
 async function purge(id){const P=PURGE[id];if(s.dead)return;if(s.party!==id){await relPurge(id);return}const r=s.prank;
   if(s.cond!=='normal'){fx({sus:P.sus[r]});return}
   sheetOpen(P.t,FAC[id].fr);shText(P.d,'q b');fx({sus:P.sus[r]});
-  if(await chance(P.arrest[r],'체포',`${PRANK[r]}급 당원이 붙잡힌 비율`)){s.cnt.arrest++;
+  const pi=await shButtons([{l:'당원 명부를 태우고 몸을 숨긴다',s:'붙잡힐 확률이 줄어든다',a:'bold'},{l:'동지들 곁에 남는다',s:'붙잡힐 확률이 늘지만 동지들의 신망을 얻는다',a:'social'},{l:'당을 떠났다고 구 위원회에 신고한다',s:'가장 안전하지만 배신자 소리를 듣는다',a:'safe'}]);
+  const pm=[.6,1.25,.35][pi];if(pi===1)fx({fame:2,rpeople:2});if(pi===2)fx({rpeople:-4,cour:-1});
+  if(await chance(Math.min(.95,P.arrest[r]*pm),'체포',`${PRANK[r]}급 당원이 붙잡힌 비율`)){s.cnt.arrest++;
     if(P.death&&await chance(P.death,'재판','붙잡힌 이들 가운데 처형된 비율')){die(id==='clichy'?'deported':'guillotine');await done();return}
     s.cond='prison';s.prisonKind=inTerror()?'terror':'plain';s.condSince=T();say('감옥에 갇혔다.','big')}
   else say(r>=2?'이름을 바꾸고 몸을 숨겨 화를 면했다.':'명부에서 이름이 빠져 화를 면했다.');
@@ -3341,7 +3343,7 @@ async function universityChoice(){const x=SCH(),g=x.grade,ks=(s.kn&&s.kn.ksci)||
    {f:'theo',l:'신학교에 들어간다',s:`스물네 살 사제 서품까지. 성적 45·신앙 40 이상${univOpen('theo')?'':' · 신학교 폐쇄 중'}`,ok:g>=45&&s.faith>=40&&univOpen('theo')&&s.faithKind==='catholic',a:'pious study'},
    {f:'mil',l:'사관학교에 들어간다',s:'귀족(1802년부터는 누구나). 성적 40 이상',ok:g>=40&&univOpen('mil')&&(noble()||T()>=1802.4),a:'bold'},
    {f:'poly',l:'이공과학교(에콜 폴리테크니크) 입학시험을 치른다',s:'1794년 설립. 성적 70·수학 20 이상. 합격은 재능과 수학 실력에 달렸다',ok:univOpen('poly')&&g>=70&&ks>=20&&isM(),hide:!univOpen('poly')||!isM(),a:'study bold'},
-   {f:null,l:'학업을 접고 일을 찾는다',s:'',ok:true,a:'safe work'}].filter(o=>!o.hide);
+   {f:null,l:'학업을 접고 일을 찾는다',s:'',ok:true,a:'safe work'}].filter(o=>!o.hide).filter((o,i,arr)=>{if(!o.f)return true;const en=arr.filter(z=>z.f&&z.ok),dis=arr.filter(z=>z.f&&!z.ok);const pickL=en.slice(0,2).concat(dis).slice(0,2);return pickL.includes(o)});
   sheetOpen('진로','après le collège');shText(`${collegeName()}의 ${jo(colEra(T())===2?'과정':'철학반','을','를')} 마쳤다. 성적은 ${g}점(${gradeLabel(g)}). 어느 길로 가겠는가.`,'q');
   const i=await shButtons(opts.map(o=>({l:o.l,s:o.ok?o.s:'조건 부족 · '+o.s,a:o.a,dis:!o.ok})));const o=opts[i];
   if(!o.f){x.st='done';await done();await careerChoice(true);return}
@@ -7475,7 +7477,7 @@ EV.push(
   if(T()>=1802.3)o.push({l:'샤토브리앙의 『그리스도교의 정수』',s:'신앙·질서',a:'pious',f:()=>say('무너진 성당과 종소리를 그린 대목에서 목이 메었다.'+fx({faith:3,vord:2,brl:-4,bch:-2}))});
   else o.push({l:'『그리스도를 본받아』와 교리서',s:'신앙·질서',a:'pious safe',f:()=>say('"세상의 영광은 이렇게 지나간다." 마음이 고요해졌다.'+fx({faith:3,vord:3,brl:-3}))});
   if(T()>=1772&&T()<1800)o.push({l:'레날 신부의 『두 인도의 역사』',s:'평등, 급진 변화',a:'radical',f:()=>say('노예무역과 식민지의 학대를 고발한 대목을 읽고 주먹을 쥐었다. 1781년 고등법원이 불태운 책이다.'+fx({edu:2,veq:4,vjus:2,bch:3,sus:T()<1789?1:0}))});
-  return o}),
+  while(o.length>3)o.splice(Math.floor(R()*o.length),1);return o}),
  S('sch2_cate',()=>schIs(['petite','convent','college'])&&s.faithKind==='catholic'&&s.age>=8&&!(T()>=1793.7&&T()<1801.5),1,3,[
   ['교리문답 제4계명 대목을 외웠다. 부모와 임금과 윗사람에게 순종하는 것이 하느님의 뜻이라고 하였다.',{vord:2,brl:-2},()=>T()<1789.5||T()>=1814],
   ['『제국 교리문답』을 외웠다. 황제를 공경하고 세금과 징병에 따르는 것이 하느님께 대한 의무라고 하였다.',{vord:2,brl:-3},()=>T()>=1806.3&&T()<1814],
@@ -9600,7 +9602,7 @@ const RF2_MEETP={louise:()=>noble()?'저택 부엌문 앞':'빵집 뒷계단',et
 async function emigrate(dest){const p=dest||pick(['코블렌츠','런던','토리노','브뤼셀','바젤']);
   say(`${jo(p,'으로')} 가는 길, 국경 검문소에서 붙잡혔다. 위조 통행증의 잉크가 아직 덜 말라 있었다. 짐 속의 금붙이와 편지는 모두 압수되었다.`+fx({sus:25,money:-Math.round(Math.max(0,s.money)*.2)}),'big');
   s.cond='prison';s.prisonKind=T()>=1792.5?'terror':'plain';s.condSince=T()}
-{const a=ACTS.find(x=>x.k==='emig');if(a){a.s='국경 검문이 삼엄하다';a.f=null;a.inter=async()=>{sheetOpen('국경','la frontière');shText('밤 마차를 타고 국경으로 향한다. 품에는 남의 이름이 적힌 통행증이 있다.','q');await shButtons([{l:'검문소로 다가간다',s:'',a:'bold'}]);await emigrate();await done()}}}
+{const a=ACTS.find(x=>x.k==='emig');if(a){a.s='국경 검문이 삼엄하다';a.f=null;a.inter=async()=>{sheetOpen('국경','la frontière');shText('밤 마차를 타고 국경으로 향한다. 품에는 남의 이름이 적힌 통행증이 있다.','q');const i=await shButtons([{l:'검문소로 다가간다',s:'붙잡힐 수 있다',a:'bold'},{l:'통행증을 찢고 마차에서 내린다',s:'',a:'safe family'}]);if(i===1){say('검문소 불빛이 보이는 언덕에서 마차를 세웠다. 통행증을 잘게 찢어 바람에 날렸다. 걸어서 돌아오는 데 사흘이 걸렸다.'+fx({sus:3,cour:-1}));await done();return}await emigrate();await done()}}}
 
 /* ---------- 6. 1758년생은 루이르그랑 ---------- */
 {const _sa=schoolAt10;schoolAt10=async function(){const x=SCH();if(s.by===1758&&isM()&&x.st==='petite'){const poor=!noble()&&s.estate!=='bourgeois';
@@ -10264,7 +10266,7 @@ const RF7_SACTS=[
  {k:'s_night',p:'class',n:'밤늦게까지 복습한다',s:'학식 +, 성적 +, 건강 -',f:()=>{addGrade(ri(2,4));say(pick(['기숙사 촛불이 꺼진 뒤에도 창가의 달빛에 기대어 공책을 넘겼다. 이튿날 아침 눈이 벌겠지만, 선생님의 질문에 막힘없이 답했다.','동사 변화표를 벽에 붙여 두고 잠들기 전에 소리 내어 외웠다. 옆 침대 아이가 베개를 던졌다.']) +fx({edu:2,hp:-1}))}},
  {k:'s_front',p:'class',n:'맨 앞자리에 앉아 손을 든다',s:'성적 +, 사교 ±',f:()=>{addGrade(ri(1,3));say(pick(['맨 앞자리에서 손을 들었다. 선생님이 처음으로 당신 이름을 기억해 불렀다. 뒷자리에서 누군가 “아첨쟁이”라고 속삭였다.','질문 하나가 수업을 삼십 분이나 붙잡았다. 선생님은 끝내 웃으며 “다음 시간에 답하마.”라고 했다.']) +fx({edu:1,orat:1}))}},
  {k:'s_contest',p:'class',n:()=>rf7Uni()?'공개 논증에 나선다':rf7Conv()?'낭독 발표회를 준비한다':'라틴어 작문 경시대회를 준비한다',s:'성적·명성 판정',c:()=>!rf7Pet(),inter:async()=>{sheetOpen(rf7Uni()?'공개 논증':rf7Conv()?'낭독 발표회':'라틴어 경시대회','le concours');shText(rf7Uni()?'강당의 교수들 앞에서 논제를 방어해야 한다. 질문은 사정없이 날아온다.':rf7Conv()?'수녀님들과 학부모들 앞에서 라신의 비극 한 대목을 낭독한다.':'파리의 콜레주들이 겨루는 경시대회(콩쿠르 제네랄)에 낼 라틴어 작문을 쓴다. 상은 소르본 강당에서 준다.','q');
-   await shButtons([{l:'몇 주 동안 매달린다',s:'',a:'study'}]);const r=await roll(s.st.edu>=60?1:s.st.edu<35?-1:0,{label:'경시'});
+   const ci=await shButtons([{l:'몇 주 동안 매달린다',s:'건강 -',a:'study'},{l:'평소처럼 준비하고 나간다',s:'',a:'safe'}]);if(ci===0)fx({hp:-1});const r=await roll((s.st.edu>=60?1:s.st.edu<35?-1:0)+(ci===0?0:-1),{label:'경시'});
    if(r.v>=5){addGrade(5);say('이름이 불렸다. 강당이 박수로 가득 찼다. 상으로 받은 책 표지에는 금박으로 학교 문장이 찍혀 있었다. 그날 저녁 식구들이 그 책을 돌려 가며 만져 보았다.'+fx({fame:2,edu:2,rfam:3}),'big')}
    else if(r.v>=3){addGrade(2);say('상은 받지 못했지만 심사 위원 하나가 당신 글의 한 문장에 밑줄을 그어 돌려주었다. “이 문장은 좋다.” 당신은 그 종이를 오래 간직했다.'+fx({edu:1}))}
    else{addGrade(-1);say('발표 날 머릿속이 하얘졌다. 외워 둔 문장이 하나도 떠오르지 않았다. 돌아오는 길, 당신은 다음에는 다를 거라고 몇 번이고 중얼거렸다.'+fx({cour:1}))}await done()}},
@@ -10876,7 +10878,7 @@ const RF11_QV={
  danton:{at:()=>`코르들리에 근처 선술집.`,o:N=>({l:'포도주를 한 병 더 시킨다',a:'social',t:`${jo(N,'은','는')} 병을 보더니 천장이 울리도록 웃었다. “좋아, 정치는 둘째 병부터야.” 둘째 병이 비었을 때 둘은 아르시의 강가 이야기를 하고 있었다.`,r:{close:4},fx:{money:-3}})}};
 {const _bs11=bfScene;bfScene=async function(title,fr,text,opts){try{if(/의 말다툼$/.test(title)){const k=(BF_KEYS||[]).find(k=>bfMet(k)&&title.startsWith(bN(k)));const P=k&&RF11_QV[k];
     if(P){const N=bN(k);text=`${P.at()} ${text}`;const o=P.o(N);opts=(opts||[]).filter(Boolean);const last=opts.pop();
-      opts=opts.concat([{l:o.l,a:o.a,f:()=>{bfRel(k,o.r);bfMem('m_qr2_'+k+s.year,k,`정치 이야기로 ${bW(k)} 다투다가 ${(rfPast(o.l)||o.l).replace(/\.$/,'')}.`,{tone:'위로'});say(o.t+(o.fx?fx(o.fx):''))}}],last?[last]:[])}}}catch(e){console.error(e)}
+      opts=opts.concat([{l:o.l,a:o.a,f:()=>{bfRel(k,o.r);bfMem('m_qr2_'+k+s.year,k,`정치 이야기로 ${bW(k)} 다투다가 ${(rfPast(o.l)||o.l).replace(/\.$/,'')}.`,{tone:'위로'});say(o.t+(o.fx?fx(o.fx):''))}}],last?[last]:[]);opts=[opts.find(z=>z.l==='설득한다'),opts[opts.length-2],opts.find(z=>z.l==='절교한다')].filter(Boolean)}}}catch(e){console.error(e)}
   return _bs11(title,fr,text,opts)}}
 
 /* ---------- 8. 사건 창 사이의 쉼: 7초쯤 ---------- */
@@ -13805,6 +13807,32 @@ let r64Quiet=0;
 {const _as64=advanceSeason;advanceSeason=async function(){const n=s?s.log.length:0;try{return await _as64.apply(this,arguments)}finally{try{if(s){const k=s.log.slice(n).filter(e=>e.k!=='yr').length;r64Quiet=k+1}}catch(e){}}}}
 {const _mp64=msPer;msPer=function(){const v=_mp64();if(!r64Quiet||(typeof rf9In==='function'&&rf9In()&&s&&s.day))return v;return Math.min(v,4000+3000*(r64Quiet-1))};
   secPerYear=function(){return Math.round(_mp64()*(12/tickMonths())/speed/1000)}}
+
+/* ================= 개편 65: 선택지는 둘에서 셋 =================
+   벗 장면(bfScene)의 선택지가 넷 이상이면 셋으로 줄이고, 하나뿐이면 그 장면에 맞는 선택지를 하나 더 붙인다.
+   - 벗과의 말다툼: 설득한다 · 그 사람다운 선택지(없으면 말을 아낀다) · 절교한다
+   - 그 밖에는 첫 선택지와 마지막 선택지를 남기고, 가운데에서 하나를 고른다(조건이 붙은 장면별 선택지가 대개 가운데에 있다) */
+const R65_ADD=[
+ [/^벽보 앞에서$/,()=>({l:'그림만 보고 둘이서 내용을 지어낸다',a:'social',f:()=>{bfKnow('louise','read',3);bfSet('louise','both');bfMem('m_read','louise',`벽보 앞에서 ${bN('louise')}도 당신도 글을 모른다는 것을 알았다. 둘이서 그림만 보고 내용을 지어냈다.`,{place:'성당 앞 벽보',their:'그 아이도 몰랐다. 그래서 둘이서 왕이 빵값을 반으로 내린다는 포고라고 우겼다.'});bfRel('louise',{close:8});say(`둘은 벽보 귀퉁이의 그림만 보고 내용을 멋대로 지어냈다. ${bU('louise')} 왕이 빵값을 반으로 내린다는 포고라고 우겼다. 지나가던 사람들이 웃었다.`)}})],
+ [/의 편지$/,t=>{const k=(BF_KEYS||[]).find(k=>bfMet(k)&&t.startsWith(bN(k)));return {l:'그날 밤 답장을 쓴다',a:'family',f:()=>{if(k)bfRel(k,{close:4});say('길게 쓰려다 몇 번이나 지웠다. 결국 몇 줄만 남았다. “나도 그래. 늘 그랬어.”')}}}],
+ [/^꽁다리$/,()=>({l:'이번엔 당신이 먼저 떼어 건넨다',a:'family',f:()=>{bfRel('louise',{close:6});try{bfRe('m_bread','예순 해 만에, 이번엔 내가 먼저 꽁다리를 떼어 주었다.','위로')}catch(e){}bfMem('m_bread2','louise',`늙은 ${bI('louise')} 빵을 들고 왔다. 이번엔 내가 먼저 꽁다리를 떼어 건넸다.`,{tone:'위로',place:'당신의 부엌',their:'예순 해 만에 처음으로 그 사람이 먼저 떼어 주었다. 제일 바삭한 데를.'});say(`${bU('louise')} 꽁다리를 받아 들고 한참 웃었다. “이건 원래 내가 하는 건데.”`)}})],
+ [/^스무 해 뒤$/,()=>({l:'강물에 돌 하나를 던지고 돌아선다',a:'safe',f:()=>{say('돌은 작은 소리를 내며 가라앉았다. 스무 해 전에도 누군가 이렇게 돌을 던졌다. 돌아오는 길, 당신은 한 번도 뒤돌아보지 않았다.')}})],
+ [/^(국유재산|철도 주식)$/,()=>({l:'“지금은 여윳돈이 없어. 다음엔 꼭.”이라고 한다',a:'social',f:()=>{bfRel('antoine',{close:2});say(`${bU('antoine')} 어깨를 으쓱했다. “다음은 없어. 이런 건 한 번뿐이야.” 그래도 웃으며 잔을 채워 주었다.`)}})],
+ [/^다시 울리는 종$/,()=>({l:`${bN('jules')}에게 새 종의 이름을 묻는다`,a:'pious',f:()=>{bfRel('jules',{close:4});say(`${bU('jules')} 종을 올려다보며 말했다. “아, 아직 이름이 없어. 세, 세례를 받아야 이름이 생겨.” 그는 처음으로 더듬으면서도 웃었다.`)}})],
+ [/^같은 자리$/,()=>({l:'계산은 내가 하겠다고 한다',a:'social',f:()=>{bfRel('antoine',{close:3});say(`${bU('antoine')} 웃음을 터뜨렸다. “평생 처음 듣는 말이네. 장부에 적어 둬야겠어.”`)}})],
+ [/^(시민 명부|세례)$/,()=>({l:'아이 이름을 집안 어른의 이름에서 따온다',a:'family',f:()=>{say('아이 이름은 할머니의 이름에서 따왔다. 명부에 그 이름이 또박또박 적혔다.'+fx({rfam:2}))}})],
+ [/^3월의 밤$/,()=>({l:'밤새 창가에서 거리를 내다본다',a:'safe',f:()=>{say('새벽까지 거리에는 순찰대의 발소리만 오갔다. 날이 밝자 소식이 왔다. 당통과 데물랭이 체포되었다.')}})],
+ [/^테르미도르 9일 밤$/,()=>({l:'이웃집에 모여 소식을 기다린다',a:'social',f:()=>{say('이웃 셋이 등잔 하나를 두고 모였다. 아무도 크게 말하지 않았다. 새벽에 경종이 울렸다.'+fx({soc:1}))}})]];
+const R65_DEF=()=>({l:'잠시 아무 말 없이 서 있는다',a:'safe',f:()=>{say('당신은 한동안 아무 말도 하지 않았다. 그것도 대답이었다.')}});
+{const _bs65=bfScene;bfScene=async function(title,fr,text,opts){try{opts=(opts||[]).filter(Boolean);const t=String(title||'');
+  if(/의 말다툼$/.test(t)&&opts.length>3){const by=l=>opts.find(o=>o.l===l);const per=by('설득한다'),cut=by('절교한다'),quiet=by('말을 아낀다');const sp=opts.find(o=>![per,cut,quiet,by('비난한다')].includes(o));opts=[per,sp||quiet,cut].filter(Boolean)}
+  if(opts.length>3){const mid=opts.slice(1,-1);opts=[opts[0],mid[Math.floor(R()*mid.length)],opts[opts.length-1]]}
+  if(opts.length<2){const ad=R65_ADD.find(([re])=>re.test(t));opts=opts.concat([ad?ad[1](t):R65_DEF()])}}catch(e){console.error(e)}
+  return _bs65(title,fr,text,opts)}}
+// 사건 창 전체의 안전장치: 넷 이상이면 셋만 보인다(고를 수 있는 것을 먼저 남기고, 고른 번호는 원래 번호로 돌려준다)
+{const _sb65=shButtons;shButtons=function(opts){try{if(Array.isArray(opts)&&opts.length>3){const idx=opts.map((o,i)=>i);const en=idx.filter(i=>!opts[i].dis),di=idx.filter(i=>opts[i].dis);
+    let keep;if(en.length>=3){const mid=en.slice(1,-1);keep=[en[0],mid[Math.floor(R()*mid.length)],en[en.length-1]]}else keep=en.concat(di).slice(0,3);keep.sort((a,b)=>a-b);
+    return _sb65(keep.map(i=>opts[i])).then(j=>keep[j])}}catch(e){console.error(e)}return _sb65(opts)}}
 </script>
 </body>
 </html>
