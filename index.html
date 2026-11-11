@@ -11696,7 +11696,7 @@ const R18_MSG='세상을 떠난 뒤에는 할 수 없습니다.';
   document.head.appendChild(st)}
 // 죽은 뒤에 눌린 행동 단추는 여기서 막는다(보기만 하는 단추는 그대로)
 document.addEventListener('click',e=>{if(!s||!s.dead)return;const b=e.target.closest&&e.target.closest('button');if(!b)return;
-  if(b.closest('#end,#title,.nav,.seg,#menu,#obBack,.logmore'))return;
+  if(b.closest('#end,#title,.nav,.seg,#menu,#obBack,.logmore,#sheet.after-death'))return;
   const act=b.matches('.opt,.plan,.fopt,.node')||!!b.closest('.letter-ch')||/편지|선물/.test(b.textContent||'');
   if(act){e.preventDefault();e.stopImmediatePropagation();try{toast(R18_MSG)}catch(x){}}},true);
 {const _ab=actButtons;actButtons=function(list,box){_ab(list,box);if(s&&s.dead)box.querySelectorAll('button').forEach(b=>b.disabled=true)}}
@@ -13839,6 +13839,39 @@ function r65Trim(arr){const n=arr.length;if(n<=3)return arr.map((o,i)=>i);const 
   if(Array.isArray(opts)&&opts.length>3&&!R65_KEEP.test(tt)&&ff!=='conscription'){const en=opts.map((o,i)=>i).filter(i=>!opts[i].dis),di=opts.map((o,i)=>i).filter(i=>opts[i].dis);
     let keep;if(en.length>=3){const k=r65Trim(en.map(i=>opts[i]));keep=k.map(j=>en[j])}else keep=en.concat(di).slice(0,3);keep.sort((x,y)=>x-y);
     return _sb65(keep.map(i=>opts[i])).then(j=>keep[j])}}catch(e){console.error(e)}return _sb65(opts)}}
+
+/* ================= 개편 66: 당신을 고발한 연인의 뒤따름 =================
+   고발당한 주인공이 처형되면, 고발한 벗이 연인이었을 때 그 벗은 며칠 뒤 저마다의 방식으로 세상을 떠난다.
+   - 처형되는 순간 그 벗을 먼저 떠난 사람으로 돌려, 다른 벗들의 애도 기록(처형 기록 위로 쌓이는 줄)에서 뺀다.
+   - 부고를 본 뒤 ‘이전으로’를 눌러 게임 화면으로 돌아오면, 그 벗의 이야기를 사건 창으로 한 번 띄운다.
+   - 로베스피에르·데물랭은 고발하지 않으므로 해당 없다(고발은 에티엔·루이즈·앙투안·가브리엘만). */
+const F63={
+ etienne:{t:'제1조',fr:'l’article premier',b:'명단을 덮는다',cause:'아편 팅크',
+  x:N=>`당신이 단두대에 오르고 사흘 뒤, ${N}의 하숙방 문은 안에서 잠긴 채 열리지 않았다. 문을 부수고 들어간 이웃들이 책상에 엎드린 ${jo(N,'을','를')} 발견했다. 손 옆에는 빈 아편 팅크 병이 굴러다녔다. 책상 위에는 그 혐의자 명단의 사본이 펼쳐져 있었다. 당신 이름 위에만 펜으로 몇 번이고 줄이 그어져, 종이가 찢어질 지경이었다. 그 아래 떨리는 글씨로 한 줄이 덧붙어 있었다. ‘제1조, 이 사람은 평생 내 옆에 있을 것. 고칠 수 없음. ─ 지키지 못함.’ 구 감시위원회는 사인을 ‘병사’라고 적었다.`,
+  ob:N=>`당신이 처형되고 사흘 뒤, ${jo(N,'은','는')} 하숙방에서 아편 팅크를 마셨다. 책상 위 명단에는 당신 이름 위에만 줄이 그어져 있었다.`,
+  fate:'당신이 처형되고 사흘 뒤, 하숙방에서 아편 팅크를 마시고 세상을 떠났다'},
+ louise:{t:'꺼진 화덕',fr:'le four éteint',b:'석판을 내려놓는다',cause:'숯불 연기',
+  x:N=>`당신이 처형되고 나흘째 새벽, ${N}의 빵집에서는 빵 굽는 냄새가 나지 않았다. 배급 줄의 사람들이 문을 두드렸지만 대답이 없었다. 덧문 틈으로 매캐한 연기가 새어 나왔다. ${jo(N,'은','는')} 화덕 아궁이를 막고 숯불을 피운 채 반죽 통 옆에 누워 있었다. 품에는 석판 하나를 안고 있었다. 삐뚤빼뚤한 글씨로 두 이름이 나란히 적혀 있었다. 처음 글을 배울 때 맨 먼저 쓴 당신 이름과, 그 옆에 쓴 자기 이름. 창턱에는 갓 구운 빵 한 덩이가 놓여 있었다. 꽁다리만 떼어져 있었다.`,
+  ob:N=>`나흘 뒤, ${jo(N,'은','는')} 아궁이를 막은 빵집에서 숯불 연기 속에 잠들었다. 품에는 두 이름이 적힌 석판이 있었다.`,
+  fate:'당신이 처형되고 나흘 뒤, 아궁이를 막은 빵집에서 숯불 연기 속에 세상을 떠났다'},
+ antoine:{t:'갚을 수 없는 빚',fr:'la dette',b:'은단추를 쥔다',cause:'센강',
+  x:N=>`당신이 처형되고 닷새 뒤, ${N}의 가게는 아침부터 문이 열려 있었다. 계산대 위에 장부가 펼쳐져 있었다. 마지막 장에는 그동안의 빚이 하나하나 갚음 표시와 함께 정리되어 있었고, 맨 아래 한 줄에만 표시가 없었다. ‘갚을 수 없는 빚.’ 그날 밤 ${jo(N,'이','가')} 퐁뇌프 난간에 서 있는 것을 본 사람이 있었다. 열흘 뒤 생클루의 그물에 걸린 시신이 ${jo(N,'으로')} 확인되었다. 외투 주머니에는 은단추 하나가 들어 있었다. 어릴 적 구슬 내기에 걸었던 바로 그 단추였다.`,
+  ob:N=>`닷새 뒤, ${jo(N,'은','는')} 퐁뇌프에서 센강에 몸을 던졌다. 외투 주머니에는 은단추 하나가 있었다.`,
+  fate:'당신이 처형되고 닷새 뒤, 퐁뇌프에서 센강에 몸을 던졌다'},
+ gabriel:{t:'이번에는',fr:'cette fois',b:'끝까지 지켜본다',cause:'단두대',
+  x:N=>`당신이 처형되고 이레 뒤, ${jo(N,'은','는')} 가장 좋은 옷을 차려입고 혁명 광장에 나타났다. 분을 바르고, 손목에는 낡은 푸른 리본을 감았다. 그리고 단두대 앞에서 모두가 들으라고 외쳤다. “나는 드 사브리다. 귀족이다. 왕 만세!” 사람들이 ${jo(N,'을','를')} 붙잡았다. 이튿날 혁명재판소는 사형을 선고했다. 수레 위에서 ${jo(bHe('gabriel'),'은','는')} 한 번도 고개를 숙이지 않았다. 집행인이 손목의 리본을 풀려 하자 처음으로 입을 열었다. “그건 두고 가. 내 거야.” 얼음이 깨지던 그날 이후 처음으로, ${jo(N,'은','는')} 달아나지 않았다.`,
+  ob:N=>`이레 뒤, ${jo(N,'은','는')} 혁명 광장에서 스스로 귀족이라 외쳐 단두대에 올랐다. 손목에는 푸른 리본이 감겨 있었다. 이번에는 달아나지 않았다.`,
+  fate:'당신이 처형되고 이레 뒤, 혁명 광장에서 스스로 귀족이라 외쳐 단두대에 올랐다'}};
+// 처형되는 순간: 고발한 연인은 애도하는 벗들 사이에 서지 않는다
+{const _d66=die;die=function(c){let fk=null;try{if(s&&!s.dead&&['guillotine','drowned'].includes(c)&&s.dncBy&&F63[s.dncBy]){const r=bfR(s.dncBy);if(r&&r.alive&&r.role==='연인'){fk=s.dncBy;r.alive=false}}}catch(e){console.error(e)}
+  const r0=_d66.apply(this,arguments);
+  try{if(fk){if(s&&s.dead){const r=bfR(fk);r.alive=false;r.dead=s.year;r.dc='follow';bfFate(fk,F63[fk].fate);s.dncFollow=fk;s.dncLover=fk}else{const r=bfR(fk);if(r)r.alive=true}}}catch(e){console.error(e)}return r0}}
+// 부고의 ‘당신을 고발한 벗’ 줄도 그 이야기로
+for(const k in F63){const D=DNC52[k];if(!D)continue;const f0=D.fol;D.fol=N=>(s&&s.dncLover===k)?F63[k].ob(N):f0(N)}
+// 부고를 보고 게임 화면으로 돌아오면, 사건 창으로 한 번
+async function dnc66Pop(){if(!s||!s.dead||!s.dncLover||s.dncPop||sheetLive)return;const k=s.dncLover,P=F63[k];if(!P)return;s.dncPop=1;try{save()}catch(e){}
+  const N=bN(k);try{rf8BackPill(false)}catch(e){}sheetOpen(P.t,P.fr);try{pzHold=false}catch(e){}$('#sheet').classList.add('after-death');$('#sheet').hidden=false;document.body.classList.add('modal');shText(P.x(N),'q');let i=0;try{i=await shButtons([{l:P.b,s:'',a:''},{l:'부고로 돌아간다',s:'',a:''}])}finally{$('#sheet').classList.remove('after-death');sheetClose()}if(i===1)showEnd();else try{rf8BackPill(true)}catch(e){}}
+{const hb=$('#homeB');if(hb){const h0=hb.onclick;hb.onclick=e=>{const r=h0&&h0(e);setTimeout(()=>{dnc66Pop().catch(x=>console.error(x))},700);return r}}}
 </script>
 </body>
 </html>
