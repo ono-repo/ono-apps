@@ -13848,7 +13848,7 @@ function r65Trim(arr){const n=arr.length;if(n<=3)return arr.map((o,i)=>i);const 
    - 로베스피에르·데물랭은 고발하지 않으므로 해당 없다(고발은 에티엔·루이즈·앙투안·가브리엘만). */
 const F63={
  etienne:{t:'제1조',fr:'l’article premier',b:'명단을 덮는다',cause:'아편 팅크',
-  x:N=>`당신이 단두대에 오르고 사흘 뒤, ${N}의 하숙방 문은 안에서 잠긴 채 열리지 않았다. 문을 부수고 들어간 이웃들이 책상에 엎드린 ${jo(N,'을','를')} 발견했다. 손 옆에는 빈 아편 팅크 병이 굴러다녔다. 책상 위에는 그 혐의자 명단의 사본이 펼쳐져 있었다. 당신 이름 위에만 펜으로 몇 번이고 줄이 그어져, 종이가 찢어질 지경이었다. 그 아래 떨리는 글씨로 한 줄이 덧붙어 있었다. ‘제1조, 이 사람은 평생 내 옆에 있을 것. 고칠 수 없음. ─ 지키지 못함.’ 구 감시위원회는 사인을 ‘병사’라고 적었다.`,
+  x:N=>`당신이 단두대에 오르고 사흘 뒤, ${N}의 하숙방 문은 안에서 잠긴 채 열리지 않았다. 문을 부수고 들어간 이웃들이 책상에 엎드린 ${jo(N,'을','를')} 발견했다. 손 옆에는 빈 아편 팅크 병이 굴러다녔다. 책상 위에는 그 혐의자 명단의 사본이 펼쳐져 있었다. 당신 이름 위에만 펜으로 몇 번이고 줄이 그어져, 종이가 찢어질 지경이었다. 그 아래 떨리는 글씨로 한 줄이 덧붙어 있었다. ${s&&s.dncLove===false?'‘우리가 같이 쓰자던 법이었는데. 너한테만은 쓰지 말았어야 했어.’':'‘제1조, 이 사람은 평생 내 옆에 있을 것. 고칠 수 없음. ─ 지키지 못함.’'} 구 감시위원회는 사인을 ‘병사’라고 적었다.`,
   ob:N=>`당신이 처형되고 사흘 뒤, ${jo(N,'은','는')} 하숙방에서 아편 팅크를 마셨다. 책상 위 명단에는 당신 이름 위에만 줄이 그어져 있었다.`,
   fate:'당신이 처형되고 사흘 뒤, 하숙방에서 아편 팅크를 마시고 세상을 떠났다'},
  louise:{t:'꺼진 화덕',fr:'le four éteint',b:'석판을 내려놓는다',cause:'숯불 연기',
@@ -13863,16 +13863,24 @@ const F63={
   x:N=>`당신이 처형되고 이레 뒤, ${jo(N,'은','는')} 가장 좋은 옷을 차려입고 혁명 광장에 나타났다. 분을 바르고, 손목에는 낡은 푸른 리본을 감았다. 그리고 단두대 앞에서 모두가 들으라고 외쳤다. “나는 드 사브리다. 귀족이다. 왕 만세!” 사람들이 ${jo(N,'을','를')} 붙잡았다. 이튿날 혁명재판소는 사형을 선고했다. 수레 위에서 ${jo(bHe('gabriel'),'은','는')} 한 번도 고개를 숙이지 않았다. 집행인이 손목의 리본을 풀려 하자 처음으로 입을 열었다. “그건 두고 가. 내 거야.” 얼음이 깨지던 그날 이후 처음으로, ${jo(N,'은','는')} 달아나지 않았다.`,
   ob:N=>`이레 뒤, ${jo(N,'은','는')} 혁명 광장에서 스스로 귀족이라 외쳐 단두대에 올랐다. 손목에는 푸른 리본이 감겨 있었다. 이번에는 달아나지 않았다.`,
   fate:'당신이 처형되고 이레 뒤, 혁명 광장에서 스스로 귀족이라 외쳐 단두대에 올랐다'}};
-// 처형되는 순간: 고발한 연인은 애도하는 벗들 사이에 서지 않는다
-{const _d66=die;die=function(c){let fk=null;try{if(s&&!s.dead&&['guillotine','drowned'].includes(c)&&s.dncBy&&F63[s.dncBy]){const r=bfR(s.dncBy);if(r&&r.alive&&r.role==='연인'){fk=s.dncBy;r.alive=false}}}catch(e){console.error(e)}
+// 처형되는 순간: 고발한 연인(또는 친밀도 100인 벗)은 애도하는 벗들 사이에 서지 않는다
+{const _d66=die;die=function(c){let fk=null;try{if(s&&!s.dead&&['guillotine','drowned'].includes(c)&&s.dncBy&&F63[s.dncBy]){const r=bfR(s.dncBy);if(r&&r.alive&&(r.role==='연인'||(r.close||0)>=100)){fk=s.dncBy;s.dncLove=r.role==='연인';r.alive=false}}}catch(e){console.error(e)}
   const r0=_d66.apply(this,arguments);
   try{if(fk){if(s&&s.dead){const r=bfR(fk);r.alive=false;r.dead=s.year;r.dc='follow';bfFate(fk,F63[fk].fate);s.dncFollow=fk;s.dncLover=fk}else{const r=bfR(fk);if(r)r.alive=true}}}catch(e){console.error(e)}return r0}}
 // 부고의 ‘당신을 고발한 벗’ 줄도 그 이야기로
 for(const k in F63){const D=DNC52[k];if(!D)continue;const f0=D.fol;D.fol=N=>(s&&s.dncLover===k)?F63[k].ob(N):f0(N)}
 // 부고를 보고 게임 화면으로 돌아오면, 사건 창으로 한 번
 async function dnc66Pop(){if(!s||!s.dead||!s.dncLover||s.dncPop||sheetLive)return;const k=s.dncLover,P=F63[k];if(!P)return;s.dncPop=1;try{save()}catch(e){}
-  const N=bN(k);try{rf8BackPill(false)}catch(e){}sheetOpen(P.t,P.fr);try{pzHold=false}catch(e){}$('#sheet').classList.add('after-death');$('#sheet').hidden=false;document.body.classList.add('modal');shText(P.x(N),'q');try{await new Promise(res=>{const w=el('div','sh-close');w.style.cssText='display:flex;justify-content:center;margin-top:18px';const c=el('button','pill','닫기');c.type='button';c.onclick=()=>res();w.appendChild(c);$('#shB').appendChild(w);c.focus({preventScroll:true})})}finally{$('#sheet').classList.remove('after-death');sheetClose()}try{rf8BackPill(true)}catch(e){}}
+  const N=bN(k);try{rf8BackPill(false)}catch(e){}sheetOpen(k==='etienne'&&s.dncLove===false?'같이 쓰자던 법':P.t,k==='etienne'&&s.dncLove===false?'la loi':P.fr);try{pzHold=false}catch(e){}$('#sheet').classList.add('after-death');$('#sheet').hidden=false;document.body.classList.add('modal');shText(P.x(N),'q');try{await r67Close()}finally{$('#sheet').classList.remove('after-death');sheetClose()}try{rf8BackPill(true)}catch(e){}}
 {const hb=$('#homeB');if(hb){const h0=hb.onclick;hb.onclick=e=>{const r=h0&&h0(e);setTimeout(()=>{dnc66Pop().catch(x=>console.error(x))},700);return r}}}
+
+/* ================= 개편 67: 주인공이 죽은 뒤의 사건 창은 ‘닫기’ 하나 =================
+   죽은 뒤에 뜨는 사건 창은 선택지를 보이지 않고 닫기 단추만 둔다. 벗 장면(bfScene)은 선택지의 효과도 실행하지 않는다. */
+function r67Close(){return new Promise(res=>{try{pzHold=false}catch(e){}const sh=$('#sheet');sh.classList.add('after-death');sh.hidden=false;document.body.classList.add('modal');try{rf8BackPill(false)}catch(e){}
+  const w=el('div','sh-close');w.style.cssText='display:flex;justify-content:center;margin-top:18px';const c=el('button','pill','닫기');c.type='button';c.onclick=()=>{sh.classList.remove('after-death');res()};w.appendChild(c);$('#shB').appendChild(w);c.focus({preventScroll:true})})}
+{const _sb67=shButtons;shButtons=function(opts){if(s&&s.dead)return r67Close().then(()=>0);return _sb67(opts)}}
+{const _bs67=bfScene;bfScene=async function(title,fr,text,opts){if(!(s&&s.dead))return _bs67(title,fr,text,opts);
+  sheetOpen(title,fr);shText(typeof text==='function'?text():text,'q');await r67Close();sheetClose();try{rf8BackPill(true)}catch(e){}return 0}}
 </script>
 </body>
 </html>
