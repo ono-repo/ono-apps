@@ -823,6 +823,7 @@ details.fold>.cgrid{margin-top:8px}
 /* 부고 화면 버튼: 세 개를 같은 폭으로 세로 정렬 */
 #end .end-btns{display:flex;flex-direction:column;align-items:stretch;gap:10px;width:100%;max-width:300px;margin:26px auto 8px}
 .sh61{position:fixed;inset:0;z-index:9999;background:rgba(10,16,13,.82);display:grid;place-items:center;padding:16px;overflow:auto}.sh61-box{max-width:420px;width:100%;text-align:center;color:#EFE4CB}.sh61-box img{width:100%;height:auto;display:block;border:1px solid #D9B166;box-shadow:0 10px 40px rgba(0,0,0,.5)}.sh61-box p{margin:10px 0}.sh61-b{display:flex;gap:10px;justify-content:center}.sh61-b .pill{text-decoration:none}
+#end .sh-close{display:flex;justify-content:center;margin-top:18px}
 #end .end-btns .pill{width:100%;justify-content:center;text-align:center;margin:0}
 #end .will-box{max-width:520px;margin:12px auto 0;display:flex;flex-direction:column;gap:8px}
 #end .will-box textarea{font:inherit;font-size:1rem;line-height:1.6;padding:10px 12px;border:1px solid #D9BC7A;background:rgba(239,229,211,.08);color:#EFE5D3;border-radius:6px;resize:vertical}
@@ -13870,7 +13871,7 @@ const F63={
 for(const k in F63){const D=DNC52[k];if(!D)continue;const f0=D.fol;D.fol=N=>(s&&s.dncLover===k)?F63[k].ob(N):f0(N)}
 // 부고를 보고 게임 화면으로 돌아오면, 사건 창으로 한 번
 async function dnc66Pop(){if(!s||!s.dead||!s.dncLover||s.dncPop||sheetLive)return;const k=s.dncLover,P=F63[k];if(!P)return;s.dncPop=1;try{save()}catch(e){}
-  const N=bN(k);try{rf8BackPill(false)}catch(e){}sheetOpen(P.t,P.fr);try{pzHold=false}catch(e){}$('#sheet').classList.add('after-death');$('#sheet').hidden=false;document.body.classList.add('modal');shText(P.x(N),'q');let i=0;try{i=await shButtons([{l:P.b,s:'',a:''},{l:'부고로 돌아간다',s:'',a:''}])}finally{$('#sheet').classList.remove('after-death');sheetClose()}if(i===1)showEnd();else try{rf8BackPill(true)}catch(e){}}
+  const N=bN(k);try{rf8BackPill(false)}catch(e){}sheetOpen(P.t,P.fr);try{pzHold=false}catch(e){}$('#sheet').classList.add('after-death');$('#sheet').hidden=false;document.body.classList.add('modal');shText(P.x(N),'q');try{await new Promise(res=>{const w=el('div','sh-close');w.style.cssText='display:flex;justify-content:center;margin-top:18px';const c=el('button','pill','닫기');c.type='button';c.onclick=()=>res();w.appendChild(c);$('#shB').appendChild(w);c.focus({preventScroll:true})})}finally{$('#sheet').classList.remove('after-death');sheetClose()}try{rf8BackPill(true)}catch(e){}}
 {const hb=$('#homeB');if(hb){const h0=hb.onclick;hb.onclick=e=>{const r=h0&&h0(e);setTimeout(()=>{dnc66Pop().catch(x=>console.error(x))},700);return r}}}
 </script>
 </body>
