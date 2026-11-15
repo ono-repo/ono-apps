@@ -13930,6 +13930,45 @@ function r67Close(){return new Promise(res=>{try{pzHold=false}catch(e){}const sh
   if(T()>=1794.5){s.cond='normal';s.dncJail=0;s.sus=Math.max(0,(s.sus||0)-25);say('테르미도르 이후 혐의자들이 풀려났다. 재판에 한 번도 불려 가지 않은 채 감옥 문을 나섰다.'+fx({hp:-4}),'big')}
   else fx({hp:-2})}}
 {const _r69=roll;roll=async function(mod,o={}){if(s&&s.dncForce==='die'&&o&&o.label==='판결'){const v=ri(1,2);L(`판결 — 주사위 ${v} → ${v} ${RES[v]} (오랜 벗의 고발)`,'dice',{f:[v],v});return {f:[v],v,m:0}}return _r69.apply(this,arguments)}}
+
+/* ================= 개편 70: 루이즈 · 쥘 · 막시밀리앙의 개인 장면 (각 2) =================
+   막시밀리앙 장면은 실제 역사에 기댄다: 1784년 메스 왕립 아카데미 현상 논문(범죄자 가족에게 미치는 치욕) 2등 수상,
+   1791년 9월 30일 제헌의회 해산 날 군중이 로베스피에르와 페티옹에게 떡갈나무 관을 씌운 일. */
+const PX70=[
+ {id:'px_lo_oven',when:()=>fx62All(['louise'])&&s.age>=16&&s.age<=22&&T()<1789,run:async()=>{const Lo=bN('louise');
+  await bfScene('혼자 지키는 화덕','la fournée',`${Lo}의 아버지가 열병으로 누웠다. 새벽 첫 빵은 ${bI('louise')} 혼자 구워야 한다. 자정, 반죽 통 앞에서 ${bU('louise')} 팔을 걷어붙이고 웃는다. “한 판이라도 태우면 동네가 굶어. 거들 거야, 구경할 거야?”`,[
+   {l:'같이 반죽을 친다',a:'family',f:()=>{bfRel('louise',{close:6,trust:4});bfMem('m_px_lo_oven','louise',`${Lo}의 아버지가 앓던 밤, 같이 반죽을 쳐서 새벽 첫 빵을 구웠다.`,{tone:'기쁨',place:'빵집 화덕 앞',their:'그 사람 반죽은 엉망이었다. 그래도 그날 빵이 제일 잘 부풀었다.'});say(`당신 반죽은 엉망이었다. ${bU('louise')} 몰래 다시 치대면서도 끝까지 칭찬했다. 새벽 빵은 한 판도 타지 않았다.`+fx({hap:3,str:1}))}},
+   {l:'밤새 장작을 나르고 불을 본다',a:'safe',f:()=>{bfRel('louise',{close:4,trust:5});bfMem('m_px_lo_oven','louise',`${Lo}의 아버지가 앓던 밤, 밤새 장작을 나르며 화덕 불을 지켰다.`,{tone:'위로',place:'빵집 화덕 앞',their:'불은 그 사람이 지켰다. 나는 빵만 보면 됐다. 처음으로 혼자가 아니었다.'});say(`화덕 불은 한 번도 꺼지지 않았다. 동틀 무렵 ${bU('louise')} 첫 빵의 꽁다리를 떼어 당신 입에 넣어 주었다.`+fx({hap:2}))}},
+   {l:'새벽에 빵 배달을 맡는다',a:'social',f:()=>{bfRel('louise',{close:4});bfMem('m_px_lo_oven','louise',`${Lo}의 아버지가 앓던 새벽, 갓 구운 빵을 골목마다 배달했다.`,{tone:'기쁨',their:'그 사람이 빵을 날라 준 덕에 아무도 빵이 늦었다고 하지 않았다.'});say('빵 바구니를 메고 골목을 돌았다. 문간마다 “루이즈네 빵이네.” 하는 소리가 들렸다. 아무도 늦었다고 하지 않았다.'+fx({soc:1,rloc:1}))}}])}},
+ {id:'px_lo_germinal',pin:1,when:()=>fx62All(['louise'])&&!child()&&inParis()&&bfW(1795.2,1795.42),run:async()=>{const Lo=bN('louise');
+  await bfScene('빵과 1793년 헌법','le 12 germinal',`1795년 봄, 공화력 3년의 굶주림. 빵 배급은 하루 몇 온스로 줄었다. 제르미날 12일, 여자들이 국민공회로 몰려간다. 모자에 “빵과 1793년 헌법”이라고 쓴 종이를 꽂은 ${bI('louise')} 앞줄에 서서 당신을 부른다.`,[
+   {l:'함께 국민공회까지 행진한다',a:'radical bold',f:()=>{bfRel('louise',{close:6,trust:4});bfMem('m_px_lo_germinal','louise',`1795년 제르미날 12일, ${bW('louise')} “빵과 1793년 헌법”을 외치며 국민공회까지 행진했다.`,{tone:'희망',place:'국민공회 앞',their:'그 사람이 옆에 있어서 목이 쉬도록 외칠 수 있었다.'});say('의사당 안까지 밀려 들어갔다. 의원들은 다짐만 하고 군대를 불렀다. 그래도 그날 루이즈는 처음으로 목이 쉬도록 외쳤다.'+fx({pol:5,sus:5}))}},
+   {l:'행진 대신 빵집에서 빵을 나눈다',a:'family',f:()=>{bfRel('louise',{close:4,resp:4});bfMem('m_px_lo_germinal','louise',`1795년 제르미날 12일, 행진하는 ${Lo} 대신 빵집에 남아 줄 선 아이들에게 빵을 나눴다.`,{tone:'위로',their:'외치는 건 내가, 먹이는 건 그 사람이 했다. 둘 다 필요했다.'});say('남은 밀가루로 작은 빵 서른 개를 구웠다. 저녁에 돌아온 루이즈가 빈 진열대를 보고 웃었다.'+fx({rloc:2,money:-5}))}},
+   {l:'군대가 온다며 말린다',a:'safe',f:()=>{bfRel('louise',{close:-3,resp:3});bfMem('m_px_lo_germinal','louise',`1795년 제르미날 12일, 국민공회로 가려는 ${jo(Lo,'을','를')} 군대가 온다며 말렸다.`,{tone:'두려움',their:'그 사람 말이 맞았다. 다음 달 프레리알에 다 끝났다. 그래도 그날은 가고 싶었다.'});say(`${bU('louise')} 모자의 종이를 떼어 주머니에 넣었다. “다음엔 안 말려도 돼. 그땐 너도 같이 갈 테니까.”`)}}])}},
+ {id:'px_ju_bell',when:()=>fx62All(['jules'])&&s.age>=12&&s.age<=17&&T()<1789,run:async()=>{const J=bN('jules');
+  await bfScene('처음 치는 큰 종','le bourdon',`부활절 아침, 종지기 아버지가 허리를 다쳤다. 큰 종은 ${bI('jules')} 쳐야 한다. 종탑 꼭대기, 굵은 밧줄을 쥔 손이 떨린다. “하, 한 번 틀리면 온 동네가 들어.” ${bU('jules')} 당신을 돌아본다.`,[
+   {l:'밧줄을 같이 쥔다',a:'family',f:()=>{bfRel('jules',{close:6,trust:5});bfMem('m_px_ju_bell','jules',`어느 부활절 아침, ${bW('jules')} 큰 종 밧줄을 같이 쥐고 첫 종을 울렸다.`,{tone:'기쁨',place:'종탑',their:'그 사람 손이 내 손 위에 있었다. 종이 한 번도 엇나가지 않았다.'});say('둘이 매달리자 종이 무겁게 울렸다. 박자가 한 번도 엇나가지 않았다. 아래 광장에서 사람들이 모자를 벗었다.'+fx({hap:3,faith:1}))}},
+   {l:'“노래하듯이 쳐 봐.”라고 말해 준다',a:'social',f:()=>{bfRel('jules',{close:5,resp:4});bfMem('m_px_ju_bell','jules',`어느 부활절 아침, 큰 종 앞에서 떠는 ${J}에게 노래하듯이 쳐 보라고 했다.`,{tone:'희망',their:'노래할 때는 안 더듬는다. 종도 그랬다.'});say(`${bU('jules')} 숨을 고르고 작게 흥얼거리며 밧줄을 당겼다. 종소리가 노래처럼 이어졌다. 내려와서 ${bU('jules')} 한 번도 더듬지 않고 말했다. “됐다.”`+fx({hap:2}))}},
+   {l:'아래 광장에서 지켜본다',a:'safe',f:()=>{bfRel('jules',{close:3});bfMem('m_px_ju_bell','jules',`어느 부활절 아침, ${J}가 처음 친 큰 종소리를 광장에서 들었다.`.replace(`${J}가`,jo(J,'이','가')),{tone:'기쁨',their:'광장에서 손을 흔드는 그 사람이 보였다. 그래서 끝까지 쳤다.'});say('첫 종은 반 박자 늦었다. 둘째부터는 고르게 울렸다. 종탑 창에서 쥘이 손을 흔들었다.')}}])}},
+ {id:'px_ju_reopen',pin:1,when:()=>fx62All(['jules'])&&!child()&&bfW(1795.15,1795.6),run:async()=>{const J=bN('jules');
+  await bfScene('다시 연 문','la liberté des cultes',`1795년 2월, 국민공회가 예배의 자유를 다시 허락했다. 종은 녹아 없어졌고 제대는 부서졌다. 반쯤 무너진 예배당에서 ${bI('jules')} 처음으로 숨지 않고 미사를 드린다. 신자는 열한 명. ${bU('jules')} 입구의 당신을 보고 잠깐 멈춘다.`,[
+   {l:'맨 앞자리에 앉는다',a:'pious',f:()=>{bfRel('jules',{close:5,trust:4});bfMem('m_px_ju_reopen','jules',`1795년 봄, 다시 문을 연 예배당에서 ${J}의 미사 맨 앞자리에 앉았다.`,{tone:'위로',their:'숨지 않고 드린 첫 미사였다. 맨 앞에 그 사람이 있었다.'});say(`${bU('jules')} 미사 내내 한 번도 더듬지 않았다. 끝나고 나서야 손이 떨렸다.`+fx({faith:3}))}},
+   {l:'부서진 제대를 같이 고친다',a:'family',f:()=>{bfRel('jules',{close:5,resp:3});bfMem('m_px_ju_reopen','jules',`1795년 봄, 다시 문을 연 예배당에서 ${bW('jules')} 부서진 제대를 고쳤다.`,{tone:'희망',their:'돌 하나를 같이 들었다. 그게 그날의 기도였다.'});say('무너진 제대 돌을 둘이서 다시 쌓았다. 반듯하지는 않았다. 쥘은 그게 더 좋다고 했다.'+fx({str:1,faith:1}))}},
+   {l:'입구에 서서 망을 봐 준다',a:'safe',f:()=>{bfRel('jules',{trust:4});bfMem('m_px_ju_reopen','jules',`1795년 봄, ${J}의 첫 미사 때 예배당 입구에서 망을 봐 주었다.`,{tone:'두려움',their:'이제 망을 볼 필요가 없었다. 그래도 그 사람이 서 있어서 마음이 놓였다.'});say('이제 망을 볼 필요는 없었다. 그래도 미사가 끝날 때까지 입구를 떠나지 않았다.')}}])}},
+ {id:'px_rb_metz',pin:1,when:()=>typeof rfRDon==='function'&&rfRDon()&&fx62All(['robespierre'])&&bfW(1784.55,1785.2),run:async()=>{const M=bN('robespierre');
+  await bfScene('메스 아카데미의 메달','le prix de Metz',`아라스에서 소포가 왔다. 메스 왕립 아카데미 현상 논문에서 ${bI('robespierre')} 2등 상을 받았다. 범죄자의 가족까지 치욕을 함께 지는 관습을 고발한 글이다. 인쇄된 논문 첫 장에 짧은 쪽지가 끼워져 있다. “1등이 아니라 아쉽소. 자네 의견을 듣고 싶소.”`,[
+   {l:'끝까지 읽고 긴 답장을 쓴다',a:'study',f:()=>{bfRel('robespierre',{close:5,resp:5});bfMem('m_px_rb_metz','robespierre',`1784년, ${M}가 메스 아카데미에서 상을 받은 논문을 끝까지 읽고 긴 답장을 썼다.`.replace(`${M}가`,jo(M,'이','가')),{tone:'희망',their:'자네 답장은 심사평보다 길었소. 그리고 더 정확했소.'});say('아버지의 죄로 자식이 결혼도 못 하는 일을 다룬 대목에 밑줄을 그어 보냈다. 한 달 뒤 답장이 왔다. “자네 밑줄이 심사평보다 정확하오.”'+fx({edu:2}))}},
+   {l:'“2등도 대단해. 축하해.”라고만 쓴다',a:'social',f:()=>{bfRel('robespierre',{close:3});bfMem('m_px_rb_metz','robespierre',`1784년, ${M}의 메스 아카데미 수상을 축하하는 짧은 편지를 보냈다.`,{tone:'기쁨',their:'축하는 고마웠소. 나는 칭찬보다 반론을 기다렸지만.'});say('답장은 짧았다. “고맙소. 다음에는 1등을 하겠소.” 그는 정말로 그렇게 될 때까지 쓰는 사람이었다.')}},
+   {l:'“1등은 누가 했는데?”라고 묻는다',a:'bold',f:()=>{bfRel('robespierre',{close:2,riv:3});bfMem('m_px_rb_metz','robespierre',`1784년, ${M}에게 메스 아카데미 1등이 누구였느냐고 물었다.`,{tone:'의문',their:'자네는 늘 아픈 데를 묻소. 그래서 자네 편지를 기다리오.'});say('답장에 이름 하나가 적혀 있었다. 라크르텔. 파리의 변호사였다. 그 아래 한 줄. “그의 문장이 나보다 낫소. 아직은.”')}}])}},
+ {id:'px_rb_crown',pin:1,when:()=>typeof rfRDon==='function'&&rfRDon()&&fx62All(['robespierre'])&&!child()&&inParis()&&bfW(1791.66,1791.84),run:async()=>{const M=bN('robespierre');
+  await bfScene('떡갈나무 관','la couronne de chêne',`1791년 9월 30일, 제헌의회가 문을 닫는 날. 의사당을 나서는 ${M}와 페티옹에게 군중이 떡갈나무 잎으로 엮은 관을 씌운다. “청렴한 자 만세!” 사람들이 마차에서 말을 풀어 직접 끌려고 한다. 인파에 떠밀린 당신과 ${M}의 눈이 마주친다.`.replace(`${M}와`,jo(M,'과','와')),[
+   {l:'그 옆으로 가서 마차를 끌지 못하게 막는다',a:'bold',f:()=>{bfRel('robespierre',{close:5,trust:5});bfMem('m_px_rb_crown','robespierre',`1791년 9월 30일, 군중이 ${M}의 마차를 끌려 할 때 옆으로 가서 막았다.`,{tone:'두려움',place:'튈르리 앞',their:'사람이 말을 대신하면 안 되오. 자네는 그걸 알았소.'});say(`${bU('robespierre')} 낮게 말했다. “사람이 말 노릇을 하면 안 되오.” 둘은 군중을 헤치고 걸어서 생토노레 거리로 돌아갔다.`+fx({cour:1}))}},
+   {l:'군중과 함께 “청렴한 자 만세!”를 외친다',a:'radical social',f:()=>{bfRel('robespierre',{close:3,resp:3});bfMem('m_px_rb_crown','robespierre',`1791년 9월 30일, 떡갈나무 관을 쓴 ${M}에게 군중과 함께 “청렴한 자 만세!”를 외쳤다.`,{tone:'희망',their:'그날 자네 목소리도 들렸소. 그 이름이 무거워진 건 나중 일이오.'});say('함성이 튈르리 정원까지 울렸다. 관을 쓴 그는 웃지 않았다. 그 이름이 얼마나 무거운지 아는 얼굴이었다.'+fx({pol:4}))}},
+   {l:'멀찍이서 그 얼굴을 지켜본다',a:'safe',f:()=>{bfRel('robespierre',{close:2});bfMem('m_px_rb_crown','robespierre',`1791년 9월 30일, 떡갈나무 관을 쓴 ${jo(M,'을','를')} 멀찍이서 지켜보았다.`,{tone:'의문',their:'멀리 자네가 보였소. 관보다 그 얼굴이 기억에 남소.'});say('관을 쓴 그는 루이르그랑의 비 오던 날처럼 꼿꼿했다. 박수 속에서 혼자만 웃지 않았다.')}}])}}];
+async function px70Tick(){if(!s||s.dead||sheetLive||!bfRev())return;s.px70=s.px70||{d:{},nx:0};const wait=MI()<s.px70.nx;
+  for(const x of PX70){if(s.px70.d[x.id]||(wait&&!x.pin))continue;let ok=false;try{ok=!!x.when()}catch(e){}if(!ok)continue;
+    s.px70.d[x.id]=s.year;s.px70.nx=MI()+4;try{await x.run()}catch(e){console.error('px70',x.id,e);if(sheetLive)sheetClose()}return}}
+{const _rd70=rfDaily;rfDaily=async function(){await _rd70();if(!s||s.dead)return;try{if(R()<.3||PX70.some(x=>x.pin&&!(s.px70&&s.px70.d[x.id])&&(()=>{try{return x.when()}catch(e){return false}})()))await px70Tick()}catch(e){console.error(e)}}}
 </script>
 </body>
 </html>
