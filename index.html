@@ -9931,16 +9931,16 @@ cf('etienne','cf_oath',()=>rf3Win(1791,1792.6)&&rf3Two('etienne','jules'),async(
      else{bfRel('etienne',{close:-3});bfRel('jules',{close:-3});say(`“너는 늘 그렇게 가운데 서 있지.” ${bI('etienne')} 쏘아붙였다. ${bU('jules')} 당신 눈을 피했다. 양쪽 모두에게 당신은 아무 편도 아닌 사람이 되었다.`)}}}])});
 
 cf('gabriel','cf_varennes',()=>rf3Win(1791.45,1792.2)&&rf3Two('gabriel','etienne'),async()=>{const Ga=bN('gabriel'),E=bN('etienne');
-  await bfScene('바렌 뒤의 카페','après Varennes',`왕이 바렌에서 붙잡혀 온 뒤, 팔레루아얄의 카페. ${bU('gabriel')} 말한다. “왕은 납치당한 거야.” ${bI('etienne')} 컵을 쾅 내려놓는다. “왕을 감싸는 놈도 배신자야.” ${bU('gabriel')} 장갑을 벗어 쥔다. 결투 신청이다.`,[
-   {l:'에티엔 편을 들어 “왕은 국민을 버렸어.”라고 말한다',a:'radical',f:()=>{bfMem('m_cf_var',['gabriel','etienne'],`바렌 사건 뒤 팔레루아얄 카페에서 ${bW('gabriel')} ${jo(E,'이','가')} 부딪쳤다. 당신은 왕이 국민을 버렸다고 말했다.`,{tone:'씁쓸함',place:'팔레루아얄',their:'그 사람마저 저쪽이었다. 나는 장갑을 다시 끼었다. 손이 떨려서 단추를 잘못 채웠다.'});
+  await bfScene('바렌 뒤의 카페','après Varennes',`왕이 바렌에서 붙잡혀 온 뒤, 팔레루아얄의 카페. ${bU('gabriel')} 말한다. “왕은 납치당한 거야.” ${bI('etienne')} 컵을 쾅 내려놓는다. “왕을 감싸는 놈도 배신자야.” ${bU('gabriel')} ${fW('gabriel','부채를 탁 접어 탁자를 내리친다. 절교 선언이다.','장갑을 벗어 쥔다. 결투 신청이다.')}`,[
+   {l:`${E} 편을 들어 “왕은 국민을 버렸어.”라고 말한다`,a:'radical',f:()=>{bfMem('m_cf_var',['gabriel','etienne'],`바렌 사건 뒤 팔레루아얄 카페에서 ${bW('gabriel')} ${jo(E,'이','가')} 부딪쳤다. 당신은 왕이 국민을 버렸다고 말했다.`,{tone:'씁쓸함',place:'팔레루아얄',their:fW('gabriel','그 사람마저 저쪽이었다. 나는 부채를 다시 폈다. 손이 떨려서 살이 하나 부러졌다.','그 사람마저 저쪽이었다. 나는 장갑을 다시 끼었다. 손이 떨려서 단추를 잘못 채웠다.')});
      bfRel('etienne',{close:6});bfRel('gabriel',{close:-8,riv:6});s.pol=clamp(s.pol+5,-100,100);
-     say(`${bU('gabriel')} 장갑을 천천히 다시 끼었다. “알았어. 너희는 너희 공화국이나 해.” ${bHe('gabriel')}가 나간 뒤 탁자에 스케치북이 남아 있었다. ${bW('etienne')} 당신이 우스꽝스럽게 그려져 있었는데, 마지막 장의 당신만은 다정했다.`+fx({rpeople:1}))}},
+     say(`${bU('gabriel')} ${fW('gabriel','부채를 천천히 다시 펼쳤다.','장갑을 천천히 다시 끼었다.')} “알았어. 너희는 너희 공화국이나 해.” ${bHe('gabriel')}가 나간 뒤 탁자에 스케치북이 남아 있었다. ${bW('etienne')} 당신이 우스꽝스럽게 그려져 있었는데, 마지막 장의 당신만은 다정했다.`+fx({rpeople:1}))}},
    {l:'가브리엘 편을 들어 “왕을 심판할 권리는 아무에게도 없어.”라고 말한다',a:'royal',f:()=>{bfMem('m_cf_var',['gabriel','etienne'],`바렌 사건 뒤 팔레루아얄 카페에서 ${bW('gabriel')} ${jo(E,'이','가')} 부딪쳤다. 당신은 가브리엘 편을 들었다.`,{tone:'두려움',place:'팔레루아얄',their:'그 사람이 내 편을 들었다. 카페 안의 누구도 그러지 않았는데.'});
      bfRel('gabriel',{close:8,trust:6});bfRel('etienne',{close:-8,riv:8});s.pol=clamp(s.pol-5,-100,100);
-     say(`카페 안이 조용해졌다. ${bI('etienne')} 의자를 밀치고 일어섰다. “기억해 둘게.” 문이 쾅 닫혔다. ${bU('gabriel')} 장갑을 탁자에 내려놓더니 웃었다. 그런데 그 웃음이 끝나기도 전에 ${bHe('gabriel')}는 창밖을 내다보며 낮게 말했다. “저 녀석, 정말 기억해 둘 거야.”`+fx({relite:2,sus:2}))}},
-   {l:'장갑을 빼앗아 들고 “결투는 내가 대신 받지.” 하고 농담한다',a:'social bold',f:()=>{const ok=R()<.5+s.st.soc/300;bfMem('m_cf_var',['gabriel','etienne'],`바렌 사건 뒤 팔레루아얄 카페에서 ${bW('gabriel')} ${jo(E,'이','가')} 부딪쳤다. 당신은 가브리엘의 장갑을 빼앗아 들고 농담을 했다.`,{tone:ok?'기쁨':'씁쓸함',place:'팔레루아얄'});
+     say(`카페 안이 조용해졌다. ${bI('etienne')} 의자를 밀치고 일어섰다. “기억해 둘게.” 문이 쾅 닫혔다. ${bU('gabriel')} ${fW('gabriel','부채를','장갑을')} 탁자에 내려놓더니 웃었다. 그런데 그 웃음이 끝나기도 전에 ${bHe('gabriel')}는 창밖을 내다보며 낮게 말했다. “${fW('gabriel','저 애','저 녀석')}, 정말 기억해 둘 거야.”`+fx({relite:2,sus:2}))}},
+   {l:fW('gabriel','부채를 빼앗아 들고 “절교는 내가 대신 받지.” 하고 농담한다','장갑을 빼앗아 들고 “결투는 내가 대신 받지.” 하고 농담한다'),a:'social bold',f:()=>{const ok=R()<.5+s.st.soc/300;bfMem('m_cf_var',['gabriel','etienne'],`바렌 사건 뒤 팔레루아얄 카페에서 ${bW('gabriel')} ${jo(E,'이','가')} 부딪쳤다. 당신은 가브리엘의 ${fW('gabriel','부채를','장갑을')} 빼앗아 들고 농담을 했다.`,{tone:ok?'기쁨':'씁쓸함',place:'팔레루아얄'});
      if(ok){bfRel('gabriel',{close:4});bfRel('etienne',{close:4});say(`옆 탁자에서 누군가 웃음을 터뜨렸다. ${bU('gabriel')} 어이없다는 듯 당신을 보더니 결국 따라 웃었다. ${bU('etienne')} 웃지 않았지만, 다시 앉았다. 그날 셋은 밤늦게까지 같은 탁자에 앉아 있었다. 정치 이야기는 한 마디도 하지 않았다.`+fx({soc:2}))}
-     else{bfRel('gabriel',{close:-3});bfRel('etienne',{close:-3});say(`아무도 웃지 않았다. ${bU('gabriel')} 장갑을 낚아채 갔고, ${bU('etienne')} 계산도 하지 않고 나가 버렸다. 당신 혼자 세 사람 몫의 커피값을 냈다.`+fx({money:-3}))}}}])});
+     else{bfRel('gabriel',{close:-3});bfRel('etienne',{close:-3});say(`아무도 웃지 않았다. ${bU('gabriel')} ${fW('gabriel','부채를','장갑을')} 낚아채 갔고, ${bU('etienne')} 계산도 하지 않고 나가 버렸다. 당신 혼자 세 사람 몫의 커피값을 냈다.`+fx({money:-3}))}}}])});
 
 cf('louise','cf_sept',()=>rf3Win(1792.7,1793.3)&&rf3Two('louise','jules'),async()=>{const Lo=bN('louise'),J=bN('jules');
   await bfScene('9월의 저녁','après Septembre',`9월 학살 뒤, ${bN('louise')}의 빵집 뒷방. ${bU('louise')} 말한다. “감옥의 귀족이랑 신부들이 적군에게 문을 열어 주려 했대.” ${bU('jules')} 수프 그릇을 내려놓는다. 죽은 사제 가운데 그의 스승이 있었다. “그분은 기도만… 했어.”`,[
@@ -11592,7 +11592,7 @@ async function r17Meet(k,d){const N=bN(k),r=bfR(k),hard=(r.hate||0)>=30;d.done=s
   if(k==='gabriel'){await bfScene('회랑의 재회','les galeries',`팔레루아얄 회랑에서 ${jo(N,'을','를')} 마주쳤다. 감옥에서 풀려난 뒤로 처음 보는 얼굴이다. 옷은 낡았지만 깃만은 여전히 빳빳하다. ${jo(N,'이','가')} 먼저 웃는다. 예전의 웃음이 아니다. “오랜만이야. 내 다락방 주소, 아직 기억해?”`,[
      sorry(`“사과는 무대 뒤에서 연습하고 와. 지금 얼굴로는 안 믿겨.” 그러다 ${jo(N,'은','는')} 당신 옆에 앉았다. “…거기서 깨달은 게 있어. 다들 겁쟁이였어. 간수도, 판사도, 너도, 나도. 그걸 알고 나니까 좀 덜 미워지더라.”`,{hate:-15,trust:3,close:5}),
      d.how==='attic'&&R65S({l:'그날 계단참에서 주운 거울 조각을 내민다',a:'family',f:()=>{bfRel(k,{hate:-25,close:8,trust:5});bfMem('m17_mirror',k,`풀려난 ${N}에게 다락방 계단참에서 주웠던 거울 조각을 내밀었다.`,{tone:'위로',obj:'거울 조각',their:'그 사람이 그 조각을 가지고 있었다. 다시 그 사람 손에 쥐여 주었다. 볼 때마다 생각하라고. 나도 그럴 테니까.'});say(`${jo(N,'은','는')} 거울 조각을 한참 들여다보았다. “여기 비친 얼굴이 내 건지 네 건지 모르겠다.” 그리고 그것을 당신 손에 다시 쥐여 주었다. “네가 가져. 볼 때마다 생각하라고.”`+fx({hap:2}))}}),
-     just(`“그래, 공화국. 나도 들었어, 그 말. 감옥 벽마다 적혀 있더라.” ${jo(N,'은','는')} 넥타이를 고쳐 매고 일어섰다.`,true),cold]);return}
+     just(`“그래, 공화국. 나도 들었어, 그 말. 감옥 벽마다 적혀 있더라.” ${jo(N,'은','는')} ${fW('gabriel','숄을 고쳐 두르고','넥타이를 고쳐 매고')} 일어섰다.`,true),cold]);return}
   if(k==='etienne'){await bfScene('계단 위의 사람','sur les marches',`사면으로 풀려난 ${jo(N,'이','가')} 라탱 구역 셋집 계단에 앉아 있다. 띠도, 붉은 모표도 없다. 그가 웃는다. “네가 내 이름을 댔다며. 괜찮아. 나도 명단을 들었어. 같은 일을 다른 해에 했을 뿐이지.”`,[
      sorry(`“사과하지 마. 네가 사과하면 내 명단도 사과해야 하잖아. 그건 아직 못 하겠어.” 그래도 ${jo(N,'은','는')} 손을 내밀었다. 그 손이 생각보다 따뜻했다.`),
      {l:'『텔레마코스의 모험』을 내민다',a:'study family',f:()=>{bfRel(k,{hate:-25,close:8,trust:5});bfMem('m17_tel',k,`풀려난 ${N}에게 『텔레마코스의 모험』을 내밀었다.`,{tone:'그리움',obj:'『텔레마코스의 모험』',their:'그 책이었다. 좋은 왕은 백성을 위해 있다는 그 구절. 우리 둘 다 그걸 잊고 살았다.'});say(`${jo(N,'은','는')} 책장을 넘기다 한 구절에서 멈췄다. 좋은 왕은 백성을 위해 있다. “우리 둘 다 이 구절을 잊었었네. 왕을 없애고 나서야.” ${jo(N,'은','는')} 소리 내어 웃었다. 오랜만에 듣는 진짜 웃음이었다.`+fx({hap:3}))}},
@@ -11904,10 +11904,10 @@ r21('gabriel','r21_ga',1800.2,1802.9,async r=>{const N=bN('gabriel'),Nu=jo(N,'�
   if(m==='guilt')return r21Guilt('gabriel','통령 정부의 파리.');
   if(m==='cold')return r21Cold('gabriel','살롱의 소파','le salon',`통령 정부의 살롱. ${Ni} 맞은편 소파에서 부채를 접었다 폈다 한다. 몇 해 동안 서로 모른 척해 온 사이다. 사람들이 빠져나가자 ${Nu} 말한다. “우리, 언제까지 이럴 거야?”`,
     `${Nu} 부채를 접어 당신 손에 쥐여 주었다. 손잡이에 푸른 리본이 묶여 있었다. “오늘까지만 하자.”`,`“네가 먼저 시작했잖아.” ${Nu} 부채를 탁 소리 나게 펼치고 일어섰다. 향수 냄새만 남았다.`);
-  await bfScene('튈르리의 연못','le bassin',`통령 정부의 파리. 튈르리 정원 연못가에서 ${Ni} 넥타이를 고쳐 매고 있다. 어릴 때 얼음이 깨지던 그 연못이다. “그날 내가 달아났잖아. 평생 그날을 갚으며 살았어.”`,[
+  await bfScene('튈르리의 연못','le bassin',`통령 정부의 파리. 튈르리 정원 연못가에서 ${Ni} ${fW('gabriel','숄을 고쳐 두르고','넥타이를 고쳐 매고')} 있다. 어릴 때 얼음이 깨지던 그 연못이다. “그날 내가 달아났잖아. 평생 그날을 갚으며 살았어.”`,[
    {l:'“너는 이미 다 갚았어.”',a:'family',f:()=>{bfRel('gabriel',{close:6,trust:4});r21Set('gabriel','recall');r21Mem('gabriel',`통령 정부 시절, 튈르리 정원에서 ${N}에게 이미 다 갚았다고 말해 주었다.`,'위로','그 사람이 다 갚았다고 했다. 그 말을 평생 기다렸다.');say(bfFl('gabriel','hid')?`“다락방에 숨겨 준 사람들, 그걸로 충분해.” ${Nu} 아무도 보지 않는 곳에서 소리 내어 웃었다.`:`${Nu} 고개를 저었다가 결국 웃었다. “네가 그렇다면 그런 거지.”`)}},
    {l:'“그날 나도 무서웠어.”',a:'safe',f:()=>{bfRel('gabriel',{close:5,trust:5});r21Set('gabriel','recall');r21Mem('gabriel',`통령 정부 시절, 튈르리 정원에서 ${N}${jo(N,'과','와').slice(-1)} 얼음이 깨지던 날을 처음부터 끝까지 이야기했다.`,'그리움');say(`${Nu} 놀란 얼굴로 당신을 보았다. 둘은 그날 일을 처음으로 처음부터 끝까지 이야기했다. 물 위로 오리가 지나갔다.`+fx({hap:1}))}},
-   {l:'“너는 여전히 겉멋만 들었네.”',a:'social',f:()=>{bfRel('gabriel',{close:4});r21Set('gabriel','recall');say(`${Nu} 넥타이를 풀어 당신 목에 걸어 주었다. “그럼 이제 네가 겉멋 들어.” 둘은 정원 한복판에서 소리 내어 웃었다.`)}}])});
+   {l:'“너는 여전히 겉멋만 들었네.”',a:'social',f:()=>{bfRel('gabriel',{close:4});r21Set('gabriel','recall');say(`${Nu} ${fW('gabriel','숄을 풀어 당신 어깨에 둘러 주었다.','넥타이를 풀어 당신 목에 걸어 주었다.')} “그럼 이제 네가 겉멋 들어.” 둘은 정원 한복판에서 소리 내어 웃었다.`)}}])});
 // 쥘: 콩코르다, 다시 울리는 종(1801~03)
 r21('jules','r21_ju',1802.3,1803.9,async r=>{const N=bN('jules'),Nu=jo(N,'은','는'),Ni=jo(N,'이','가');const ev=T()>=1802.29?'1802년 부활절. 콩코르다가 공포되었다.':'콩코르다가 맺어졌다는 소식이 돈다. 곧 성당 문이 다시 열린다.';
   if(!r.alive){await bfScene('새 종','la cloche neuve',`${ev} ${bfPar()}에 새 종이 걸렸다. 옛 종은 혁명 때 녹여 대포가 되었다. 종지기 자리엔 낯선 소년이 서 있다. 성당 뒤뜰 약초밭은 쐐기풀에 덮였다. ${Ni} 떠난 지 ${r21Gone(r)}.`,[
@@ -12293,7 +12293,7 @@ function bfRnLine(k){const r=bfR(k),t=T(),rv=bfRev(),pr=/신부|사제/.test(r.j
   if(k==='etienne')return hot?`${bU(k)} 삼색 띠를 맨 채 구 회의에서 곧장 왔다. 늦었다고 투덜대면서도 제일 먼저 모두를 끌어안았다`:`${bU(k)} 낡은 법학책을 옆구리에 끼고 왔다. 스무 해 전 이 다리에서 세상을 고치겠다던 말을 아직 기억하고 있었다`;
   if(k==='jules')return pr?`${bU(k)} 사제복 위에 외투를 걸치고 와서 모두의 머리에 손을 얹어 짧게 축복했다. 축복을 마치고는 아이들 손에 빵 조각을 하나씩 쥐여 주었다`:`${bU(k)} 조금 늦게 와서 멋쩍게 웃더니 어릴 적 같이 부르던 성가 한 소절을 흥얼거렸다`;
   if(k==='antoine')return `${bU(k)} 회중시계를 꺼내 보이며 약속 시간에 딱 맞춰 왔다고 자랑했다. 그날 저녁 술값만은 한 푼도 따지지 않았다`;
-  if(k==='gabriel')return `${bU(k)} 제일 늦게, 제일 잘 차려입고 나타났다. 그러고는 모두를 보자마자 넥타이를 풀어 난간에 걸었다`;
+  if(k==='gabriel')return `${bU(k)} 제일 늦게, 제일 잘 차려입고 나타났다. 그러고는 모두를 보자마자 ${fW('gabriel','깃털 모자를 벗어 난간에 걸었다','넥타이를 풀어 난간에 걸었다')}`;
   return `${bU(k)} 왔다`}
 // 루이 카페 처형(1월 21일) 줄이 먼저 나오고, 그 뒤에 벗들의 반응(쥘의 미사 등)이 나오게 한다
 {const _r9o=rf9React;rf9React=async function(key){if(key==='1793-1'&&s&&!(s.gfame&&s.gfame.louis16)){s.r9pend=key;return}return _r9o(key)}}
@@ -12699,7 +12699,7 @@ sd12('antoine','p95_antoine_1',()=>p95Ok('antoine',1796.15,1797.1),async()=>{con
 
 // 앙투안 2: 팔레루아얄 113번지 도박장의 새벽(1798~99)
 sd12('antoine','p95_antoine_2',()=>p95Ok('antoine',1798.0,1800.0),async()=>{const {N,Nu,Ni,Nw,Nl,He,Hu,Hi}=p95Nm('antoine');
-  await bfScene('113번지','le numéro 113',`새벽 다섯 시, 팔레루아얄 회랑. 도박장 113번지 문 앞 계단에 ${Ni} 앉아 있다. 넥타이가 풀려 있다. 무엇이든 세는 사람이 오늘 밤 얼마를 잃었는지는 세지 않았다고 한다. “룰렛은 셈이 안 돼. 그래서 해 본 건데.”`,[
+  await bfScene('113번지','le numéro 113',`새벽 다섯 시, 팔레루아얄 회랑. 도박장 113번지 문 앞 계단에 ${Ni} 앉아 있다. ${fW('antoine','머리가 풀려 있다.','넥타이가 풀려 있다.')} 무엇이든 세는 사람이 오늘 밤 얼마를 잃었는지는 세지 않았다고 한다. “룰렛은 셈이 안 돼. 그래서 해 본 건데.”`,[
    {l:'잃은 돈은 묻지 않고 집까지 데려다준다',a:'family',f:()=>{bfRel('antoine',{close:5,trust:5});bfMem('m_p95_an2','antoine',`총재정부 시절, 팔레루아얄 도박장 앞에 주저앉은 ${Nl} 집까지 데려다주었다.`,{tone:'위로',their:'그 사람은 얼마 잃었냐고 묻지 않았다. 대문 앞에서 내가 먼저 말했다. 다 셌다고.'});
      say(`생드니 거리까지 걷는 동안 ${Nu} 한 마디도 하지 않았다. 대문 앞에서야 말했다. “이천 프랑. 셌어. 사실 다 셌어.” 그 뒤로 113번지 앞에서 ${He}를 본 사람은 없었다.`)}},
    {l:'“한 판만 더. 내가 옆에 있을게.”',a:'bold greedy',f:async()=>{if(await chance(.3,'룰렛','총재정부 시절 팔레루아얄 도박장은 파리에서 가장 붐볐고, 판은 늘 도박장 쪽에 유리했다')){bfRel('antoine',{close:4});say(`붉은 칸이 세 번 연달아 나왔다. ${Nu} 잃은 돈의 반을 되찾자마자 칩을 쓸어 담고 일어섰다. “여기서 그만두는 게 셈이야.” 둘은 해 뜰 때까지 회랑을 걸으며 웃었다.`+fx({hap:2}))}
@@ -12852,7 +12852,7 @@ async function gb89Tick(){if(!s||s.dead||!bfRev()||sheetLive||child()||s.cond!==
 /* ================= 개편 32: 공포정치 때 가브리엘이 주인공네 집에 숨는다 =================
    가브리엘의 길은 셋: 망명 시도(10%) · 다락방에 사람을 숨김 · 주인공 집에 숨음. */
 async function gb32Refuge(){const r=bfR('gabriel'),G=bN('gabriel'),et=bfAlive('etienne')&&bfR('etienne').cond==='normal';s.gb32={st:'asked',y:s.year};
-  await bfScene('덧문 뒤의 손님','l’hôte caché',`자정이 지나 덧문을 세 번 두드리는 소리. 외투 깃을 세운 ${bI('gabriel')} 서 있다. 구 감시위원회 명단에 이름이 올랐다고 한다. 늘 반듯하던 넥타이가 비뚤어져 있다. “하룻밤만. 아니, 모르겠어. 갈 데가 없어.”`,[
+  await bfScene('덧문 뒤의 손님','l’hôte caché',`자정이 지나 덧문을 세 번 두드리는 소리. ${fW('gabriel','망토 두건을 깊이 쓴','외투 깃을 세운')} ${bI('gabriel')} 서 있다. 구 감시위원회 명단에 이름이 올랐다고 한다. ${fW('gabriel','늘 곱게 땋던 머리가 흐트러져 있다.','늘 반듯하던 넥타이가 비뚤어져 있다.')} “하룻밤만. 아니, 모르겠어. 갈 데가 없어.”`,[
    {l:'다락에 자리를 내어 준다',s:'혐의 +',a:'bold family',f:()=>{s.gb32.st='hid';r.cond='hiding';bfSet('gabriel','atYou');bfFate('gabriel','공포정치 동안 당신 집 다락에 숨어 지냈다');s.sus=clamp((s.sus||0)+6,0,100);
      bfMem('m_gb32','gabriel',`공포정치 때 ${jo(G,'이','가')} 당신 집 다락에 숨어 지냈다.`,{tone:'두려움',place:'다락',their:'그 사람의 집 다락에서 몇 달을 살았다. 계단 삐걱이는 소리만 들려도 숨을 멈췄다. 그래도 그 집은 따뜻했다.'});bfRel('gabriel',{close:12,trust:15});
      say(`${bU('gabriel')} 다락 들보 아래 웅크리고 앉아 처음으로 웃었다. “영국식으로 말하면, 신세 좀 지겠어.” 그날부터 계단 넷째 칸은 밟지 않기로 했다. 삐걱거렸으니까.`+fx({cour:2,hap:1}),'big')}},
@@ -12861,7 +12861,7 @@ async function gb32Refuge(){const r=bfR('gabriel'),G=bN('gabriel'),et=bfAlive('e
      say(`포도주 통 사이에 짚을 깔았다. ${bU('gabriel')} 촛불 하나로 스케치북을 넘기며 밤을 보냈다. 아침마다 빵을 내려 보내면, 저녁엔 빈 접시와 함께 작은 그림 한 장이 올라왔다.`+fx({cour:2}))}},
    {l:'“여긴 안 돼. 미안해.”라며 돌려보낸다',a:'safe',f:()=>{s.gb32.st='refused';bfRel('gabriel',{close:-12,trust:-15,hate:10});
      bfMem('m_gb32','gabriel',`공포정치 때 숨겨 달라는 ${bL('gabriel')} 돌려보냈다.`,{tone:'죄책감',their:'그 사람 문 앞에서 돌아섰다. 이해한다. 다들 무서웠으니까. 그래도 그날 밤 거리는 너무 길었다.'});
-     say(`${bU('gabriel')} 고개를 끄덕이고 어둠 속으로 사라졌다. 넥타이를 고쳐 매는 것도 잊은 채였다. 그날 밤 당신은 덧문 소리가 날 때마다 잠에서 깼다.`+fx({hap:-4}),'dark')}}])}
+     say(`${bU('gabriel')} 고개를 끄덕이고 어둠 속으로 사라졌다. ${fW('gabriel','흐트러진 머리를 매만지는 것도','넥타이를 고쳐 매는 것도')} 잊은 채였다. 그날 밤 당신은 덧문 소리가 날 때마다 잠에서 깼다.`+fx({hap:-4}),'dark')}}])}
 async function gb32Tick(){if(!s||s.dead||!bfRev()||s.gb92br!=='refuge'||!bfMet('gabriel'))return;const r=bfR('gabriel'),t=T(),now=MI();if(!r||!r.alive)return;
   if(!s.gb32){if(sheetLive||child()||s.cond!=='normal'||!bfHere()||t<1793.7||t>=1794.45||r.cond!=='normal'||r.cut)return;s.gb32at=s.gb32at||now+ri(0,3);if(now<s.gb32at)return;await gb32Refuge();return}
   const G=s.gb32;
@@ -13039,7 +13039,7 @@ const GAX=[
    {l:'“다들 코가 똑같네.”라고 놀린다',a:'bold social',f:()=>{bfSet('gabriel','pride');bfMem('m_gx_honneur','gabriel',`${G}의 가문 초상화를 보며 다들 코가 똑같다고 놀렸다. ${he}는 화를 내다가 웃음을 터뜨렸다.`,{tone:'기쁨',place:'사브리 저택 회랑',their:'사백 년 된 코를 놀린 건 그 아이가 처음이었다. 화가 났어야 했는데 웃음이 났다. 처음으로 그 벽이 무겁지 않았다.'});bfRel('gabriel',{close:5,riv:2});
      say(`${bU('gabriel')} 눈을 부릅떴다. “사브리 가문의 코야. 명예로운 코라고.” 그러고는 거울 앞에 가서 자기 코를 들여다보았다. 한참 뒤 웃음을 터뜨렸다. “…진짜 똑같네.” 둘은 회랑 바닥에 주저앉아 초상화마다 별명을 붙였다.`+fx({hap:3}))}},
    {l:'빈 벽을 가리키며 “여긴 네 자리야?”라고 묻는다',a:'family',f:()=>{bfSet('gabriel','pride');bfMem('m_gx_honneur','gabriel',`${G}의 가문 초상화 회랑 끝 빈 벽 앞에서, 거기가 그의 자리냐고 물었다.`,{tone:'의문',place:'사브리 저택 회랑',their:'그 아이가 빈 벽을 봤다. 나는 그 자리가 무서웠다. 저 사람들처럼 될 수 있을까. 아니면 아무것도 걸리지 않을까.'});bfRel('gabriel',{close:6,trust:6});
-     say(`${bU('gabriel')} 웃으려다 말았다. “아버지는 그렇게 말씀하셔. 그런데 나는 결투에서 물러선 적이 없을 자신이 없어. 말도 무섭고.” 잠시 뒤 ${he}가 빈 벽에 손바닥을 댔다. “그래도 여기 걸릴 때는, 옆에 누가 같이 그려져 있으면 좋겠어. 그럼 덜 무서울 것 같아.”`+fx({hap:1}))}}])}},
+     say(`${bU('gabriel')} 웃으려다 말았다. “아버지는 그렇게 말씀하셔. ${fW('gabriel','그런데 딸은 결투도 못 하고 전쟁에도 못 나가. 저 벽에 걸릴 일을 할 수가 없어.','그런데 나는 결투에서 물러선 적이 없을 자신이 없어. 말도 무섭고.')}” 잠시 뒤 ${he}가 빈 벽에 손바닥을 댔다. “그래도 여기 걸릴 때는, 옆에 누가 같이 그려져 있으면 좋겠어. 그럼 덜 무서울 것 같아.”`+fx({hap:1}))}}])}},
  {id:'gx_titre',when:()=>!child()&&bfW(1790.47,1791.3),run:async()=>{const G=bN('gabriel'),he=bHe('gabriel'),nob=gaNob();
   const T0=nob?`1790년 6월 19일, 의회가 세습 귀족과 작위, 문장과 하인 제복을 없앴다. 다음 날 ${bU('gabriel')} 마차 문 앞에 쪼그리고 앉아 끌로 가문의 문장인 푸른 사자를 긁어내고 있다. 칠이 생각보다 단단하다. “이름 앞의 ‘드’도 떼라더라. 그럼 나는 그냥 사브리야. 무슨 치즈 이름 같지 않아?”`
    :`1790년 6월 19일, 의회가 세습 귀족과 작위, 문장을 없앴다. ${bN('gabriel')}네 아버지가 몇 해 전 큰돈을 주고 산 ‘국왕 비서’ 관직은 하루아침에 종잇조각이 되었다. 스무 해 지니면 집안이 귀족이 된다던 자리, 사람들이 ‘천것 씻는 비누’라 부르던 자리였다. ${bU('gabriel')} 언젠가 마차 문에 붙이려고 그려 두었던 문장 그림을 접었다 폈다 한다. “이십 년을 기다리라더니, 이제 기다릴 것도 없네. 비누값이 얼마였는지 알아?”`;
@@ -13734,14 +13734,14 @@ const FX62=[
   await bfScene('한 달의 침묵','la brouille',`${Lo}의 남동생 피에르가 ${A}에게 3수를 빌렸다가 4수로 갚았다. ${jo(Lo,'이','가')} 소리쳤다. “고리대금업자! 애한테까지 이자를 받아?” ${A}도 지지 않았다. “빵 꽁다리를 공짜로 퍼 주니까 너희 집이 맨날 그 모양이지!” 그 뒤로 한 달, 둘은 말 한마디 하지 않는다. 보다 못한 ${jo(G,'이','가')} 셋을 저택으로 끌고 가 옷장 문을 연다. “오늘은 내가 너희 셋을 꾸며 줄 거야. 다 끝날 때까지 아무도 못 나가.”`,[
    {l:`${G}에게 맡기고 맨 먼저 거울 앞에 선다`,a:'social bold',f:()=>{bfSet('antoine','madeUp');bfSet('louise','dressed');bfRel('louise',{close:5});bfRel('antoine',{close:5});bfRel('gabriel',{close:6});bfMem('m_fx_quarrel',['antoine','louise','gabriel'],`${jo(A,'과','와')} ${jo(Lo,'이','가')} 이자 1수 때문에 한 달 동안 말을 하지 않던 때, ${jo(G,'이','가')} 우리 셋을 저택으로 데려가 꾸며 주었다. 내가 먼저 우스꽝스러운 가발을 쓰자 둘이 동시에 웃음을 터뜨렸다.`,{tone:'기쁨',place:'생제르맹 문밖의 저택',their:'거울 속에 넷이 서 있었다. 다 남의 옷을 입고 있었다. 그래서 다 같이 웃을 수 있었다.'});
      say(`${jo(G,'은','는')} 당신에게 분 바른 높은 가발을 얹었다. 늙은 후작 부인 같은 당신을 보고 ${jo(Lo,'이','가')} 먼저 웃음을 터뜨렸고, ${jo(A,'이','가')} 참다가 따라 웃었다. 둘의 눈이 마주쳤다. 해 질 녘, 넷은 남의 옷을 입은 채 거울 앞에 나란히 섰다. 아무도 이자 이야기를 꺼내지 않았다.`+fx({hap:5,soc:1}),'big')}},
-   {l:`${A}의 외투를 함께 골라 주며 ${Lo} 쪽으로 슬쩍 등을 민다`,a:'social',f:()=>{bfSet('antoine','madeUp');bfRel('louise',{close:4});bfRel('antoine',{close:5,trust:3});bfRel('gabriel',{close:4});bfMem('m_fx_quarrel',['antoine','louise','gabriel'],`${jo(A,'과','와')} ${jo(Lo,'이','가')} 한 달 동안 말을 하지 않던 때, ${jo(G,'이','가')} 우리 셋을 꾸며 주었다. 비단 외투를 입은 ${jo(A,'이','가')} 하늘색 드레스를 입은 ${Lo}에게 먼저 말을 걸었다. “이자는… 돌려줄게.”`,{tone:'기쁨',place:'생제르맹 문밖의 저택',their:'좋은 외투를 입으니 사과가 쉬웠다. 옷이 대신 말해 주는 것 같았다.'});
-     say(`비단 외투를 입은 ${A}의 등을 당신이 ${Lo} 쪽으로 슬쩍 밀었다. ${jo(A,'이','가')} 헛기침을 했다. “이자는… 돌려줄게. 피에르한테.” ${jo(Lo,'은','는')} 드레스 자락을 잡고 우스꽝스럽게 무릎을 굽혔다. “고맙사옵니다, 나리.” ${jo(G,'은','는')} 박수를 쳤다.`+fx({hap:4}),'big')}}])}},
+   {l:`${A}의 ${fW('antoine','드레스','외투')}를 함께 골라 주며 ${Lo} 쪽으로 슬쩍 등을 민다`,a:'social',f:()=>{bfSet('antoine','madeUp');bfRel('louise',{close:4});bfRel('antoine',{close:5,trust:3});bfRel('gabriel',{close:4});bfMem('m_fx_quarrel',['antoine','louise','gabriel'],`${jo(A,'과','와')} ${jo(Lo,'이','가')} 한 달 동안 말을 하지 않던 때, ${jo(G,'이','가')} 우리 셋을 꾸며 주었다. ${fW('antoine','비단 드레스','비단 외투')}를 입은 ${jo(A,'이','가')} 하늘색 드레스를 입은 ${Lo}에게 먼저 말을 걸었다. “이자는… 돌려줄게.”`,{tone:'기쁨',place:'생제르맹 문밖의 저택',their:fW('antoine','좋은 드레스','좋은 외투')+'를 입으니 사과가 쉬웠다. 옷이 대신 말해 주는 것 같았다.'});
+     say(`${fW('antoine','비단 드레스','비단 외투')}를 입은 ${A}의 등을 당신이 ${Lo} 쪽으로 슬쩍 밀었다. ${jo(A,'이','가')} 헛기침을 했다. “이자는… 돌려줄게. 피에르한테.” ${jo(Lo,'은','는')} 드레스 자락을 잡고 우스꽝스럽게 무릎을 굽혔다. “고맙사옵니다, 나리.” ${jo(G,'은','는')} 박수를 쳤다.`+fx({hap:4}),'big')}}])}},
  {id:'fx_theatre',when:()=>fx62All(['gabriel','antoine'])&&s.age>=13&&s.age<=20&&T()<1789,run:async()=>{const G=bN('gabriel'),A=bN('antoine');
-  await bfScene('이층 특별석','Le Bourgeois gentilhomme',`${bU('gabriel')} 집안의 테아트르프랑세 특별석이 오늘 비었다며 당신과 ${bL('antoine')} 부른다. ${A}에게는 그럴듯한 외투가 없다. ${bI('gabriel')} 자기 연회색 외투를 던져 준다. 소매가 조금 길다. 오늘 연극은 몰리에르의 『부르주아 귀족』. 귀족 흉내를 내다 웃음거리가 되는 상인 주르댕의 이야기다. 객석이 웃음으로 들썩이는데, ${bU('antoine')} 웃지 않는다. 무대 위 주르댕의 손짓을 한 동작도 놓치지 않고 따라 한다.`,[
+  await bfScene('이층 특별석','Le Bourgeois gentilhomme',`${bU('gabriel')} 집안의 테아트르프랑세 특별석이 오늘 비었다며 당신과 ${bL('antoine')} 부른다. ${A}에게는 ${fW('antoine',`그럴듯한 숄이 없다. ${bI('gabriel')} 자기 연회색 비단 숄을 던져 준다. 끝자락이 조금 길다.`,`그럴듯한 외투가 없다. ${bI('gabriel')} 자기 연회색 ${fW('antoine','숄을','외투를')} 던져 준다. 소매가 조금 길다.`)} 오늘 연극은 몰리에르의 『부르주아 귀족』. 귀족 흉내를 내다 웃음거리가 되는 상인 주르댕의 이야기다. 객석이 웃음으로 들썩이는데, ${bU('antoine')} 웃지 않는다. 무대 위 주르댕의 손짓을 한 동작도 놓치지 않고 따라 한다.`,[
    {l:`막간에 “주르댕 흉내 내 봐.”라고 ${jo(A,'을','를')} 부추긴다`,a:'social',f:()=>{bfSet('antoine','jourdain');bfRel('antoine',{close:6});bfRel('gabriel',{close:3});bfMem('m_fx_theatre',['antoine','gabriel'],`${bU('gabriel')} 테아트르프랑세 특별석에 ${bW('antoine')} 나를 데려갔다. 『부르주아 귀족』 막간에 ${jo(A,'이','가')} 주르댕 흉내를 냈다. 옆 특별석 귀부인들까지 웃었다.`,{tone:'기쁨',place:'테아트르프랑세',their:'주르댕처럼 웃음거리는 되지 않겠다고 했다. 그 아이 앞에서. 지켜야 할 약속이 생겼다.'});
-     say(`${bU('antoine')} 특별석 난간에 서서 주르댕이 처음 귀족 예법을 배우는 장면을 해 보였다. 옆 특별석 귀부인들이 부채 뒤에서 웃었다. ${bU('gabriel')} 박수를 쳤다. 돌아오는 길에 ${bI('antoine')} 외투를 벗어 돌려주며 말했다. “나는 주르댕처럼 웃음거리는 안 될 거야. 진짜로 될 거야.”`+fx({hap:3,soc:1}),'big')}},
-   {l:`${G}에게 “그 외투, 그냥 ${A} 줘.”라고 한다`,a:'family',f:()=>{bfRel('antoine',{trust:5,close:3});bfRel('gabriel',{close:2});bfMem('m_fx_theatre',['antoine','gabriel'],`테아트르프랑세에서 돌아오는 길, ${G}에게 빌려준 외투를 ${A}에게 그냥 주라고 했다. ${jo(A,'은','는')} 빌린 건 갚는 거라며 외투를 곱게 개어 돌려주었다.`,{tone:'씁쓸함',place:'테아트르프랑세',their:'빌린 건 갚을 수 있다. 받은 건 못 갚는다. 그래서 돌려줬다.'});
-     say(`${bU('gabriel')} “그래, 가져.”라고 쉽게 말했다. ${bU('antoine')} 외투를 한참 쥐고 있다가 고개를 저었다. “빌린 건 갚으면 되지만, 받은 건 못 갚아.” 그날 밤 ${bU('antoine')} 외투를 곱게 개어 돌려주었다.`)}},
+     say(`${bU('antoine')} 특별석 난간에 서서 주르댕이 처음 귀족 예법을 배우는 장면을 해 보였다. 옆 특별석 귀부인들이 부채 뒤에서 웃었다. ${bU('gabriel')} 박수를 쳤다. 돌아오는 길에 ${bI('antoine')} ${fW('antoine','숄을','외투를')} 벗어 돌려주며 말했다. “나는 주르댕처럼 웃음거리는 안 될 거야. 진짜로 될 거야.”`+fx({hap:3,soc:1}),'big')}},
+   {l:`${G}에게 “${fW('antoine','그 숄,','그 외투,')} 그냥 ${A} 줘.”라고 한다`,a:'family',f:()=>{bfRel('antoine',{trust:5,close:3});bfRel('gabriel',{close:2});bfMem('m_fx_theatre',['antoine','gabriel'],`테아트르프랑세에서 돌아오는 길, ${G}에게 빌려준 ${fW('antoine','숄을','외투를')} ${A}에게 그냥 주라고 했다. ${jo(A,'은','는')} 빌린 건 갚는 거라며 ${fW('antoine','숄을','외투를')} 곱게 개어 돌려주었다.`,{tone:'씁쓸함',place:'테아트르프랑세',their:'빌린 건 갚을 수 있다. 받은 건 못 갚는다. 그래서 돌려줬다.'});
+     say(`${bU('gabriel')} “그래, 가져.”라고 쉽게 말했다. ${bU('antoine')} ${fW('antoine','숄을','외투를')} 한참 쥐고 있다가 고개를 저었다. “빌린 건 갚으면 되지만, 받은 건 못 갚아.” 그날 밤 ${bU('antoine')} ${fW('antoine','숄을','외투를')} 곱게 개어 돌려주었다.`)}},
    {l:`${A} 옆에서 같이 웃는다`,a:'safe',f:()=>{bfRel('antoine',{close:4});bfRel('gabriel',{close:3});bfMem('m_fx_theatre',['antoine','gabriel'],`${bU('gabriel')} 테아트르프랑세 특별석에 ${bW('antoine')} 나를 데려갔다. 『부르주아 귀족』을 보고 오는 마차 안에서 ${jo(A,'이','가')} 물었다. 주르댕은 돈이 많아서 우스운 거냐, 귀족이 아니어서 우스운 거냐고.`,{tone:'의문',place:'테아트르프랑세',their:'둘 다 대답하지 못했다. 나도 아직 모른다.'});
      say(`당신이 웃자 ${A}도 따라 웃었다. 하지만 막이 내릴 때 그 얼굴은 웃고 있지 않았다. 마차 안에서 ${bU('antoine')} 창밖을 보며 물었다. “주르댕은 돈이 많아서 우스운 거야, 아니면 귀족이 아니라서 우스운 거야?” ${G}도 당신도 대답하지 못했다.`+fx({hap:2}))}}])}},
  // ----- 혁명기 -----
@@ -13969,6 +13969,75 @@ async function px70Tick(){if(!s||s.dead||sheetLive||!bfRev())return;s.px70=s.px7
   for(const x of PX70){if(s.px70.d[x.id]||(wait&&!x.pin))continue;let ok=false;try{ok=!!x.when()}catch(e){}if(!ok)continue;
     s.px70.d[x.id]=s.year;s.px70.nx=MI()+4;try{await x.run()}catch(e){console.error('px70',x.id,e);if(sheetLive)sheetClose()}return}}
 {const _rd70=rfDaily;rfDaily=async function(){await _rd70();if(!s||s.dead)return;try{if(R()<.3||PX70.some(x=>x.pin&&!(s.px70&&s.px70.d[x.id])&&(()=>{try{return x.when()}catch(e){return false}})()))await px70Tick()}catch(e){console.error(e)}}}
+
+/* ================= 개편 71: 여자 생의 가브리엘 =================
+   주인공이 여자면 가브리엘도 여자다. 칼·결투·몽둥이·넥타이 장면을 그 시대 여자의 장면으로 바꾼다.
+   기억 id는 그대로 쓴다(뒤 장면들이 같은 기억을 본다). */
+{const gF=()=>{const r=bfR('gabriel');return !!(r&&r.sex==='F')};
+ const swap=(list,id,fem,when)=>{const x=list.find(z=>z.id===id);if(!x)return;const o=x.run,w=x.when;x.run=async()=>gF()?fem():o();if(when)x.when=()=>gF()?when():w()};
+
+ // 검술 도장 → 모드 상점의 드레스 (로즈 베르탱의 ‘르 그랑 모골’, 생토노레 거리)
+ swap(GAX,'gx_salle',async()=>{const G=bN('gabriel'),he=bHe('gabriel'),nob=gaNob();
+  const T0=nob?`생토노레 거리 ‘르 그랑 모골’. 왕비의 옷을 짓는 로즈 베르탱의 가게다. 깃털과 리본이 천장까지 쌓였다. ${bU('gabriel')} 연분홍 비단 드레스 앞에서 떠나지 못한다. “아버지가 그러셔. 사브리 집안 딸은 옷으로 이름을 남기는 거래. 오빠들은 칼로, 나는 이걸로.”`
+   :`생토노레 거리 ‘르 그랑 모골’. 왕비의 옷을 짓는 가게다. ${bU('gabriel')} 진열창에 코를 붙이고 연분홍 비단 드레스를 본다. 한 벌 값이 우리 집 일 년 빵값이다. “언젠가 저걸 입고 저 문으로 들어갈 거야. 손님으로.”`;
+  await bfScene('모드 상점의 드레스','la marchande de modes',T0,[
+   {l:'드레스를 대 보게 거울을 들어 준다',a:'social',f:()=>{bfMem('m_gx_salle','gabriel',`${jo(G,'과','와')} 생토노레 거리 모드 상점에 갔다. 연분홍 드레스를 몸에 대 보는 ${he}에게 거울을 들어 주었다.`,{tone:'기쁨',place:'생토노레 거리',their:'거울 속 나보다 거울을 든 그 아이 얼굴이 더 기억난다. 나보다 더 신이 나 있었다.'});bfRel('gabriel',{close:6,trust:2});
+     say(`${bU('gabriel')} 드레스를 몸에 대고 거울 앞에서 한 바퀴 돌았다. 점원이 눈살을 찌푸렸지만 ${he}는 못 본 척 두 바퀴를 더 돌았다. “어때? 초상화에 걸릴 만해?”`+fx({soc:1,hap:3}))}},
+   {l:'입은 모습을 목탄으로 그려 준다',a:'study',f:()=>{bfMem('m_gx_salle','gabriel',`모드 상점에서 드레스를 몸에 댄 ${jo(G,'을','를')} 목탄으로 그려 주었다. ${he}는 그 그림을 드레스보다 오래 들여다보았다.`,{tone:'기쁨',their:'그 아이가 그려 준 나는 실제보다 훨씬 근사했다. 그 그림처럼 되고 싶었다.'});bfRel('gabriel',{close:5,trust:2});
+     say(`목탄으로 드레스를 몸에 댄 ${jo(G,'을','를')} 그렸다. 허리를 조금 가늘게 그렸다. ${bU('gabriel')} 그림을 받아 들고 웃었다. “드레스는 못 사도 이건 가질 수 있네.”`+fx({draw:1,soc:1}))}},
+   {l:'“그 돈이면 빵이 몇 덩이야.”라고 한다',a:'radical',f:()=>{bfMem('m_gx_salle','gabriel',`모드 상점에서 ${G}에게 드레스 한 벌 값이면 빵이 몇 덩이냐고 했다. ${he}는 리본 끝으로 내 코를 툭 건드렸다.`,{tone:'의문',their:'그 아이 말이 맞았다. 그래도 그날 나는 그 드레스가 갖고 싶었다. 그게 부끄러웠다.'});bfRel('gabriel',{riv:3});s.pol=clamp(s.pol+2,-100,100);
+     say(`${bU('gabriel')} 리본 끝으로 당신 코를 툭 건드렸다. “빵은 배를 채우고, 이건 이름을 남겨.” 웃었지만 가게를 나서며 진열창을 한 번도 돌아보지 않았다.`)}}])});
+
+ // 결투 신청 → 시장 여인들의 매 (1791년 4월, 선서 거부 사제의 미사에 간 여자들을 레알 여인들이 매질했다)
+ swap(GAX,'gx_duel',async()=>{const G=bN('gabriel'),he=bHe('gabriel');
+  await bfScene('시장 여인들의 매','la fessée',`1791년 4월. 선서를 거부한 신부의 미사에 다녀온 여자들을 레알의 시장 여인들이 붙잡아 치마를 걷고 매질했다. 밤늦게 ${bI('gabriel')} 문을 두드린다. 숄이 찢어졌고 손목에 멍이 있다. “어머니 따라갔을 뿐이야.” 어머니는 다음 주에도 가겠다고 한다. “같이 가 줘. 혼자선 그 골목을 못 지나가.”`,[
+   {l:'함께 가서 시장 여인들에게 먼저 말을 건다',a:'social',f:()=>{const ok=s.st.soc+ri(0,40)>45;bfMem('m_gx_duel','gabriel',ok?`1791년 봄, ${jo(G,'과','와')} 그 어머니를 데리고 미사 골목을 지났다. 시장 여인들에게 먼저 말을 걸어 길을 텄다.`:`1791년 봄, ${jo(G,'과','와')} 그 어머니를 데리고 미사 골목을 지났다. 말은 통하지 않았고, 진흙과 썩은 양배추가 날아왔다.`,{tone:ok?'위로':'두려움',their:ok?'그 아이가 아니었으면 나는 다시는 그 골목을 걷지 못했을 것이다.':'진흙이 묻은 숄을 볼 때마다 그 아침 그 아이가 내 앞에 서 있던 게 먼저 생각난다.'});bfRel('gabriel',{close:6,trust:8});
+     say((ok?`당신은 생선 장수 아낙에게 빵값 이야기부터 꺼냈다. 한참 뒤 아낙이 손을 내저었다. “됐어, 지나가.” 골목을 빠져나오자 ${bU('gabriel')} 다리가 풀려 벽에 기댔다.`:`말은 통하지 않았다. 진흙과 썩은 양배추가 날아왔다. 셋은 뛰었다. 집에 와서 숄을 빨아 주는 동안 ${bU('gabriel')} 내내 울었다. 묻지 않았다.`)+fx({soc:1,cour:1}))}},
+   {l:'“선서한 신부 성당으로 가.”라고 달랜다',a:'safe',f:()=>{bfMem('m_gx_duel','gabriel',`1791년 봄, 매를 맞고 온 ${G}에게 선서한 신부의 성당으로 다니라고 했다. ${he}는 어머니를 설득했다.`,{tone:'부끄러움',their:'어머니는 끝내 울었다. 나는 또 물러섰다. 그래도 그해 봄을 무사히 났다.'});bfRel('gabriel',{trust:4});
+     say(`${bU('gabriel')} 한참 말이 없다가 고개를 끄덕였다. 다음 주 일요일, 골목에서 ${bHe('gabriel')}를 ‘신부 치마 붙잡는 귀족 계집’이라 부르는 소리가 들렸다. ${bU('gabriel')} 못 들은 척 걸었다. 무사히 걸었다.`)}},
+   {l:'앞장서서 그 골목을 지나간다',a:'bold',f:()=>{const win=s.st.cour+ri(0,40)>55;bfMem('m_gx_duel','gabriel',win?`1791년 봄, ${G} 앞에 서서 미사 골목을 지났다. 아무도 손을 대지 못했다.`:`1791년 봄, ${G} 앞에 서서 미사 골목을 지났다. 매는 내가 맞았다. ${he}는 내 손을 붙잡고 ‘이번에도 내가 네 뒤로 숨었어.’라는 말만 되풀이했다.`,{tone:win?'희망':'두려움',their:win?'그 아이가 내 앞에 섰다. 평생 갚지 못할 빚이다.':'얼음이 깨지던 그 겨울처럼, 이번에도 다친 건 그 아이고 멀쩡한 건 나였다.'});bfRel('gabriel',{close:8,trust:10});
+     say((win?`당신이 앞에서 노려보자 매를 든 여인들이 길을 비켰다. 골목을 빠져나오자 ${bU('gabriel')} 당신을 끌어안았다. 향수 냄새가 너무 진했다.`:`누군가 당신 어깨를 붙잡았다. 정신을 차렸을 때 ${bU('gabriel')} 당신 등을 감싸고 있었다. 집에 와서 겨우 말했다. “미안해. 얼음이 깨지던 날도, 오늘도… 다친 건 늘 너야.”`)+fx(win?{cour:3}:{cour:2,hp:-6}))}}])},()=>!child()&&bfW(1791.25,1791.75));
+
+ // 구역의 검술 교관 → 구역의 바느질 방 (1792년 7월, 의용병 셔츠와 붕대 실밥)
+ swap(GAX,'gx_section',async()=>{const G=bN('gabriel'),he=bHe('gabriel');
+  await bfScene('구역의 바느질 방','l’atelier de la section',`1792년 7월, ‘조국이 위험하다’는 포고가 붙었다. 구역 회관 이층, 여자들이 국경으로 갈 의용병들의 셔츠를 꿰매고 헌 리넨을 풀어 붕대 실밥을 만든다. 그 틈에 ${bI('gabriel')} 앉아 있다. 레이스 소매를 걷어붙였다. 바늘땀은 누구보다 곱다. 구석에서 누가 수군거린다. “귀족 여자가 여기서 뭘 해? 어느 편에 서려고?”`,[
+   {l:'옆에 앉아 함께 셔츠를 꿰맨다',a:'social',f:()=>{bfSet('gabriel','section');bfMem('m_gx_section','gabriel',`1792년 여름, 구역 회관 바느질 방에서 ${G} 옆에 앉아 의용병 셔츠를 꿰맸다. ${he}는 내 바늘땀을 몰래 다시 떴다.`,{tone:'희망',place:'구역 회관',their:'그 아이가 내 옆에 앉았다. 그 순간부터 수군거림이 줄었다. 나를 믿는 사람이 하나 있으면, 사람들도 믿는다.'});bfRel('gabriel',{close:8,trust:8});
+     say(`당신의 바늘땀은 삐뚤었다. ${bU('gabriel')} 몰래 실을 뽑아 다시 떴다. 저녁이 되자 수군거리던 여자가 ${G}에게 단춧구멍 뜨는 법을 물었다.`+fx({dex:1,soc:1,rloc:1}))}},
+   {l:'“귀족이 여기 있으면 의심받아.”라고 말린다',a:'safe',f:()=>{bfMem('m_gx_section','gabriel',`1792년 여름, 구역 바느질 방에 나가는 ${G}에게 의심받을 테니 그만두라고 했다. ${he}는 바늘을 내려놓지 않았다.`,{tone:'두려움',their:'그 아이 말이 맞았다. 그래도 그만둘 수 없었다. 처음으로 바늘이 나를 귀족 말고 다른 무엇으로 만들어 주고 있었으니까.'});bfRel('gabriel',{trust:4});
+     say(`${bU('gabriel')} 바늘 끝을 내려다보았다. “알아. 그래도 이건 내가 제일 잘하는 거야. 저 셔츠들 내일모레면 국경으로 가.”`)}},
+   {l:'수군거린 여자에게 따진다',a:'radical bold',f:()=>{const ok=s.st.soc+s.st.cour/2+ri(0,30)>55;bfSet('gabriel','section');bfMem('m_gx_section','gabriel',ok?`1792년 여름, 구역 바느질 방에서 ${jo(G,'을','를')} 의심하던 여자에게 따졌다. 그 여자는 결국 ${G} 옆에 앉았다.`:`1792년 여름, 구역 바느질 방에서 ${jo(G,'을','를')} 의심하던 여자에게 따졌다. 말싸움이 커져 둘 다 쫓겨났다.`,{tone:ok?'기쁨':'씁쓸함',place:'구역 회관',their:'그 아이가 나 대신 소리를 질렀다. 나는 그 목소리가 부러웠다.'});bfRel('gabriel',{close:6,resp:4});s.pol=clamp(s.pol+2,-100,100);
+     say(ok?`“이 셔츠 누가 제일 많이 꿰맸는지 세어 봐.” 여자가 셔츠 더미를 보더니 입을 다물었다. 잠시 뒤 실 한 타래를 ${G}에게 내밀었다.`+fx({soc:1,cour:1}):`목소리가 커졌다. 위원이 올라와 둘 다 내보냈다. 계단에서 ${bU('gabriel')} 웃었다. “덕분에 오늘 바느질은 끝이네.”`+fx({cour:1}))}}])});
+
+ // 재단사의 가게 → 모드 상점의 숄
+ swap(RF2_SIDE,'ga_tailor',async()=>{const Ga=bN('gabriel');
+  await bfScene('모드 상점','chez la marchande de modes',`${bU('gabriel')} 당신을 생토노레 거리 모드 상점에 끌고 갔다. “네 숄은 범죄야.” 핀을 입에 문 점원이 당신을 위아래로 훑는다. 비단 숄 한 장에 40리브르다.`,[
+   {l:'숄을 산다',a:'social',dis:s.money<40,f:()=>{bfMem('m_ga_tailor','gabriel',`${Ga}에게 끌려가 생토노레 거리에서 비단 숄을 샀다.`,{obj:'비단 숄',place:'생토노레 거리',their:'그 사람이 처음으로 내 말을 들었다. 숄은 정말 잘 어울렸다.'});bfRel('gabriel',{close:8});say(`${bU('gabriel')} 새 숄을 두른 당신을 한 바퀴 돌려 보더니 박수를 쳤다. “이제 좀 스마트하네.” 영국 말이라고 했다.`+fx({money:-40,soc:2}))}},
+   {l:'“내 숄이 어때서?”라고 버틴다',a:'bold',f:()=>{say(`점원이 눈썹을 치켜올렸다. ${bU('gabriel')} 한숨을 쉬더니 당신의 낡은 숄을 손수 고쳐 둘러 주었다. “좋아. 그럼 적어도 똑바로 둘러.”`);bfMem('m_ga_tailor','gabriel',`${Ga}의 모드 상점 앞에서 낡은 숄을 고집했다.`,{their:'그 사람은 낡은 숄을 벗지 않았다. 나는 그 고집이 부러웠다. 나는 한 번도 그래 본 적이 없다.'});bfRel('gabriel',{resp:6,riv:3})}},
+   {l:'가브리엘의 숄을 골라 준다',a:'social',f:()=>{say(`당신은 화려한 비단들을 지나 맨 아래 칸의 회색 모직 숄을 골랐다. ${bU('gabriel')} 질색을 하면서도 그 천을 오래 만지작거렸다. 결국 그 숄을 샀다.`);bfMem('m_ga_tailor','gabriel',`모드 상점에서 ${Ga}의 숄을 대신 골라 주었다. 수수한 회색이었다.`,{their:'그 사람이 골라 준 회색 숄은 아무도 칭찬하지 않았다. 그래도 제일 자주 둘렀다.'});bfRel('gabriel',{close:6,trust:4})}}])});
+
+ // 앵크루아야블 → 메르베이외즈
+ swap(RF2_SIDE,'gb_d_incroyable',async()=>{
+  await bfScene('메르베이외즈','les Merveilleuses',`${r12I('gabriel')} 속이 비치는 흰 모슬린 드레스에 금발 가발을 쓰고 나타났다. 한겨울인데 팔이 다 드러났다. 게다가 ‘르’ 발음을 하지 않는다. “정말 놀라워(메르베이외즈)! 이게 요즘 유행이야.” 혁명의 R을 지운 말투라고 했다.`,[
+   {l:'배를 잡고 웃는다',a:'social',f:()=>{r12Rel('gabriel',{close:3});say(`${r12U('gabriel')} 처음엔 토라졌다가 결국 같이 웃었다. 웃다가 R 발음이 튀어나왔다. 석 달 뒤 ${r12U('gabriel')} 가발을 벗어 던졌다. “R을 빼고 말하려니 숨이 차. 유행은 남들이 따라 하면 끝난 거야.”`+fx({hap:3}))}},
+   {l:'함께 R 없이 말해 본다',a:'bold social',f:()=>{r12Rel('gabriel',{close:5});say(`둘은 카페에서 R 없는 말로 한 시간을 떠들었다. ${r12I('gabriel')} 속삭였다. “봐, 다들 부러워해.” 그런데 석 달도 못 가 모슬린 드레스는 서랍에 들어갔다. “추워. 다들 똑같이 입으니까 재미도 없고.”`+fx({soc:2,hap:2}))}}])});
+
+ // 몽둥이 → 몽둥이를 든 사내들 뒤의 가브리엘
+ swap(RF2_SIDE,'cf_gourdin',async()=>{const Ga=bN('gabriel'),E=bN('etienne');
+  await bfScene('몽둥이','le gourdin',`테르미도르 뒤. 납 박은 몽둥이를 든 금빛 청년단 사내들이 골목을 막는다. 그 앞에 ${bI('gabriel')} 부채를 접으며 다가와 당신을 붙잡는다. “${E} 어디 숨었어? 그 애가 우리 아버지를 명단에 적었어.” 당신은 ${bI('etienne')} 숨은 다락방을 안다.`,[
+   {l:'“몰라. 파리를 떴다던데.”라고 거짓말한다',a:'bold',f:()=>{bfMem('m_cf_gourdin',['gabriel','etienne'],`테르미도르 뒤, 몽둥이 든 사내들을 거느린 ${Ga}에게 ${E}의 은신처를 모른다고 거짓말했다.`,{tone:'두려움',their:bfR('etienne')?'그 사람이 나를 숨겨 주었다는 걸 나중에 알았다. 가브리엘에게 거짓말을 했다는 것도.':null});
+     bfRel('etienne',{close:10,trust:12});bfRel('gabriel',{trust:-4});bfBrave();
+     say(`${bU('gabriel')} 당신 얼굴을 한참 보더니 부채를 펼쳤다. “그래? 아깝네.” 사내들이 물러간 뒤 당신은 다리가 풀려 벽에 기댔다. 그날 밤 다락방에 빵과 초를 가져다주었다. ${bU('etienne')} 처음으로 당신 앞에서 울었다.`+fx({cour:3}))}},
+   {l:'“그만둬. 그러면 너도 그 애랑 똑같아.”라고 말한다',a:'social bold',f:()=>{bfMem('m_cf_gourdin',['gabriel','etienne'],`테르미도르 뒤, 몽둥이 든 사내들을 거느린 ${Ga}에게 그러면 ${jo(E,'과','와')} 똑같다고 말했다.`,{tone:'씁쓸함',their:'그 사람 말이 맞았다. 그날은 사내들을 돌려보냈다. 다음 날 다시 불렀지만.'});
+     bfRel('gabriel',{resp:8,close:-2});
+     say(`${bU('gabriel')} 웃음을 거두었다. 접은 부채 끝으로 손바닥을 몇 번 두드렸다. “똑같다고?” 그러고는 사내들에게 손짓하고 가 버렸다. 그날 저녁 사내들이 빈손으로 카페에 앉아 있더라는 이야기를 나중에 들었다.`)}},
+   {l:'아무 대답도 하지 않는다',a:'safe',f:()=>{bfMem('m_cf_gourdin',['gabriel','etienne'],`테르미도르 뒤, 몽둥이 든 사내들을 거느린 ${jo(Ga,'이','가')} ${E}의 은신처를 물었다. 아무 대답도 하지 않았다.`,{tone:'의문'});bfRel('gabriel',{close:-2});bfRel('etienne',{close:-2});
+     say(`침묵이 길어졌다. ${bU('gabriel')} 피식 웃었다. “너는 옛날부터 그랬어. 늘 아무 편도 아니지.” 그 말이 칼처럼 박혔다. 그 주에 ${bU('etienne')} 다락방을 옮겼다. 누가 알려 주었는지는 묻지 않았다.`)}}])});
+
+ // 일상: 검술 도장 → 모드 상점
+ try{const V=RF2_VISIT.gabriel,i=V.findIndex(f=>String(f).includes('검술 도장에 갔다'));if(i>=0){const o=V[i];V[i]=()=>gF()?`${bW('gabriel')} 모드 상점에 갔다. ${bU('gabriel')} 리본 하나 고르는 데 한 시간을 썼지만, 점원에게 건네는 인사만큼은 왕비보다 우아했다.`:o()}}catch(e){}
+}
+
+function fW(k,f,m){try{const r=bfR(k);return r&&r.sex==='F'?f:m}catch(e){return m}}
 </script>
 </body>
 </html>
