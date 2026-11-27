@@ -13974,7 +13974,7 @@ async function px70Tick(){if(!s||s.dead||sheetLive||!bfRev())return;s.px70=s.px7
    주인공이 여자면 가브리엘도 여자다. 칼·결투·몽둥이·넥타이 장면을 그 시대 여자의 장면으로 바꾼다.
    기억 id는 그대로 쓴다(뒤 장면들이 같은 기억을 본다). */
 {const gF=()=>{const r=bfR('gabriel');return !!(r&&r.sex==='F')};
- const swap=(list,id,fem,when)=>{const x=list.find(z=>z.id===id);if(!x)return;const o=x.run,w=x.when;x.run=async()=>gF()?fem():o();if(when)x.when=()=>gF()?when():w()};
+ const swap=(list,id,fem,when)=>{const x=list.find(z=>z.id===id);if(!x)return;const o=x.run,w=x.when;x.run=async()=>gF()?fem():o();x.run.__m=o;x.run.__f=fem;if(when)x.when=()=>gF()?when():w()};
 
  // 검술 도장 → 모드 상점의 드레스 (로즈 베르탱의 ‘르 그랑 모골’, 생토노레 거리)
  swap(GAX,'gx_salle',async()=>{const G=bN('gabriel'),he=bHe('gabriel'),nob=gaNob();
