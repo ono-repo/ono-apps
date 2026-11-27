@@ -14034,16 +14034,14 @@ async function px70Tick(){if(!s||s.dead||sheetLive||!bfRev())return;s.px70=s.px7
 
  // 젊은 날 일상: 여자 가브리엘의 자수
  try{const M=ST_BF.gabriel,Y=M[1].map(x=>x==='가브리엘은 분 바른 머리에 영국식 승마 외투를 입고 다녔다. 정작 말 등에는 한 번도 오르지 않았다.'?'가브리엘은 분 바른 머리에 영국식 승마복을 입고 다녔다. 정작 말 등에는 한 번도 오르지 않았다.':x);
-  Y.push('가브리엘은 수틀을 무릎에 올려놓고 비단실로 장미를 놓았다. 꽃잎 하나에 실 색을 일곱 번 바꿨다. “멀리서 보면 아무도 몰라. 그래도 나는 알잖아.”',
-   '가브리엘은 손수건 귀퉁이마다 사브리 가문 문장을 수놓았다. 당신 손수건에는 당신 이름 첫 글자를 놓아 주었다. 문장보다 공을 더 들인 티가 났다.',
-   '가브리엘은 자수 본을 남에게서 빌리지 않았다. 스케치북에 그린 꽃과 새를 그대로 수틀에 옮겼다. 수녀원 선생은 본에 없는 무늬라며 혀를 찼다.',
+  Y.push(   '가브리엘은 손수건 귀퉁이마다 사브리 가문 문장을 수놓았다. 당신 손수건에는 당신 이름 첫 글자를 놓아 주었다. 문장보다 공을 더 들인 티가 났다.',
    '가브리엘은 바늘에 찔려도 소리를 내지 않았다. 피 한 방울이 비단에 번지면 그 자리에 붉은 무당벌레를 하나 수놓아 감췄다.',
-   ()=>`${bU('gabriel')} 수놓은 작은 지갑을 내밀었다. 안감에 아주 작게 ‘사브리’라고 놓여 있었다. “내가 잊혀도 이건 남을 거야. 잃어버리지 마.”`);
+   '가브리엘은 하루 종일 하프와 바이올린을 번갈아 연습했다. 손끝에 굳은살이 박이자 그 손을 오래 들여다보다 울상을 지었다. “귀부인 손은 이러면 안 되는데. 장갑을 끼면 줄이 안 느껴지고.”');
   const F=[M[0],Y,M[2]];Object.defineProperty(ST_BF,'gabriel',{configurable:true,get:()=>gF()?F:M})}catch(e){console.error(e)}
  try{const V=RF2_VISIT.gabriel,i=V.findIndex(f=>String(f).includes('새 조끼 천을'));if(i>=0){const o=V[i];V[i]=()=>gF()?`${bU('gabriel')} 모드 상점에 당신을 끌고 가 새 숄을 골라 주었다. 값은 끝내 말하지 않았다.`:o()}
 }catch(e){}
  // 일상: 검술 도장 → 모드 상점
- try{const V=RF2_VISIT.gabriel,i=V.findIndex(f=>String(f).includes('검술 도장에 갔다'));if(i>=0){const o=V[i];V[i]=()=>gF()?`${bU('gabriel')} 수틀을 들고 당신 집에 왔다. 당신이 이야기하는 동안 ${bHe('gabriel')}는 장미 한 송이를 다 놓았다. “네 이야기는 바느질이 잘 돼.”`:o()}}catch(e){}
+ try{const V=RF2_VISIT.gabriel,i=V.findIndex(f=>String(f).includes('검술 도장에 갔다'));if(i>=0){const o=V[i];V[i]=()=>gF()?`${bW('gabriel')} 모드 상점에 갔다. ${bU('gabriel')} 리본 하나 고르는 데 한 시간을 썼지만, 점원에게 건네는 인사만큼은 왕비보다 우아했다.`:o()}}catch(e){}
 }
 
 function fW(k,f,m){try{const r=bfR(k);return r&&r.sex==='F'?f:m}catch(e){return m}}
